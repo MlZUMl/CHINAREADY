@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ChinaReady 🐼</title>
+<style>
+:root{
+  --bg:#0f0f14;--surface:#1a1a24;--surface2:#22222e;--surface3:#2a2a38;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.12);
+  --text:#f0f0f0;--muted:#888;--dim:#444;
+  --pink:#ff6b9d;--peach:#ff9a3c;--mint:#4ecdc4;--lav:#9b8ec4;
+  --sky:#4a9eff;--green:#56cf7a;--red:#ff5252;--gold:#ffd166;
+  --shadow:0 4px 20px rgba(0,0,0,.4);--shadow-lg:0 8px 40px rgba(0,0,0,.6);
+  --grad-pink:linear-gradient(135deg,#ff6b9d,#ff9a3c);
+  --grad-teal:linear-gradient(135deg,#4ecdc4,#4a9eff);
+  --grad-lav:linear-gradient(135deg,#9b8ec4,#ff6b9d);
+  --grad-green:linear-gradient(135deg,#56cf7a,#4ecdc4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh;display:flex;justify-content:center}
+#app{width:100%;max-width:480px;min-height:100vh;display:flex;flex-direction:column;position:relative}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:99;background:rgba(15,15,20,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-logo{font-size:16px;font-weight:900;display:flex;align-items:center;gap:8px}
+.tone-btn{background:var(--grad-pink);border:none;color:#fff;border-radius:20px;padding:5px 12px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:800}
+
+/* NAV */
+.bottom-nav{position:sticky;bottom:0;z-index:99;background:rgba(15,15,20,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;flex-shrink:0}
+.nav-btn{flex:1;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;font-family:inherit;color:var(--muted);font-size:9px;font-weight:700;transition:all .2s}
+.nav-btn.active{color:var(--pink)}
+.nav-btn .nav-ico{font-size:19px;line-height:1}
+
+/* SCREENS */
+.screen{display:none;flex:1;overflow-y:auto;padding:16px 16px 24px}
+.screen.active{display:block}
+
+/* TONE POP */
+.tone-pop{position:fixed;top:54px;right:14px;background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:16px;z-index:200;width:240px;box-shadow:var(--shadow-lg);display:none}
+.tone-pop.open{display:block}
+.tone-pop-title{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:11px}
+.tone-row{display:flex;align-items:center;gap:9px;margin-bottom:8px;font-size:12px;font-weight:600;color:var(--text)}
+.tbadge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:800;white-space:nowrap;display:inline-block}
+.tbadge-lg{font-size:13px;padding:3px 10px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px;box-shadow:var(--shadow);margin-bottom:13px}
+.section-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px}
+.pbar-wrap{height:5px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* BUTTONS */
+.primary-btn{background:var(--grad-pink);color:#fff;border:none;border-radius:14px;padding:13px;font-size:14px;cursor:pointer;font-weight:900;font-family:inherit;width:100%;box-shadow:0 4px 14px rgba(255,107,157,.3)}
+.secondary-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:14px;padding:12px;font-size:13px;cursor:pointer;font-weight:700;font-family:inherit;width:100%}
+.back-btn{background:none;border:none;color:var(--pink);font-size:20px;cursor:pointer;padding:0;font-family:inherit;font-weight:800;display:flex;align-items:center;gap:4px;margin-bottom:14px}
+.btn-row{display:flex;gap:10px;width:100%}
+
+/* AUDIO */
+.abtn{border-radius:50%;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;transition:all .2s}
+.abtn.playing{border-color:var(--pink);background:rgba(255,107,157,.15);color:var(--pink)}
+.abtn-lg{width:44px;height:44px}.abtn-md{width:34px;height:34px}.abtn-sm{width:28px;height:28px}
+
+/* ── HOME ── */
+.hero{background:linear-gradient(135deg,#1a0a24,#0a1a2e);border:1px solid rgba(155,142,196,.2);border-radius:22px;padding:22px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+.hero::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(255,107,157,.15),transparent 70%);pointer-events:none}
+.hero::after{content:"🐼";position:absolute;right:16px;bottom:12px;font-size:52px;opacity:.12}
+.hero-title{font-size:24px;font-weight:900;letter-spacing:-.5px;background:var(--grad-pink);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:12px;color:var(--muted);font-weight:600;margin:3px 0 14px}
+.hero-pct{font-size:44px;font-weight:900;line-height:1;color:var(--text)}
+.hero-lbl{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+.hero-pbar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:10px;overflow:hidden}
+.hero-pbar-fill{height:100%;background:var(--grad-pink);border-radius:3px;transition:width .6s}
+.hero-count{font-size:12px;color:var(--muted);margin-top:6px;font-weight:600}
+
+.module-row{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:13px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;font-family:inherit;text-align:left;transition:all .2s;box-shadow:var(--shadow);margin-bottom:9px}
+.module-row:active{transform:scale(.98);background:var(--surface2)}
+.mod-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.mod-info{flex:1}
+.mod-name{color:var(--text);font-weight:800;font-size:13px;margin-bottom:5px}
+.mod-stat{text-align:right;min-width:40px}
+.mod-pct{font-weight:900;font-size:13px}
+.mod-cnt{font-size:10px;color:var(--muted);font-weight:600}
+
+/* ── MODULE ── */
+.mod-banner{border-radius:18px;padding:18px;color:#fff;margin-bottom:14px;box-shadow:var(--shadow-lg)}
+.mode-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px;cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;font-family:inherit;text-align:left;transition:all .2s;box-shadow:var(--shadow);margin-bottom:9px}
+.mode-row:active{background:var(--surface2)}
+.mode-lbl{color:var(--text);font-weight:800;font-size:14px}
+.mode-dsc{color:var(--muted);font-size:11px;margin-top:2px;font-weight:600}
+
+/* ── PHRASEBOOK ── */
+.pb-search{background:var(--surface);border:1px solid var(--border2);border-radius:11px;padding:11px 14px;color:var(--text);font-size:15px;outline:none;width:100%;margin-bottom:13px;font-family:inherit;font-weight:600}
+.pb-search:focus{border-color:var(--pink)}
+.pb-search::placeholder{color:var(--dim)}
+.pb-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 13px;display:flex;gap:10px;align-items:center;margin-bottom:8px;box-shadow:var(--shadow)}
+.pb-zh-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:52px}
+.pb-zh{font-size:26px;font-weight:700;line-height:1.1;text-align:center;color:var(--text)}
+.pb-info{flex:1}
+.pb-pinyin{font-weight:800;font-size:13px}
+.pb-phon{color:var(--muted);font-size:11px;font-style:italic;font-weight:600}
+.pb-fr{color:var(--text);font-size:12px;margin-top:2px;font-weight:700}
+.fav-btn{background:none;border:none;font-size:18px;cursor:pointer;padding:4px;line-height:1;flex-shrink:0}
+
+/* ── FLASHCARD ── */
+.fc-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.fc-counter{font-size:13px;color:var(--muted);font-weight:700}
+.fc-pbar-wrap{flex:1;margin:0 12px;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden}
+.fc-pbar-fill{height:100%;background:var(--pink);border-radius:2px;transition:width .3s}
+.close-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;font-family:inherit;font-weight:800}
+.card-scene{width:100%;min-height:290px;perspective:1000px;cursor:pointer;margin-bottom:10px}
+.card-inner{position:relative;width:100%;min-height:290px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;gap:11px;box-shadow:var(--shadow-lg)}
+.card-front{background:var(--surface);border:1px solid var(--border2)}
+.card-back{background:var(--surface2);border:1px solid rgba(155,142,196,.25);transform:rotateY(180deg)}
+.card-zh-big{font-size:64px;font-weight:700;line-height:1;color:var(--text)}
+.card-zh-med{font-size:36px;font-weight:700;color:var(--text)}
+.card-pinyin{font-size:19px;font-weight:800}
+.card-phon{font-size:13px;color:var(--muted);font-style:italic;font-weight:600;background:rgba(255,255,255,.05);border-radius:10px;padding:4px 12px;border:1px solid var(--border)}
+.card-fr{font-size:17px;font-weight:700;color:var(--text)}
+.card-hint{font-size:12px;color:var(--dim);font-weight:700}
+.card-badges{display:flex;align-items:center;gap:9px;margin-top:2px}
+.fc-hint{text-align:center;color:var(--dim);font-size:12px;margin-top:8px;font-weight:700}
+.fc-btns{display:flex;gap:12px;margin-top:14px}
+.fc-btn{flex:1;padding:13px;border-radius:12px;font-size:14px;cursor:pointer;font-weight:800;font-family:inherit;border:1px solid transparent}
+.fc-review{background:rgba(255,82,82,.12);border-color:rgba(255,82,82,.3);color:#ff5252}
+.fc-known{background:rgba(86,207,122,.12);border-color:rgba(86,207,122,.3);color:#56cf7a}
+
+/* ── RESULT ── */
+.result-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;padding:20px 0;text-align:center}
+.result-emoji{font-size:60px}
+.result-title{font-size:22px;font-weight:900;color:var(--text)}
+.result-scores{display:flex;gap:28px}
+.rscore-num{font-size:34px;font-weight:900}
+.rscore-lbl{font-size:12px;color:var(--muted);font-weight:700}
+.result-pctbox{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:10px 22px;font-size:13px;color:var(--muted);font-weight:700}
+.result-bigpct{font-size:52px;font-weight:900}
+
+/* ── QUIZ ── */
+.qz-card{background:var(--surface);border:1px solid var(--border2);border-radius:18px;padding:24px;text-align:center;margin-bottom:14px;box-shadow:var(--shadow-lg)}
+.qz-zh{font-size:54px;font-weight:700;line-height:1.1;margin-bottom:8px;color:var(--text)}
+.qz-pinyin{font-size:18px;font-weight:800;margin-bottom:12px}
+.qz-opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.qz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 10px;font-size:12px;cursor:pointer;font-weight:700;text-align:left;line-height:1.4;color:var(--text);font-family:inherit;transition:all .15s}
+.qz-opt:hover:not(:disabled){background:var(--surface3)}
+.qz-opt.correct{background:rgba(86,207,122,.15)!important;border-color:#56cf7a!important;color:#56cf7a!important}
+.qz-opt.wrong{background:rgba(255,82,82,.12)!important;border-color:#ff5252!important;color:#ff5252!important}
+.qz-next{background:var(--grad-teal);border:none;color:#fff;border-radius:12px;padding:13px;font-size:14px;cursor:pointer;font-weight:900;width:100%;font-family:inherit}
+.qz-score{color:var(--green);font-size:13px;font-weight:800}
+
+/* ── SURVIVAL ── */
+.surv-card{background:var(--surface);border:1px solid rgba(255,82,82,.2);border-radius:16px;padding:13px;margin-bottom:9px;display:flex;gap:11px;align-items:center;box-shadow:var(--shadow)}
+
+/* ── ITINERARY ── */
+.day-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:11px;box-shadow:var(--shadow)}
+.day-header{display:flex;align-items:center;gap:10px;cursor:pointer}
+.day-num{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0}
+.day-body{display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.day-body.open{display:block}
+.day-slot{display:flex;gap:10px;margin-bottom:9px}
+.day-slot-time{font-size:10px;font-weight:800;color:var(--pink);min-width:48px;padding-top:2px}
+.day-slot-title{font-size:12px;font-weight:800;color:var(--text)}
+.day-slot-desc{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;line-height:1.5}
+.tag{display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:8px;margin-top:4px;margin-right:3px}
+.tag-shop{background:rgba(255,107,157,.15);color:#ff6b9d}
+.tag-food{background:rgba(255,154,60,.15);color:#ff9a3c}
+.tag-cult{background:rgba(74,158,255,.15);color:#4a9eff}
+.tag-fun{background:rgba(86,207,122,.15);color:#56cf7a}
+.tag-night{background:rgba(155,142,196,.15);color:#9b8ec4}
+.tag-excursion{background:rgba(78,205,196,.15);color:#4ecdc4}
+.tag-halal{background:rgba(86,207,122,.15);color:#56cf7a}
+.tag-tech{background:rgba(74,158,255,.15);color:#4a9eff}
+
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:15px}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:15px;text-align:center;box-shadow:var(--shadow)}
+.stat-num{font-size:30px;font-weight:900}
+.stat-lbl{font-size:11px;color:var(--muted);font-weight:700;margin-top:2px}
+.streak-card{background:linear-gradient(135deg,#1a0f00,#2a1800);border:1px solid rgba(255,209,102,.2);border-radius:16px;padding:18px;text-align:center;box-shadow:var(--shadow-lg);margin-bottom:15px}
+
+/* ── DAILY ── */
+.daily-hero{background:linear-gradient(135deg,#0a1f0a,#0a180a);border:1px solid rgba(86,207,122,.2);border-radius:18px;padding:18px;margin-bottom:15px;text-align:center;box-shadow:var(--shadow)}
+
+/* ── MAPS ── */
+.map-container{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:13px;box-shadow:var(--shadow)}
+.map-header{padding:13px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.map-title{font-size:14px;font-weight:800;color:var(--text)}
+.map-sub{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px}
+.map-iframe{width:100%;height:340px;border:none;display:block}
+.spot-list{padding:13px 14px}
+.spot-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.spot-row:last-child{border-bottom:none}
+.spot-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.spot-name{font-size:12px;font-weight:800;color:var(--text);flex:1}
+.spot-dist{font-size:11px;color:var(--muted);font-weight:600}
+.map-tabs{display:flex;gap:8px;padding:13px 14px 0;overflow-x:auto;scrollbar-width:none}
+.map-tabs::-webkit-scrollbar{display:none}
+.map-tab{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:800;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.map-tab.active{background:var(--pink);border-color:var(--pink);color:#fff}
+
+/* ── CHINESE CARDS ── */
+.zh-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer;transition:all .2s}
+.zh-card:active{background:var(--surface2);transform:scale(.98)}
+.zh-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.zh-card-label{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.zh-card-cat{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px}
+.zh-big{font-size:36px;font-weight:900;color:var(--text);line-height:1.1;margin-bottom:6px}
+.zh-pinyin{font-size:15px;font-weight:800;margin-bottom:3px}
+.zh-phon{font-size:12px;color:var(--muted);font-style:italic;font-weight:600;margin-bottom:5px}
+.zh-fr{font-size:13px;font-weight:700;color:var(--text)}
+.zh-copy{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit}
+.zh-copy.copied{background:rgba(86,207,122,.15);border-color:var(--green);color:var(--green)}
+.zh-section{font-size:13px;font-weight:900;color:var(--text);margin:18px 0 10px;display:flex;align-items:center;gap:8px}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-ico{font-size:52px;margin-bottom:12px}
+
+/* HOTEL CARD */
+.hotel-card{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid rgba(155,142,196,.25);border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:var(--shadow-lg)}
+.hotel-badge{background:var(--grad-pink);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px}
+.hotel-dist-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}
+.hotel-dist-item{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:7px 10px}
+.hotel-dist-lbl{font-size:10px;color:var(--muted);font-weight:700}
+.hotel-dist-val{font-size:12px;font-weight:900;color:var(--pink)}
+
+@media(max-width:380px){.card-zh-big{font-size:52px}.qz-zh{font-size:44px}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div class="topbar">
+  <div class="topbar-logo"><span>🐼</span><span id="topbar-text">ChinaReady</span></div>
+  <button class="tone-btn" id="tone-toggle-btn">🎵 Tons</button>
+</div>
+
+<div class="tone-pop" id="tone-pop">
+  <div class="tone-pop-title">🎵 Les 4 tons</div>
+  <div class="tone-row"><span class="tbadge" style="background:rgba(229,57,53,.2);color:#ef5350;border:1px solid rgba(229,57,53,.4)">ton 1</span>Plat et haut ➡️</div>
+  <div class="tone-row"><span class="tbadge" style="background:rgba(230,81,0,.2);color:#ff9a3c;border:1px solid rgba(230,81,0,.4)">ton 2</span>Montant ↗️</div>
+  <div class="tone-row"><span class="tbadge" style="background:rgba(46,125,50,.2);color:#56cf7a;border:1px solid rgba(46,125,50,.4)">ton 3</span>Descend puis remonte ↘↗</div>
+  <div class="tone-row"><span class="tbadge" style="background:rgba(21,101,192,.2);color:#4a9eff;border:1px solid rgba(21,101,192,.4)">ton 4</span>Descendant brusque ↘️</div>
+  <div class="tone-row"><span class="tbadge" style="background:rgba(155,142,196,.2);color:#9b8ec4;border:1px solid rgba(155,142,196,.4)">neutre</span>Ton neutre 😌</div>
+  <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;font-weight:600">💡 Même mot + ton différent = sens différent !</div>
+</div>
+
+<!-- HOME -->
+<div class="screen active" id="scr-home">
+  <div class="hero">
+    <div class="hero-title">学中文 ✨</div>
+    <div class="hero-sub">Shanghai • 17 déc 2025 — 1er jan 2026 🇨🇳</div>
+    <div style="display:flex;align-items:flex-end;gap:16px">
+      <div><div class="hero-pct" id="h-pct">0%</div><div class="hero-lbl">progression</div></div>
+      <div style="text-align:right;flex:1" id="streak-display"></div>
+    </div>
+    <div class="hero-pbar"><div class="hero-pbar-fill" id="h-bar" style="width:0%"></div></div>
+    <div class="hero-count" id="h-count">0 / 0 expressions</div>
+  </div>
+  <div id="daily-shortcut"></div>
+  <div class="section-title">📚 Modules</div>
+  <div id="mod-list"></div>
+</div>
+
+<!-- MODULE -->
+<div class="screen" id="scr-module">
+  <button class="back-btn" id="mod-back-btn">← Retour</button>
+  <div class="mod-banner" id="mod-banner">
+    <div style="font-size:28px;margin-bottom:6px" id="mod-banner-emoji"></div>
+    <div style="font-size:20px;font-weight:900" id="mod-banner-title"></div>
+    <div style="font-size:12px;opacity:.7;font-weight:600;margin-top:3px" id="mod-banner-sub"></div>
+  </div>
+  <div class="card" style="padding:12px 14px;margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:7px;font-size:12px;font-weight:700">
+      <span style="color:var(--muted)">🌟 Progression</span><span id="mod-prog-pct">0%</span>
+    </div>
+    <div class="pbar-wrap"><div class="pbar-fill" id="mod-prog-bar" style="width:0%"></div></div>
+  </div>
+  <div id="mode-list-container"></div>
+</div>
+
+<!-- PHRASEBOOK -->
+<div class="screen" id="scr-pb">
+  <button class="back-btn" id="pb-back-btn">←</button>
+  <div style="font-size:17px;font-weight:900;margin-bottom:13px" id="pb-title">📖 Phrasebook</div>
+  <input class="pb-search" id="pb-search" placeholder="🔍 Chercher en français, pinyin…"/>
+  <div id="pb-list"></div>
+</div>
+
+<!-- FLASHCARD -->
+<div class="screen" id="scr-fc">
+  <div class="fc-toprow">
+    <span class="fc-counter" id="fc-counter">1/10</span>
+    <div class="fc-pbar-wrap"><div class="fc-pbar-fill" id="fc-pbar" style="width:0%"></div></div>
+    <button class="close-btn" id="fc-close-btn">✕</button>
+  </div>
+  <div class="card-scene" id="card-scene">
+    <div class="card-inner" id="card-inner">
+      <div class="card-face card-front">
+        <div class="card-zh-big" id="fc-zh-front"></div>
+        <div id="fc-pinyin-front" style="font-size:19px;font-weight:800"></div>
+        <div id="fc-phon-front" class="card-phon"></div>
+        <div id="fc-audio-front"></div>
+        <div class="card-hint">👆 Tapez pour voir la traduction</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-zh-med" id="fc-zh-back"></div>
+        <div class="card-pinyin" id="fc-pinyin-back"></div>
+        <div class="card-phon" id="fc-phon-back"></div>
+        <div class="card-fr" id="fc-fr"></div>
+        <div class="card-badges"><span id="fc-badge"></span><div id="fc-audio-back"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="fc-hint" id="fc-hint">👆 Tapez la carte pour voir la réponse</div>
+  <div class="fc-btns" id="fc-btns" style="display:none">
+    <button class="fc-btn fc-review" id="fc-btn-review">😅 À revoir</button>
+    <button class="fc-btn fc-known" id="fc-btn-known">🌟 Je sais !</button>
+  </div>
+</div>
+
+<!-- FC RESULT -->
+<div class="screen" id="scr-fc-result">
+  <div class="result-wrap">
+    <div class="result-emoji" id="fcr-emoji">🎉</div>
+    <div class="result-title">Session terminée !</div>
+    <div class="result-scores">
+      <div><div class="rscore-num" style="color:#56cf7a" id="fcr-known">0</div><div class="rscore-lbl">Mémorisées</div></div>
+      <div><div class="rscore-num" style="color:#ff5252" id="fcr-review">0</div><div class="rscore-lbl">À revoir</div></div>
+    </div>
+    <div class="result-pctbox">Score : <span id="fcr-pct" style="font-weight:900">0%</span></div>
+    <div class="btn-row">
+      <button class="secondary-btn" id="fcr-revise-btn" style="display:none">🔁 Réviser</button>
+      <button class="primary-btn" id="fcr-back-btn">Retour 🏠</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="screen" id="scr-quiz">
+  <div class="fc-toprow">
+    <span class="fc-counter" id="qz-counter">1/10</span>
+    <span class="qz-score" id="qz-score">⭐ 0</span>
+    <button class="close-btn" id="qz-close-btn">✕</button>
+  </div>
+  <div class="qz-card">
+    <div class="qz-zh" id="qz-zh"></div>
+    <div class="qz-pinyin" id="qz-pinyin"></div>
+    <div id="qz-audio" style="display:flex;justify-content:center"></div>
+  </div>
+  <div class="qz-opts" id="qz-opts"></div>
+  <button class="qz-next" id="qz-next-btn" style="display:none">Suivant ✨</button>
+</div>
+
+<!-- QUIZ RESULT -->
+<div class="screen" id="scr-quiz-result">
+  <div class="result-wrap">
+    <div class="result-emoji" id="qzr-emoji">🏆</div>
+    <div class="result-title">Quiz terminé !</div>
+    <div class="result-bigpct" id="qzr-pct">0%</div>
+    <div class="result-pctbox" id="qzr-sub"></div>
+    <div class="btn-row">
+      <button class="secondary-btn" id="qzr-replay-btn">🔄 Rejouer</button>
+      <button class="primary-btn" id="qzr-back-btn">Retour 🏠</button>
+    </div>
+  </div>
+</div>
+
+<!-- SURVIVAL -->
+<div class="screen" id="scr-survival">
+  <div style="font-size:19px;font-weight:900;margin-bottom:4px">🚨 Mode Survie</div>
+  <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:16px">Les phrases les plus urgentes, en 1 clic</div>
+  <div id="surv-list"></div>
+</div>
+
+<!-- MAPS -->
+<div class="screen" id="scr-maps">
+  <div style="font-size:19px;font-weight:900;margin-bottom:4px">🗺️ Mes Spots Shanghai</div>
+  <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">Depuis le Tianping Hotel · Xuhui</div>
+
+  <!-- HOTEL RECAP -->
+  <div class="hotel-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:11px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <span style="font-size:24px">🏨</span>
+        <div>
+          <div style="font-size:13px;font-weight:900">Tianping Hotel</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600">185 Tianping Road · Xuhui</div>
+        </div>
+      </div>
+      <span class="hotel-badge">HOME 🏠</span>
+    </div>
+    <div class="hotel-dist-grid">
+      <div class="hotel-dist-item"><div class="hotel-dist-lbl">Le Bund</div><div class="hotel-dist-val">25 min 🚇</div></div>
+      <div class="hotel-dist-item"><div class="hotel-dist-lbl">Wukang Road</div><div class="hotel-dist-val">1 min 🚶</div></div>
+      <div class="hotel-dist-item"><div class="hotel-dist-lbl">TX Huaihai</div><div class="hotel-dist-val">15 min 🚶</div></div>
+      <div class="hotel-dist-item"><div class="hotel-dist-lbl">Tianzifang</div><div class="hotel-dist-val">10 min 🚇</div></div>
+      <div class="hotel-dist-item"><div class="hotel-dist-lbl">Fake Market</div><div class="hotel-dist-val">20 min 🚇</div></div>
+      <div class="hotel-dist-item"><div class="hotel-dist-lbl">Xiaomi Auto</div><div class="hotel-dist-val">40 min 🚇</div></div>
+    </div>
+  </div>
+
+  <!-- MAP EMBED -->
+  <div class="map-container">
+    <div class="map-header">
+      <div>
+        <div class="map-title">📍 Carte interactive</div>
+        <div class="map-sub">Tous tes spots sur la carte</div>
+      </div>
+    </div>
+    <iframe class="map-iframe"
+      src="https://www.openstreetmap.org/export/embed.html?bbox=121.39%2C31.18%2C121.55%2C31.28&layer=mapnik&marker=31.2185%2C121.4363"
+      allowfullscreen loading="lazy">
+    </iframe>
+    <div style="padding:8px 14px;font-size:10px;color:var(--muted);text-align:center">
+      📱 Ouvrir dans <a href="https://maps.apple.com/?q=Shanghai+Bund" style="color:var(--pink);text-decoration:none;font-weight:700" target="_blank">Apple Maps</a> · <a href="https://www.google.com/maps/search/Shanghai+Bund" style="color:var(--mint);text-decoration:none;font-weight:700" target="_blank">Google Maps</a>
+    </div>
+  </div>
+
+  <!-- SPOTS BY CATEGORY -->
+  <div id="spots-container"></div>
+</div>
+
+<!-- ITINERARY -->
+<div class="screen" id="scr-itinerary">
+  <div style="font-size:19px;font-weight:900;margin-bottom:4px">📅 Itinéraire</div>
+  <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:14px">17 déc 2025 → 1er jan 2026</div>
+  <div class="hotel-card" style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+      <span style="font-size:22px">🏨</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:900">Tianping Hotel Shanghai</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600">Xujiahui · Wukang Road · Xuhui District</div>
+      </div>
+      <span class="hotel-badge">HOME</span>
+    </div>
+    <div style="font-size:11px;color:var(--muted);font-weight:600;line-height:1.7">
+      📍 185 Tianping Road · Lignes métro 1 et 9<br>
+      🔑 Check-in 14h · Check-out 12h<br>
+      ✅ Gym · Sauna · Bowling · 4 restaurants · Parking
+    </div>
+    <div style="margin-top:10px;background:rgba(255,107,157,.08);border:1px solid rgba(255,107,157,.2);border-radius:10px;padding:8px 11px;font-size:11px;color:var(--muted);font-weight:600">
+      💡 Arrivée 17 déc (nuit du 17 au 18) — check-in à 14h le 18 déc
+    </div>
+  </div>
+  <div id="itin-list"></div>
+</div>
+
+<!-- FAVORITES -->
+<div class="screen" id="scr-favorites">
+  <div style="font-size:19px;font-weight:900;margin-bottom:4px">⭐ Mes Favoris</div>
+  <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:16px">Appuyez ☆ dans le Phrasebook</div>
+  <div id="fav-list"></div>
+</div>
+
+<!-- STATS -->
+<div class="screen" id="scr-stats">
+  <div style="font-size:19px;font-weight:900;margin-bottom:16px">📊 Mes Stats</div>
+  <div class="streak-card">
+    <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:4px">🔥 Streak actuel</div>
+    <div style="font-size:50px;font-weight:900;color:var(--gold)" id="stat-streak">0</div>
+    <div style="font-size:11px;color:rgba(255,209,102,.6);font-weight:600">jours consécutifs</div>
+  </div>
+  <div class="stat-grid" id="stat-grid"></div>
+  <div class="section-title">📈 Par module</div>
+  <div id="stat-modules"></div>
+</div>
+
+<!-- DAILY -->
+<div class="screen" id="scr-daily">
+  <div class="daily-hero">
+    <div style="font-size:17px;font-weight:900;color:var(--green);margin-bottom:4px">📅 Défi du jour</div>
+    <div style="font-size:12px;color:rgba(86,207,122,.7);font-weight:600" id="daily-date-label">Chargement…</div>
+  </div>
+  <div id="daily-content"></div>
+</div>
+
+<!-- CHINESE CARDS -->
+<div class="screen" id="scr-zhcards">
+  <div style="font-size:19px;font-weight:900;margin-bottom:4px">🀄 Cartes Chinoises</div>
+  <div style="font-size:12px;color:var(--muted);font-weight:600;margin-bottom:16px">Montrez l'écran — plus besoin de parler !</div>
+  <div id="zh-cards-list"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-home"><span class="nav-ico">🏠</span><span>Accueil</span></button>
+  <button class="nav-btn" id="nav-survival"><span class="nav-ico">🚨</span><span>Survie</span></button>
+  <button class="nav-btn" id="nav-maps"><span class="nav-ico">🗺️</span><span>Maps</span></button>
+  <button class="nav-btn" id="nav-itinerary"><span class="nav-ico">📅</span><span>Plan</span></button>
+  <button class="nav-btn" id="nav-zhcards"><span class="nav-ico">🀄</span><span>Cartes</span></button>
+  <button class="nav-btn" id="nav-stats"><span class="nav-ico">📊</span><span>Stats</span></button>
+</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// GLOBALS
+// ══════════════════════════════════════════════════════════════
+
+var TC={1:"#ef5350",2:"#ff9a3c",3:"#56cf7a",4:"#4a9eff",0:"#9b8ec4"};
+var TC_BG={1:"rgba(229,57,53,.2)",2:"rgba(230,81,0,.2)",3:"rgba(46,125,50,.2)",4:"rgba(21,101,192,.2)",0:"rgba(155,142,196,.2)"};
+var TC_BD={1:"rgba(229,57,53,.4)",2:"rgba(230,81,0,.4)",3:"rgba(46,125,50,.4)",4:"rgba(21,101,192,.4)",0:"rgba(155,142,196,.4)"};
+
+// ── DATA ──────────────────────────────────────────────────────
+var DATA=[
+  {id:"basics",emoji:"🗣️",title:"Survie de base",color:"linear-gradient(135deg,#ff6b9d,#ff9a3c)",cs:"#ff6b9d",phrases:[
+    {zh:"你好",py:"nǐ hǎo",fr:"Bonjour / Salut",ph:"ni-r' ha-o",t:3},
+    {zh:"谢谢",py:"xiè xie",fr:"Merci",ph:"syè-syè",t:4},
+    {zh:"不客气",py:"bú kè qi",fr:"De rien",ph:"bou-kheu-tchi",t:2},
+    {zh:"对不起",py:"duì bu qǐ",fr:"Pardon / Excusez-moi",ph:"douèï-bou-tchi-r'",t:4},
+    {zh:"没关系",py:"méi guān xi",fr:"Ce n'est pas grave",ph:"méï-gouan-ssi",t:2},
+    {zh:"是",py:"shì",fr:"Oui",ph:"ch-r'",t:4},
+    {zh:"不是",py:"bú shì",fr:"Non",ph:"bou-ch-r'",t:2},
+    {zh:"我不懂",py:"wǒ bù dǒng",fr:"Je ne comprends pas",ph:"wo-bou-dong",t:3},
+    {zh:"请说慢一点",py:"qǐng shuō màn yī diǎn",fr:"Parlez plus lentement",ph:"tching-chouo-mann-yi-tyenn",t:3},
+    {zh:"你会说英语吗？",py:"nǐ huì shuō yīng yǔ ma?",fr:"Parlez-vous anglais ?",ph:"ni-houèï-chouo-ying-yü-ma",t:3}
+  ]},
+  {id:"food",emoji:"🍜",title:"Restaurant & Halal 🌙",color:"linear-gradient(135deg,#56cf7a,#4a9eff)",cs:"#4ecdc4",phrases:[
+    {zh:"菜单",py:"cài dān",fr:"Le menu",ph:"tsaï-dann",t:4},
+    {zh:"我要这个",py:"wǒ yào zhè ge",fr:"Je veux celui-ci",ph:"wo-yao-jeu-geu",t:3},
+    {zh:"好吃！",py:"hǎo chī!",fr:"C'est délicieux !",ph:"hao-tch-r'",t:3},
+    {zh:"我不吃猪肉",py:"wǒ bù chī zhū ròu",fr:"Je ne mange pas de porc 🚫",ph:"wo-bou-tch-r'-jou-rou",t:3},
+    {zh:"有猪肉吗？",py:"yǒu zhū ròu ma?",fr:"Y a-t-il du porc ?",ph:"yiou-jou-rou-ma",t:3},
+    {zh:"这是清真食品吗？",py:"zhè shì qīng zhēn shí pǐn ma?",fr:"C'est halal ? 🌙",ph:"jeu-ch-r'-tching-jenn",t:4},
+    {zh:"不要猪油",py:"bú yào zhū yóu",fr:"Sans huile de porc",ph:"bou-yao-jou-yiou",t:2},
+    {zh:"有清真餐厅吗？",py:"yǒu qīng zhēn cān tīng ma?",fr:"Y a-t-il un resto halal ?",ph:"yiou-tching-jenn-tsann-ting-ma",t:3},
+    {zh:"不要辣",py:"bú yào là",fr:"Pas épicé 🌶️",ph:"bou-yao-la",t:4},
+    {zh:"买单",py:"mǎi dān",fr:"L'addition SVP",ph:"maï-dann",t:3},
+    {zh:"水",py:"shuǐ",fr:"De l'eau 💧",ph:"chouèï",t:3},
+    {zh:"好吃极了！",py:"hǎo chī jí le!",fr:"Absolument délicieux !",ph:"hao-tch-r'-ji-leu",t:3}
+  ]},
+  {id:"transport",emoji:"🚇",title:"Transports",color:"linear-gradient(135deg,#4a9eff,#9b8ec4)",cs:"#4a9eff",phrases:[
+    {zh:"出租车",py:"chū zū chē",fr:"Taxi 🚕",ph:"tchou-tsou-tcheu",t:1},
+    {zh:"地铁",py:"dì tiě",fr:"Métro 🚇",ph:"ti-tyè",t:4},
+    {zh:"请带我去…",py:"qǐng dài wǒ qù …",fr:"Emmenez-moi à…",ph:"tching-daï-wo-tchü",t:3},
+    {zh:"机场",py:"jī chǎng",fr:"Aéroport ✈️",ph:"ji-tchang",t:1},
+    {zh:"火车站",py:"huǒ chē zhàn",fr:"Gare 🚉",ph:"houo-tcheu-jann",t:3},
+    {zh:"停在这里",py:"tíng zài zhè lǐ",fr:"Arrêtez-vous ici",ph:"ting-zaï-jeu-li",t:2},
+    {zh:"多少钱？",py:"duō shao qián?",fr:"Combien ? 💰",ph:"douo-chao-tchienn",t:1},
+    {zh:"左",py:"zuǒ",fr:"À gauche ⬅️",ph:"tsou-or'",t:3},
+    {zh:"右",py:"yòu",fr:"À droite ➡️",ph:"yiou",t:4},
+    {zh:"直走",py:"zhí zǒu",fr:"Tout droit ⬆️",ph:"j-r'-tsou",t:2}
+  ]},
+  {id:"hotel",emoji:"🏨",title:"Hôtel",color:"linear-gradient(135deg,#9b8ec4,#ff6b9d)",cs:"#9b8ec4",phrases:[
+    {zh:"我有预订",py:"wǒ yǒu yù dìng",fr:"J'ai une réservation",ph:"wo-yiou-yü-ting",t:3},
+    {zh:"入住",py:"rù zhù",fr:"Check-in 🔑",ph:"rou-jou",t:4},
+    {zh:"退房",py:"tuì fáng",fr:"Check-out 🧳",ph:"touèï-fang",t:4},
+    {zh:"我的房间",py:"wǒ de fáng jiān",fr:"Ma chambre 🛏️",ph:"wo-deu-fang-tyenn",t:3},
+    {zh:"空调坏了",py:"kōng tiáo huài le",fr:"La clim est cassée",ph:"khong-tyao-houaï-leu",t:1},
+    {zh:"毛巾",py:"máo jīn",fr:"Serviette de bain",ph:"mao-jinn",t:2},
+    {zh:"WIFI密码是什么？",py:"WIFI mì mǎ shì shén me?",fr:"Mot de passe WiFi ?",ph:"WiFi-mi-ma-ch-r'-chenn-meu",t:4},
+    {zh:"行李寄存",py:"xíng lǐ jì cún",fr:"Consigne à bagages",ph:"sing-li-ji-tsonn",t:2}
+  ]},
+  {id:"shopping",emoji:"🛍️",title:"Shopping & Marchés",color:"linear-gradient(135deg,#ff6b9d,#ff9a3c)",cs:"#ff6b9d",phrases:[
+    {zh:"多少钱？",py:"duō shao qián?",fr:"Combien ? 💰",ph:"douo-chao-tchienn",t:1},
+    {zh:"太贵了",py:"tài guì le",fr:"C'est trop cher !",ph:"taï-gouèï-leu",t:4},
+    {zh:"便宜一点",py:"pián yi yī diǎn",fr:"Un peu moins cher",ph:"pyenn-yi-yi-tyenn",t:2},
+    {zh:"我买了",py:"wǒ mǎi le",fr:"Je le prends !",ph:"wo-maï-leu",t:3},
+    {zh:"不要了",py:"bú yào le",fr:"Je n'en veux pas",ph:"bou-yao-leu",t:4},
+    {zh:"有没有…？",py:"yǒu méi yǒu…?",fr:"Avez-vous… ?",ph:"yiou-méï-yiou",t:3},
+    {zh:"可以试穿吗？",py:"kě yǐ shì chuān ma?",fr:"Puis-je l'essayer ?",ph:"kheu-yi-ch-r'-tchouan-ma",t:3},
+    {zh:"收据",py:"shōu jù",fr:"Reçu 🧾",ph:"chou-jü",t:1},
+    {zh:"有折扣吗？",py:"yǒu zhé kòu ma?",fr:"Y a-t-il une réduction ?",ph:"yiou-jeu-khou-ma",t:3},
+    {zh:"我只是看看",py:"wǒ zhǐ shì kàn kàn",fr:"Je regarde juste 👀",ph:"wo-j-r'-ch-r'-khann-khann",t:3}
+  ]},
+  {id:"emergency",emoji:"🚨",title:"Urgences",color:"linear-gradient(135deg,#ff5252,#ff9a3c)",cs:"#ff5252",phrases:[
+    {zh:"救命！",py:"jiù mìng!",fr:"Au secours ! 🆘",ph:"jyou-ming",t:4},
+    {zh:"我需要医生",py:"wǒ xū yào yī shēng",fr:"J'ai besoin d'un médecin",ph:"wo-ssü-yao-yi-cheng",t:3},
+    {zh:"医院在哪里？",py:"yī yuàn zài nǎ lǐ?",fr:"Où est l'hôpital ?",ph:"yi-yüann-zaï-na-li",t:1},
+    {zh:"警察",py:"jǐng chá",fr:"Police 👮",ph:"jing-tcha",t:3},
+    {zh:"我迷路了",py:"wǒ mí lù le",fr:"Je suis perdu(e)",ph:"wo-mi-lou-leu",t:3},
+    {zh:"请帮帮我",py:"qǐng bāng bāng wǒ",fr:"Aidez-moi SVP",ph:"tching-bang-bang-wo",t:3},
+    {zh:"我的护照丢了",py:"wǒ de hù zhào diū le",fr:"J'ai perdu mon passeport",ph:"wo-deu-hou-jao-dyou-leu",t:3},
+    {zh:"大使馆",py:"dà shǐ guǎn",fr:"Ambassade 🏛️",ph:"ta-ch-r'-gouan",t:4},
+    {zh:"我头疼",py:"wǒ tóu téng",fr:"J'ai mal à la tête",ph:"wo-thou-theng",t:2},
+    {zh:"药店在哪里？",py:"yào diàn zài nǎ lǐ?",fr:"Où est la pharmacie ?",ph:"yao-tyenn-zaï-na-li",t:4}
+  ]},
+  {id:"numbers",emoji:"🔢",title:"Chiffres & Argent",color:"linear-gradient(135deg,#4ecdc4,#56cf7a)",cs:"#4ecdc4",phrases:[
+    {zh:"一 二 三",py:"yī èr sān",fr:"1, 2, 3",ph:"yi-eu-r'-sann",t:1},
+    {zh:"四 五 六",py:"sì wǔ liù",fr:"4, 5, 6",ph:"ss-r'-wou-lyou",t:4},
+    {zh:"七 八 九 十",py:"qī bā jiǔ shí",fr:"7, 8, 9, 10",ph:"tchi-ba-jyou-ch-r'",t:1},
+    {zh:"百",py:"bǎi",fr:"Cent (100)",ph:"baï",t:3},
+    {zh:"元 / 块",py:"yuán / kuài",fr:"Yuan 💴",ph:"yüann / kouaï",t:2},
+    {zh:"我想换钱",py:"wǒ xiǎng huàn qián",fr:"Changer de l'argent",ph:"wo-ssyang-houan-tchienn",t:3},
+    {zh:"可以用支付宝吗？",py:"kě yǐ yòng Zhī fù bǎo ma?",fr:"Payer avec Alipay ?",ph:"kheu-yi-yong-j-r'-fou-bao-ma",t:3},
+    {zh:"找钱",py:"zhǎo qián",fr:"La monnaie rendue",ph:"jao-tchienn",t:3}
+  ]},
+  {id:"arcade",emoji:"🎮",title:"Arcade & Jeux",color:"linear-gradient(135deg,#9b8ec4,#4ecdc4)",cs:"#9b8ec4",phrases:[
+    {zh:"抓娃娃机在哪里？",py:"zhuā wáwá jī zài nǎ lǐ?",fr:"Machines à pince ?",ph:"joa-wa-wa-ji-zaï-na-li",t:1},
+    {zh:"游戏厅",py:"yóu xì tīng",fr:"Salle d'arcade 🎮",ph:"yiou-ssi-ting",t:2},
+    {zh:"卡拉OK",py:"kǎ lā OK",fr:"Karaoké 🎤",ph:"kha-la-O-K",t:3},
+    {zh:"一个包间",py:"yī gè bāo jiān",fr:"Salle privée KTV",ph:"yi-geu-bao-tyenn",t:1},
+    {zh:"密室逃脱",py:"mì shì táo tuō",fr:"Escape Room 🔐",ph:"mi-ch-r'-thao-thouo",t:4},
+    {zh:"再来一次",py:"zài lái yī cì",fr:"Encore une fois !",ph:"zaï-laï-yi-tseu",t:4},
+    {zh:"我赢了！",py:"wǒ yíng le!",fr:"J'ai gagné ! 🏆",ph:"wo-ying-leu",t:3},
+    {zh:"真好玩！",py:"zhēn hǎo wán!",fr:"C'est super fun !",ph:"jenn-hao-wann",t:1},
+    {zh:"太难了",py:"tài nán le",fr:"Trop difficile !",ph:"taï-nann-leu",t:4},
+    {zh:"再玩一次",py:"zài wán yī cì",fr:"On rejoue ?",ph:"zaï-wann-yi-tseu",t:4}
+  ]},
+  {id:"tech",emoji:"📱",title:"Tech & Xiaomi",color:"linear-gradient(135deg,#ff9a3c,#ffd166)",cs:"#ff9a3c",phrases:[
+    {zh:"小米之家在哪里？",py:"Xiǎo mǐ zhī jiā zài nǎ lǐ?",fr:"Où est le magasin Xiaomi ?",ph:"ssyao-mi-j-r'-jia-zaï-na-li",t:3},
+    {zh:"可以试用吗？",py:"kě yǐ shì yòng ma?",fr:"Puis-je l'essayer ?",ph:"kheu-yi-ch-r'-yong-ma",t:3},
+    {zh:"充电器",py:"chōng diàn qì",fr:"Chargeur 🔌",ph:"tchong-tyenn-tchi",t:1},
+    {zh:"这个多少钱？",py:"zhè ge duō shao qián?",fr:"Combien coûte celui-ci ?",ph:"jeu-geu-douo-chao-tchienn",t:4},
+    {zh:"有保修吗？",py:"yǒu bǎo xiū ma?",fr:"Y a-t-il une garantie ?",ph:"yiou-bao-ssyou-ma",t:3},
+    {zh:"电动汽车",py:"diàn dòng qì chē",fr:"Voiture électrique 🚗⚡",ph:"tyenn-dong-tchi-tcheu",t:4},
+    {zh:"扫码",py:"sǎo mǎ",fr:"Scanner le QR code 📲",ph:"sao-ma",t:3},
+    {zh:"可以退款吗？",py:"kě yǐ tuì kuǎn ma?",fr:"Puis-je être remboursé ?",ph:"kheu-yi-touèï-kouann-ma",t:3}
+  ]}
+];
+
+// ── CHINESE CARDS DATA ────────────────────────────────────────
+var ZH_CARDS=[
+  {cat:"🚕 Taxi",catColor:"#ff9a3c",catBg:"rgba(255,154,60,.15)",items:[
+    {zh:"请带我去天平宾馆\n185天平路",py:"Qǐng dài wǒ qù Tiānpíng Bīnguan\n185 Tiānpíng Lù",fr:"Emmène-moi à l'hôtel Tianping, 185 rue Tianping",label:"🏨 Mon hôtel"},
+    {zh:"外滩",py:"Wàitān",fr:"Le Bund",label:"🌊 Le Bund"},
+    {zh:"南京东路",py:"Nánjīng Dōng Lù",fr:"Nanjing Road Est",label:"🛍️ Nanjing Road"},
+    {zh:"武康路",py:"Wǔkāng Lù",fr:"Wukang Road",label:"📸 Wukang Road"},
+    {zh:"泰康路田子坊",py:"Tàikāng Lù Tiánzǐfāng",fr:"Tianzifang",label:"🎨 Tianzifang"},
+    {zh:"科技馆地铁站",py:"Kējì Guǎn dìtiě zhàn",fr:"Station Science & Tech Museum (Fake Market)",label:"🛍️ Fake Market"},
+    {zh:"浦东机场",py:"Pǔdōng Jīchǎng",fr:"Aéroport de Pudong",label:"✈️ Aéroport"},
+  ]},
+  {cat:"🌙 Halal",catColor:"#56cf7a",catBg:"rgba(86,207,122,.15)",items:[
+    {zh:"清真",py:"Qīngzhēn",fr:"Halal (chercher ce signe)",label:"🌙 Mot HALAL"},
+    {zh:"我不吃猪肉",py:"Wǒ bù chī zhū ròu",fr:"Je ne mange pas de porc",label:"🚫 Pas de porc"},
+    {zh:"有猪肉吗？",py:"Yǒu zhū ròu ma?",fr:"Y a-t-il du porc ?",label:"❓ Porc ?"},
+    {zh:"不要猪油",py:"Bú yào zhū yóu",fr:"Sans huile de porc",label:"🚫 Huile de porc"},
+    {zh:"猪肉",py:"Zhū ròu",fr:"Porc (le mot à éviter)",label:"🐷 PORC"},
+    {zh:"有清真餐厅吗？",py:"Yǒu qīngzhēn cāntīng ma?",fr:"Y a-t-il un restaurant halal ?",label:"🌙 Resto halal ?"},
+  ]},
+  {cat:"🚻 Urgences quotidiennes",catColor:"#4a9eff",catBg:"rgba(74,158,255,.15)",items:[
+    {zh:"厕所在哪里？",py:"Cèsuǒ zài nǎlǐ?",fr:"Où sont les toilettes ?",label:"🚻 WC"},
+    {zh:"厕所",py:"Cèsuǒ",fr:"Toilettes / WC",label:"🚻 Le mot WC"},
+    {zh:"药店",py:"Yàodiàn",fr:"Pharmacie",label:"💊 Pharmacie"},
+    {zh:"我头疼",py:"Wǒ tóu téng",fr:"J'ai mal à la tête",label:"🤕 Mal de tête"},
+    {zh:"我感冒了",py:"Wǒ gǎnmào le",fr:"J'ai un rhume / sinusite",label:"🤧 Rhume"},
+    {zh:"我需要医生",py:"Wǒ xūyào yīshēng",fr:"J'ai besoin d'un médecin",label:"👨‍⚕️ Médecin"},
+    {zh:"帮我叫出租车",py:"Bāng wǒ jiào chūzūchē",fr:"Appelez-moi un taxi SVP",label:"🚕 Taxi SVP"},
+    {zh:"请帮我拍照",py:"Qǐng bāng wǒ pāizhào",fr:"Pouvez-vous me prendre en photo ?",label:"📸 Photo SVP"},
+  ]},
+  {cat:"🛍️ Shopping & Négociation",catColor:"#ff6b9d",catBg:"rgba(255,107,157,.15)",items:[
+    {zh:"多少钱？",py:"Duōshao qián?",fr:"Combien ça coûte ?",label:"💰 Prix ?"},
+    {zh:"太贵了！",py:"Tài guì le!",fr:"C'est trop cher !",label:"😱 Trop cher"},
+    {zh:"便宜一点",py:"Pián yi yīdiǎn",fr:"Un peu moins cher SVP",label:"🙏 Réduire"},
+    {zh:"我不要",py:"Wǒ bú yào",fr:"Je n'en veux pas",label:"❌ Non merci"},
+    {zh:"可以试穿吗？",py:"Kěyǐ shì chuān ma?",fr:"Puis-je l'essayer ?",label:"👗 Essayer"},
+    {zh:"有小一点的吗？",py:"Yǒu xiǎo yīdiǎn de ma?",fr:"Avez-vous une taille plus petite ?",label:"📐 Taille -"},
+    {zh:"有大一点的吗？",py:"Yǒu dà yīdiǎn de ma?",fr:"Avez-vous une taille plus grande ?",label:"📐 Taille +"},
+  ]},
+  {cat:"🎮 Fun & Sorties",catColor:"#9b8ec4",catBg:"rgba(155,142,196,.15)",items:[
+    {zh:"抓娃娃机在哪里？",py:"Zhuā wáwá jī zài nǎlǐ?",fr:"Où sont les machines à pince ?",label:"🎯 Machines à pince"},
+    {zh:"卡拉OK在哪里？",py:"Kǎlā OK zài nǎlǐ?",fr:"Où est le karaoké ?",label:"🎤 Karaoké"},
+    {zh:"一个包间，几个小时？",py:"Yī gè bāojiān, jǐ gè xiǎoshí?",fr:"Une salle privée, combien d'heures ?",label:"🎤 KTV salle"},
+    {zh:"密室逃脱在哪里？",py:"Mìshì táotuō zài nǎlǐ?",fr:"Où est l'escape room ?",label:"🔐 Escape Room"},
+    {zh:"这附近有游戏厅吗？",py:"Zhè fùjìn yǒu yóuxìtīng ma?",fr:"Y a-t-il une salle d'arcade près d'ici ?",label:"🕹️ Arcade ?"},
+  ]},
+  {cat:"📱 Pratique",catColor:"#4ecdc4",catBg:"rgba(78,205,196,.15)",items:[
+    {zh:"WiFi密码是什么？",py:"WiFi mìmǎ shì shénme?",fr:"Quel est le mot de passe WiFi ?",label:"📶 WiFi"},
+    {zh:"可以充电吗？",py:"Kěyǐ chōngdiàn ma?",fr:"Puis-je charger mon téléphone ?",label:"🔋 Charger"},
+    {zh:"我不会说中文",py:"Wǒ bú huì shuō zhōngwén",fr:"Je ne parle pas chinois",label:"😅 Je parle pas"},
+    {zh:"请写下来",py:"Qǐng xiě xià lái",fr:"Pouvez-vous l'écrire SVP ?",label:"✍️ Écrire SVP"},
+    {zh:"扫码",py:"Sǎo mǎ",fr:"Scanner le QR code",label:"📲 QR Code"},
+    {zh:"叫滴滴",py:"Jiào Dīdī",fr:"Appeler un DiDi (taxi)",label:"🚗 DiDi"},
+  ]}
+];
+
+// ── SURVIVAL ──────────────────────────────────────────────────
+var SURVIVAL=[
+  {zh:"救命！",py:"jiù mìng!",fr:"Au secours !",ph:"jyou-ming",t:4,ico:"🆘"},
+  {zh:"我不懂",py:"wǒ bù dǒng",fr:"Je ne comprends pas",ph:"wo-bou-dong",t:3,ico:"😕"},
+  {zh:"我迷路了",py:"wǒ mí lù le",fr:"Je suis perdu(e)",ph:"wo-mi-lou-leu",t:3,ico:"📍"},
+  {zh:"我需要医生",py:"wǒ xū yào yī shēng",fr:"J'ai besoin d'un médecin",ph:"wo-ssü-yao-yi-cheng",t:3,ico:"🏥"},
+  {zh:"这是清真食品吗？",py:"zhè shì qīng zhēn shí pǐn ma?",fr:"C'est halal ?",ph:"jeu-ch-r'-tching-jenn",t:4,ico:"🌙"},
+  {zh:"我不吃猪肉",py:"wǒ bù chī zhū ròu",fr:"Je ne mange pas de porc",ph:"wo-bou-tch-r'-jou-rou",t:3,ico:"🚫"},
+  {zh:"多少钱？",py:"duō shao qián?",fr:"Combien ça coûte ?",ph:"douo-chao-tchienn",t:1,ico:"💰"},
+  {zh:"厕所在哪里？",py:"cèsuǒ zài nǎlǐ?",fr:"Où sont les toilettes ?",ph:"tseu-souo-zaï-na-li",t:4,ico:"🚻"},
+  {zh:"警察",py:"jǐng chá",fr:"Police",ph:"jing-tcha",t:3,ico:"👮"},
+  {zh:"请帮帮我",py:"qǐng bāng bāng wǒ",fr:"Aidez-moi SVP",ph:"tching-bang-bang-wo",t:3,ico:"🙏"}
+];
+
+// ── SPOTS ─────────────────────────────────────────────────────
+var SPOTS={
+  "🏛️ Culture":[
+    {n:"Le Bund 外滩",d:"25 min 🚇",c:"#4a9eff",lat:31.2397,lng:121.4905},
+    {n:"Yu Yuan Garden 豫园",d:"25 min 🚇",c:"#4a9eff",lat:31.2271,lng:121.4928},
+    {n:"50 Moganshan Road",d:"30 min 🚇",c:"#4a9eff",lat:31.2402,lng:121.4419},
+    {n:"TeamLab",d:"35 min 🚇",c:"#4a9eff",lat:31.2028,lng:121.5105},
+    {n:"Jade Buddha Temple",d:"20 min 🚇",c:"#4a9eff",lat:31.2497,lng:121.4451},
+  ],
+  "🛍️ Shopping":[
+    {n:"TX Huaihai",d:"15 min 🚶",c:"#ff6b9d",lat:31.2196,lng:121.4619},
+    {n:"Nanjing Road",d:"20 min 🚇",c:"#ff6b9d",lat:31.2370,lng:121.4750},
+    {n:"Tianzifang 田子坊",d:"10 min 🚇",c:"#ff6b9d",lat:31.2119,lng:121.4697},
+    {n:"Fake Market APAC",d:"20 min 🚇",c:"#ff6b9d",lat:31.2200,lng:121.5440},
+    {n:"Wukang Road 武康路",d:"1 min 🚶",c:"#ff6b9d",lat:31.2162,lng:121.4403},
+    {n:"Dongtai Road Antiquités",d:"15 min 🚇",c:"#ff6b9d",lat:31.2128,lng:121.4681},
+  ],
+  "🍜 Halal & Food":[
+    {n:"Mosquée Xiaotaoyuan",d:"20 min 🚇",c:"#56cf7a",lat:31.2218,lng:121.4828},
+    {n:"Wujiang Road 吴江路",d:"20 min 🚇",c:"#56cf7a",lat:31.2338,lng:121.4581},
+    {n:"Amam Bakery",d:"15 min 🚶",c:"#56cf7a",lat:31.2200,lng:121.4588},
+  ],
+  "🎮 Fun":[
+    {n:"Joy City (Xiaomi + Arcade)",d:"25 min 🚇",c:"#9b8ec4",lat:31.2305,lng:121.4522},
+    {n:"Xiaomi Auto Center Pudong",d:"40 min 🚇",c:"#9b8ec4",lat:31.2109,lng:121.6002},
+    {n:"KTV Cashbox",d:"20 min 🚇",c:"#9b8ec4",lat:31.2340,lng:121.4760},
+  ],
+  "🚄 Excursions":[
+    {n:"Gare Shanghai Hongqiao",d:"30 min 🚇",c:"#ff9a3c",lat:31.1986,lng:121.3192},
+    {n:"Gare Shanghai Centrale",d:"20 min 🚇",c:"#ff9a3c",lat:31.2497,lng:121.4556},
+    {n:"Zhujiajiao 朱家角",d:"1h bus",c:"#ff9a3c",lat:31.1138,lng:121.0667},
+  ]
+};
+
+// ── ITINERARY ─────────────────────────────────────────────────
+var ITINERARY=[
+  {day:1,date:"Mar 17 déc",theme:"✈️ Arrivée nuit",color:"#ff9a3c",slots:[
+    {time:"Nuit",title:"Arrivée depuis Barcelone",desc:"Vol de nuit. Arrivée à l'aéroport Pudong.",tags:[]},
+    {time:"Nuit",title:"Check-in hôtel",desc:"Tianping Hotel — Check-in disponible si chambre libre, sinon dépôt bagages + repos dans le lobby.",tags:[]}
+  ]},
+  {day:2,date:"Mer 18 déc",theme:"🌅 Bund + Tours",color:"#ff6b9d",slots:[
+    {time:"07h30",title:"The Bund au lever du soleil",desc:"Retraités qui dansent, tai-chi. Zéro touriste.",tags:["cult"]},
+    {time:"Matin",title:"Ferry → Lu Jia Zui",desc:"5 min de ferry (2 yuans). Vue unique.",tags:["cult"]},
+    {time:"Journée",title:"Shanghai Tower 🏙️",desc:"2e plus haute tour du monde. Vue à 360°.",tags:["cult"]},
+    {time:"Soir",title:"Yu Yuan de nuit 🏮",desc:"Jardin illuminé en décembre = magique !",tags:["cult","night"]}
+  ]},
+  {day:3,date:"Jeu 19 déc",theme:"🛍️ TX Huaihai + AnFu",color:"#9b8ec4",slots:[
+    {time:"Matin",title:"AnFu Road ☕",desc:"Rue branchée locale. Coffee shops, créateurs.",tags:["shop","cult"]},
+    {time:"Après-midi",title:"TX Huaihai 🔥",desc:"LE mall Gen Z. Art, streetwear, rooftop. 3h min.",tags:["shop","cult"]},
+    {time:"Soir",title:"Xintiandi + Amam Bakery 🎄",desc:"Déco de Noël féerique.",tags:["food","night","shop"]}
+  ]},
+  {day:4,date:"Ven 20 déc",theme:"🏮 Vieille ville + Zhangyuan",color:"#ff6b9d",slots:[
+    {time:"Matin",title:"Jardin Yu + Vieille ville",desc:"Ruelles authentiques tôt le matin.",tags:["cult"]},
+    {time:"Après-midi",title:"Zhangyuan + Qipu Road",desc:"Boutiques tendance + shopping pas cher local.",tags:["shop","cult"]},
+    {time:"Soir",title:"Nanjing Road illuminée 🌟",desc:"5km d'illuminations de Noël.",tags:["shop","food","night"]}
+  ]},
+  {day:5,date:"Sam 21 déc",theme:"🎨 Moganshan + TeamLab",color:"#9b8ec4",slots:[
+    {time:"Matin",title:"50 Moganshan Road 🎨",desc:"Galeries d'art, street art. Zéro touriste.",tags:["cult"]},
+    {time:"Après-midi",title:"North Bund",desc:"Vue sur le Bund côté opposé.",tags:["cult"]},
+    {time:"Soir",title:"TeamLab ✨",desc:"Expo art immersif lumineuse. 2-3h. À RÉSERVER !",tags:["cult","night","fun"]}
+  ]},
+  {day:6,date:"Dim 22 déc",theme:"🌿 Temples + Jing'an",color:"#56cf7a",slots:[
+    {time:"Matin",title:"Garden Greenhouse 🌿",desc:"Serre botanique chauffée.",tags:["cult"]},
+    {time:"Après-midi",title:"Jade Buddha + Jing'an Temple",desc:"Temples actifs, contraste gratte-ciels.",tags:["cult"]},
+    {time:"Après-midi",title:"HKRI Taikoo Hui 🛍️",desc:"Grand mall premium.",tags:["shop"]},
+    {time:"Soir",title:"Music Head Spa 💆",desc:"Spa du cuir chevelu ultra tendance.",tags:["fun","night"]}
+  ]},
+  {day:7,date:"Lun 23 déc",theme:"🏺 Guangfulin + Qibao",color:"#4ecdc4",slots:[
+    {time:"Matin",title:"Guangfulin 🏺",desc:"Ruines 5000 ans sous structure en verre.",tags:["cult"]},
+    {time:"Après-midi",title:"Qibao 🛶",desc:"Vieux bourg d'eau dans Shanghai. Gâteaux de riz.",tags:["cult","food"]},
+    {time:"Soir",title:"Réveillon de Noël 🎄",desc:"Xintiandi féerique. Dîner halal.",tags:["food","night","halal"]}
+  ]},
+  {day:8,date:"Mar 24 déc",theme:"🕌 Halal + Fake Market",color:"#ff6b9d",slots:[
+    {time:"Matin",title:"Mosquée Xiaotaoyuan 🌙",desc:"Quartier musulman, restos hui, pâtisseries halal.",tags:["halal","cult","food"]},
+    {time:"Après-midi",title:"Fake Market APAC Yinyang 🛍️",desc:"Ligne 2, Science & Tech Museum. Divise le prix par 10 !",tags:["shop"]},
+    {time:"Soir",title:"KTV Karaoké 🎤",desc:"Salle privée pour vous deux. Open jusqu'à 5h !",tags:["fun","night"]}
+  ]},
+  {day:9,date:"Mer 25 déc",theme:"🚄 Excursion Suzhou",color:"#4a9eff",slots:[
+    {time:"Matin",title:"Train → Suzhou 🚄",desc:"30 min seulement.",tags:["excursion"]},
+    {time:"Matin",title:"Pingjiang Road 🛶",desc:"Rue canal pittoresque, coffee shops locaux.",tags:["excursion","cult"]},
+    {time:"Midi",title:"Déjeuner halal Suzhou",desc:"Cherchez le signe 清真.",tags:["excursion","food","halal"]},
+    {time:"Après-midi",title:"Marché de la soie + Shantang",desc:"Soie moins chère qu'à Shanghai.",tags:["excursion","shop"]},
+    {time:"Soir",title:"Retour Shanghai",desc:"Retour en train.",tags:["excursion"]}
+  ]},
+  {day:10,date:"Jeu 26 déc",theme:"🤖 Journée Xiaomi",color:"#ff9a3c",slots:[
+    {time:"Matin",title:"Xiaomi Auto Center 🚗⚡",desc:"Pudong, Waigaoqiao. 15 000m² ! Toutes les SU7.",tags:["tech","cult"]},
+    {time:"Après-midi",title:"Xiaomi Mi Home (Joy City) 📱",desc:"Gadgets, tests. + machines à pince dans le mall !",tags:["tech","shop","fun"]},
+    {time:"Soir",title:"Salle d'arcade 🕹️",desc:"30 machines à pince ! Taito/LLJ Station.",tags:["fun","night"]}
+  ]},
+  {day:11,date:"Ven 27 déc",theme:"🛶 Excursion Zhujiajiao",color:"#4ecdc4",slots:[
+    {time:"Matin",title:"Zhujiajiao 🛶",desc:"Village d'eau du XVIe siècle. 1h de bus.",tags:["excursion","cult"]},
+    {time:"Après-midi",title:"Barque + Street food",desc:"Balade sur les canaux. Street food locale.",tags:["excursion","food"]},
+    {time:"Soir",title:"Escape Room 🔐",desc:"Réserver à l'avance ! Meilleures salles d'Asie.",tags:["fun","night"]}
+  ]},
+  {day:12,date:"Sam 28 déc",theme:"🛍️ Shopping intensif",color:"#ff6b9d",slots:[
+    {time:"Journée",title:"Tai Koo Li + TX Huaihai bis",desc:"Le mall le plus design + ce qu'il reste à voir.",tags:["shop","cult"]},
+    {time:"Après-midi",title:"Wow Colour + Miniso",desc:"Beauty store local + achats dernière minute.",tags:["shop"]},
+    {time:"Soir",title:"Ben Hai Park illuminé 🌙",desc:"Promenade nocturne.",tags:["cult","night"]}
+  ]},
+  {day:13,date:"Dim 29 déc",theme:"💆 Concession + Spa",color:"#9b8ec4",slots:[
+    {time:"Matin",title:"Wukang Road 🌳",desc:"La rue la plus photogénique de Shanghai.",tags:["cult"]},
+    {time:"Après-midi",title:"Dongtai Road + Marché de la soie",desc:"Antiquités, négociation. Sur mesure 24h.",tags:["shop"]},
+    {time:"Soir",title:"Spa & bains chauds 🛁",desc:"3h dans un hammam local. 20-30€ pour deux.",tags:["fun","night"]},
+    {time:"Nuit",title:"Bund by night 🌃",desc:"La plus belle vue de Shanghai une dernière fois.",tags:["night"]}
+  ]},
+  {day:14,date:"Lun 30 déc",theme:"🎆 RÉVEILLON",color:"#ff6b9d",slots:[
+    {time:"Matin",title:"Derniers achats",desc:"Wujiang Road pour le déjeuner snacks.",tags:["shop","food"]},
+    {time:"17h00",title:"Coucher de soleil Bund 🌅",desc:"L'heure dorée avant les illuminations.",tags:["cult"]},
+    {time:"Soir",title:"🎆 RÉVEILLON SUR LE BUND",desc:"Des milliers de personnes, feux d'artifice. Minuit : 2026 !",tags:["night"]}
+  ]},
+  {day:15,date:"Mar 31 déc",theme:"🛫 Retour",color:"#888",slots:[
+    {time:"Matin",title:"Check-out 12h",desc:"Dépôt bagages si besoin.",tags:[]},
+    {time:"Après-midi",title:"Dernière balade",desc:"Quartier de l'hôtel, Wukang Road une dernière fois.",tags:["cult"]},
+    {time:"Soir",title:"Départ aéroport ✈️",desc:"Vol retour vers Barcelone.",tags:[]}
+  ]}
+];
+
+// ── STATE ─────────────────────────────────────────────────────
+var activeModId=null;
+var progressMap={};
+var reviewList=[];
+var fcState={phrases:[],idx:0,knownCnt:0,reviewCnt:0,isFlipped:false};
+var qzState={questions:[],idx:0,scoreCnt:0,answered:false};
+var _pbPhrases=[];
+
+DATA.forEach(function(m){progressMap[m.id]=0;});
+
+var favorites=[];
+try{favorites=JSON.parse(localStorage.getItem('cr_fav')||'[]');}catch(e){}
+var statsData={totalSessions:0,totalKnown:0,bestStreak:0,currentStreak:0,lastDate:"",quizPlayed:0};
+try{var sd=JSON.parse(localStorage.getItem('cr_stats')||'{}');if(sd.totalSessions!==undefined)statsData=sd;}catch(e){}
+var dailyDone="";
+try{dailyDone=localStorage.getItem('cr_daily_date')||"";}catch(e){}
+
+// ── AUDIO ─────────────────────────────────────────────────────
+if(window.speechSynthesis){window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.getVoices();};}
+function doSpeak(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(text);
+  u.lang="zh-CN";u.rate=0.82;
+  var vv=window.speechSynthesis.getVoices();
+  for(var i=0;i<vv.length;i++){if(vv[i].lang.indexOf("zh")===0){u.voice=vv[i];break;}}
+  window.speechSynthesis.speak(u);
+}
+function spkSVG(s){return'<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="currentColor"><path d="M11.553 3.064A.75.75 0 0 1 12 3.75v16.5a.75.75 0 0 1-1.255.555L5.46 16H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h2.46l5.285-4.805a.75.75 0 0 1 .808-.131ZM16.72 8.22a.75.75 0 0 1 1.06 0A6.48 6.48 0 0 1 19.5 12a6.48 6.48 0 0 1-1.72 4.28.75.75 0 1 1-1.06-1.06A4.98 4.98 0 0 0 18 12a4.98 4.98 0 0 0-1.28-3.22.75.75 0 0 1 0-1.06Z"/><path d="M14.19 10.19a.75.75 0 0 1 1.06 0 3.48 3.48 0 0 1 .25 4.62.75.75 0 1 1-1.06-1.06 1.98 1.98 0 0 0-.25-2.5.75.75 0 0 1 0-1.06Z"/></svg>';}
+function pauSVG(s){return'<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="4" height="16" rx="1"/><rect x="15" y="4" width="4" height="16" rx="1"/></svg>';}
+function makeAudioBtn(text,cls){
+  var s=cls==="abtn-lg"?18:cls==="abtn-sm"?13:15;
+  var b=document.createElement("button");
+  b.className="abtn "+cls;b.title="Écouter";b.innerHTML=spkSVG(s);
+  b.addEventListener("click",function(e){
+    e.stopPropagation();doSpeak(text);
+    b.classList.add("playing");b.innerHTML=pauSVG(s);
+    setTimeout(function(){b.classList.remove("playing");b.innerHTML=spkSVG(s);},1500);
+  });
+  return b;
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function showScreen(id){
+  var all=document.querySelectorAll(".screen");
+  for(var i=0;i<all.length;i++)all[i].classList.remove("active");
+  var el=document.getElementById("scr-"+id);
+  if(el){el.classList.add("active");el.scrollTop=0;}
+}
+function makeBadge(t,lg){
+  var c=TC[t]||TC[0],bg=TC_BG[t]||TC_BG[0],bd=TC_BD[t]||TC_BD[0];
+  var cls=lg?"tbadge tbadge-lg":"tbadge";
+  return'<span class="'+cls+'" style="background:'+bg+';color:'+c+';border:1px solid '+bd+'">ton '+(t===0?"neutre":t)+'</span>';
+}
+function totalPhrases(){var n=0;DATA.forEach(function(m){n+=m.phrases.length;});return n;}
+function totalLearned(){var n=0;Object.keys(progressMap).forEach(function(k){n+=progressMap[k];});return n;}
+function getMod(id){for(var i=0;i<DATA.length;i++){if(DATA[i].id===id)return DATA[i];}return null;}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function isFav(zh){return favorites.indexOf(zh)>=0;}
+function toggleFav(zh){
+  var idx=favorites.indexOf(zh);
+  if(idx>=0)favorites.splice(idx,1);else favorites.push(zh);
+  try{localStorage.setItem('cr_fav',JSON.stringify(favorites));}catch(e){}
+}
+function saveStats(){try{localStorage.setItem('cr_stats',JSON.stringify(statsData));}catch(e){}}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+
+// ── NAV ───────────────────────────────────────────────────────
+function navTo(name){
+  var btns=document.querySelectorAll(".nav-btn");
+  for(var i=0;i<btns.length;i++)btns[i].classList.remove("active");
+  var nb=document.getElementById("nav-"+name);
+  if(nb)nb.classList.add("active");
+  var titles={home:"ChinaReady 🐼",survival:"Mode Survie 🚨",maps:"Mes Spots 🗺️",itinerary:"Itinéraire 📅",favorites:"Mes Favoris ⭐",stats:"Mes Stats 📊",daily:"Défi du jour 📅",zhcards:"Cartes Chinoises 🀄"};
+  document.getElementById("topbar-text").textContent=titles[name]||"ChinaReady 🐼";
+  if(name==="home"){renderHome();showScreen("home");}
+  else if(name==="survival"){renderSurvival();showScreen("survival");}
+  else if(name==="maps"){renderMaps();showScreen("maps");}
+  else if(name==="itinerary"){renderItinerary();showScreen("itinerary");}
+  else if(name==="favorites"){renderFavorites();showScreen("favorites");}
+  else if(name==="stats"){renderStats();showScreen("stats");}
+  else if(name==="daily"){renderDaily();showScreen("daily");}
+  else if(name==="zhcards"){renderZhCards();showScreen("zhcards");}
+}
+
+// ── HOME ──────────────────────────────────────────────────────
+function renderHome(){
+  var tot=totalPhrases(),lrn=totalLearned(),pct=tot?Math.round(lrn/tot*100):0;
+  document.getElementById("h-pct").textContent=pct+"%";
+  document.getElementById("h-bar").style.width=pct+"%";
+  document.getElementById("h-count").textContent=lrn+" / "+tot+" expressions apprises 🌟";
+  var sk=document.getElementById("streak-display");
+  sk.innerHTML=statsData.currentStreak>0?'<div style="font-size:22px;font-weight:900;color:#ffd166">🔥 '+statsData.currentStreak+'</div><div style="font-size:10px;color:rgba(255,209,102,.6);font-weight:700">streak</div>':'';
+  var today=todayStr();
+  var ds=document.getElementById("daily-shortcut");
+  if(dailyDone!==today){
+    ds.innerHTML='<div id="daily-cz" style="background:rgba(86,207,122,.08);border:1px solid rgba(86,207,122,.2);border-radius:14px;padding:13px 15px;cursor:pointer;margin-bottom:14px;display:flex;align-items:center;gap:11px"><span style="font-size:26px">📅</span><div><div style="font-size:13px;font-weight:900;color:#56cf7a">Défi du jour disponible !</div><div style="font-size:11px;color:rgba(86,207,122,.7);font-weight:600">5 expressions à apprendre</div></div><span style="margin-left:auto;color:#444;font-size:17px">›</span></div>';
+    setTimeout(function(){var el=document.getElementById("daily-cz");if(el)el.addEventListener("click",function(){navTo("daily");});},50);
+  }else{
+    ds.innerHTML='<div style="background:rgba(86,207,122,.08);border:1px solid rgba(86,207,122,.2);border-radius:14px;padding:11px 15px;margin-bottom:14px;display:flex;align-items:center;gap:11px"><span style="font-size:22px">✅</span><div style="font-size:12px;font-weight:800;color:#56cf7a">Défi du jour complété !</div></div>';
+  }
+  var list=document.getElementById("mod-list");list.innerHTML="";
+  DATA.forEach(function(mod){
+    var prog=progressMap[mod.id]||0,mpct=Math.round(prog/mod.phrases.length*100);
+    var btn=document.createElement("button");btn.className="module-row";
+    btn.innerHTML='<div class="mod-icon-wrap" style="background:'+mod.color+'">'+mod.emoji+'</div>'
+      +'<div class="mod-info"><div class="mod-name">'+mod.title+'</div>'
+      +'<div class="pbar-wrap"><div class="pbar-fill" style="width:'+mpct+'%;background:'+mod.cs+'"></div></div></div>'
+      +'<div class="mod-stat"><div class="mod-pct" style="color:'+mod.cs+'">'+mpct+'%</div>'
+      +'<div class="mod-cnt">'+mod.phrases.length+' phrases</div></div>';
+    (function(modId){btn.addEventListener("click",function(){openModule(modId);});})(mod.id);
+    list.appendChild(btn);
+  });
+}
+
+// ── MODULE ────────────────────────────────────────────────────
+function openModule(id){
+  activeModId=id;var mod=getMod(id);
+  var prog=progressMap[id]||0,pct=Math.round(prog/mod.phrases.length*100);
+  document.getElementById("mod-banner").style.background=mod.color;
+  document.getElementById("mod-banner-emoji").textContent=mod.emoji;
+  document.getElementById("mod-banner-title").textContent=mod.title;
+  document.getElementById("mod-banner-sub").textContent=mod.phrases.length+" expressions ✨";
+  document.getElementById("mod-prog-pct").textContent=pct+"%";
+  document.getElementById("mod-prog-pct").style.color=mod.cs;
+  document.getElementById("mod-prog-bar").style.width=pct+"%";
+  document.getElementById("mod-prog-bar").style.background=mod.cs;
+  document.getElementById("topbar-text").textContent=mod.title;
+  var cont=document.getElementById("mode-list-container");cont.innerHTML="";
+  var modes=[
+    {id:"fc",e:"🃏",l:"Flashcards",d:"Mémoriser avec phonétique française"},
+    {id:"quiz",e:"🧠",l:"Quiz",d:"Tester en QCM"},
+    {id:"pb",e:"📖",l:"Phrasebook + Audio 🔊",d:"Consulter et écouter"}
+  ];
+  if(reviewList.length>0)modes.push({id:"revision",e:"🔁",l:"Révision ("+reviewList.length+")",d:"Retravailler les ratées"});
+  modes.forEach(function(m){
+    var btn=document.createElement("button");btn.className="mode-row";
+    btn.innerHTML='<span style="font-size:22px">'+m.e+'</span>'
+      +'<div><div class="mode-lbl">'+m.l+'</div><div class="mode-dsc">'+m.d+'</div></div>'
+      +'<span style="margin-left:auto;color:var(--dim);font-size:17px">›</span>';
+    (function(mId){btn.addEventListener("click",function(){startMode(mId);});})(m.id);
+    cont.appendChild(btn);
+  });
+  showScreen("module");
+}
+function startMode(mode){
+  if(mode==="pb")openPhrasebook();
+  else if(mode==="fc")startFlashcards(false);
+  else if(mode==="quiz")startQuiz();
+  else if(mode==="revision")startFlashcards(true);
+}
+
+// ── PHRASEBOOK ────────────────────────────────────────────────
+function openPhrasebook(phrases,title){
+  var mod=getMod(activeModId);
+  _pbPhrases=phrases||(mod?mod.phrases:[]);
+  document.getElementById("pb-title").textContent=title||(mod?"📖 "+mod.title:"📖 Phrasebook");
+  document.getElementById("pb-search").value="";
+  renderPhrasebook();showScreen("pb");
+}
+function renderPhrasebook(){
+  var q=document.getElementById("pb-search").value.toLowerCase();
+  var list=document.getElementById("pb-list");list.innerHTML="";
+  _pbPhrases.forEach(function(p){
+    if(q&&p.fr.toLowerCase().indexOf(q)<0&&p.zh.indexOf(q)<0&&p.py.toLowerCase().indexOf(q)<0)return;
+    var card=document.createElement("div");card.className="pb-card";
+    var wrap=document.createElement("div");wrap.className="pb-zh-wrap";
+    var zh=document.createElement("div");zh.className="pb-zh";zh.textContent=p.zh;
+    wrap.appendChild(zh);wrap.appendChild(makeAudioBtn(p.zh,"abtn-sm"));
+    var info=document.createElement("div");info.className="pb-info";
+    info.innerHTML='<div class="pb-pinyin" style="color:'+(TC[p.t]||"#ef5350")+'">'+p.py+'</div>'
+      +'<div class="pb-phon">« '+p.ph+' »</div><div class="pb-fr">'+p.fr+'</div>';
+    var fBtn=document.createElement("button");fBtn.className="fav-btn";
+    fBtn.textContent=isFav(p.zh)?"⭐":"☆";
+    (function(phrase,btn){btn.addEventListener("click",function(e){e.stopPropagation();toggleFav(phrase.zh);btn.textContent=isFav(phrase.zh)?"⭐":"☆";});})(p,fBtn);
+    var badge=document.createElement("span");badge.innerHTML=makeBadge(p.t,false);
+    card.appendChild(wrap);card.appendChild(info);card.appendChild(badge);card.appendChild(fBtn);
+    list.appendChild(card);
+  });
+  if(list.children.length===0)list.innerHTML='<div style="text-align:center;padding:28px;color:var(--muted);font-weight:600">Aucun résultat 🔍</div>';
+}
+
+// ── FLASHCARDS ────────────────────────────────────────────────
+function startFlashcards(isRevision){
+  var mod=getMod(activeModId);
+  var phrases=isRevision?reviewList.slice():shuffle(mod.phrases);
+  if(phrases.length===0){alert("Aucune expression à réviser !");return;}
+  fcState.phrases=phrases;fcState.idx=0;fcState.knownCnt=0;fcState.reviewCnt=0;fcState.isFlipped=false;
+  if(!isRevision)reviewList=[];
+  renderFC();showScreen("fc");
+}
+function renderFC(){
+  var p=fcState.phrases[fcState.idx];
+  fcState.isFlipped=false;
+  document.getElementById("card-inner").classList.remove("flipped");
+  document.getElementById("fc-btns").style.display="none";
+  document.getElementById("fc-hint").style.display="block";
+  document.getElementById("fc-counter").textContent=(fcState.idx+1)+" / "+fcState.phrases.length;
+  document.getElementById("fc-pbar").style.width=(fcState.idx/fcState.phrases.length*100)+"%";
+  document.getElementById("fc-zh-front").textContent=p.zh;
+  document.getElementById("fc-pinyin-front").textContent=p.py;
+  document.getElementById("fc-pinyin-front").style.color=TC[p.t]||"#ef5350";
+  document.getElementById("fc-phon-front").textContent="« "+p.ph+" »";
+  document.getElementById("fc-zh-back").textContent=p.zh;
+  document.getElementById("fc-pinyin-back").textContent=p.py;
+  document.getElementById("fc-pinyin-back").style.color=TC[p.t]||"#ef5350";
+  document.getElementById("fc-phon-back").textContent="« "+p.ph+" »";
+  document.getElementById("fc-fr").textContent=p.fr;
+  document.getElementById("fc-badge").innerHTML=makeBadge(p.t,true);
+  var fa=document.getElementById("fc-audio-front"),ba=document.getElementById("fc-audio-back");
+  fa.innerHTML="";ba.innerHTML="";
+  fa.appendChild(makeAudioBtn(p.zh,"abtn-lg"));ba.appendChild(makeAudioBtn(p.zh,"abtn-md"));
+}
+function fcAdvance(known){
+  if(known)fcState.knownCnt++;else{fcState.reviewCnt++;reviewList.push(fcState.phrases[fcState.idx]);}
+  fcState.idx++;
+  if(fcState.idx>=fcState.phrases.length){
+    var pct=Math.round(fcState.knownCnt/fcState.phrases.length*100);
+    document.getElementById("fcr-emoji").textContent=pct>=80?"🎉":pct>=50?"😊":"💪";
+    document.getElementById("fcr-known").textContent=fcState.knownCnt;
+    document.getElementById("fcr-review").textContent=fcState.reviewCnt;
+    document.getElementById("fcr-pct").textContent=pct+"%";
+    document.getElementById("fcr-pct").style.color=pct>=70?"#56cf7a":"#ff9a3c";
+    progressMap[activeModId]=fcState.phrases.length;
+    statsData.totalSessions++;statsData.totalKnown+=fcState.knownCnt;
+    updateStreak();saveStats();
+    document.getElementById("fcr-revise-btn").style.display=reviewList.length>0?"block":"none";
+    showScreen("fc-result");
+  }else{renderFC();}
+}
+function updateStreak(){
+  var today=todayStr();
+  if(statsData.lastDate===today)return;
+  var yd=new Date();yd.setDate(yd.getDate()-1);
+  var yStr=yd.getFullYear()+'-'+(yd.getMonth()+1)+'-'+yd.getDate();
+  statsData.currentStreak=(statsData.lastDate===yStr)?statsData.currentStreak+1:1;
+  if(statsData.currentStreak>statsData.bestStreak)statsData.bestStreak=statsData.currentStreak;
+  statsData.lastDate=today;
+}
+
+// ── QUIZ ──────────────────────────────────────────────────────
+function startQuiz(){
+  var mod=getMod(activeModId);
+  qzState.questions=shuffle(mod.phrases).map(function(p){
+    var others=mod.phrases.filter(function(x){return x.zh!==p.zh;});
+    var wrong=shuffle(others).slice(0,3).map(function(x){return x.fr;});
+    return{phrase:p,opts:shuffle(wrong.concat([p.fr])),correct:p.fr};
+  });
+  qzState.idx=0;qzState.scoreCnt=0;qzState.answered=false;
+  statsData.quizPlayed++;saveStats();
+  renderQuiz();showScreen("quiz");
+}
+function renderQuiz(){
+  var q=qzState.questions[qzState.idx];qzState.answered=false;
+  document.getElementById("qz-counter").textContent=(qzState.idx+1)+" / "+qzState.questions.length;
+  document.getElementById("qz-score").textContent="⭐ "+qzState.scoreCnt;
+  document.getElementById("qz-zh").textContent=q.phrase.zh;
+  document.getElementById("qz-pinyin").textContent=q.phrase.py;
+  document.getElementById("qz-pinyin").style.color=TC[q.phrase.t]||"#ef5350";
+  document.getElementById("qz-next-btn").style.display="none";
+  var aw=document.getElementById("qz-audio");aw.innerHTML="";
+  aw.appendChild(makeAudioBtn(q.phrase.zh,"abtn-lg"));
+  var oe=document.getElementById("qz-opts");oe.innerHTML="";
+  q.opts.forEach(function(opt){
+    var btn=document.createElement("button");btn.className="qz-opt";btn.textContent=opt;
+    (function(o,b){b.addEventListener("click",function(){quizAnswer(o,b);});})(opt,btn);
+    oe.appendChild(btn);
+  });
+}
+function quizAnswer(opt,btn){
+  if(qzState.answered)return;qzState.answered=true;
+  var q=qzState.questions[qzState.idx];
+  if(opt===q.correct){btn.classList.add("correct");qzState.scoreCnt++;}
+  else{
+    btn.classList.add("wrong");
+    var all=document.querySelectorAll(".qz-opt");
+    for(var i=0;i<all.length;i++){if(all[i].textContent===q.correct)all[i].classList.add("correct");all[i].disabled=true;}
+  }
+  document.getElementById("qz-score").textContent="⭐ "+qzState.scoreCnt;
+  var nb=document.getElementById("qz-next-btn");nb.style.display="block";
+  nb.textContent=(qzState.idx+1>=qzState.questions.length)?"Voir les résultats 🎊":"Suivant ✨";
+}
+
+// ── SURVIVAL ──────────────────────────────────────────────────
+function renderSurvival(){
+  var list=document.getElementById("surv-list");list.innerHTML="";
+  SURVIVAL.forEach(function(p){
+    var card=document.createElement("div");card.className="surv-card";
+    var left=document.createElement("div");left.style.minWidth="58px";
+    left.innerHTML='<div style="font-size:22px;text-align:center">'+p.ico+'</div>'
+      +'<div style="font-size:22px;font-weight:700;text-align:center;line-height:1.1;color:var(--text)">'+p.zh+'</div>';
+    var info=document.createElement("div");info.style.flex="1";
+    info.innerHTML='<div style="font-size:13px;font-weight:800;color:var(--text)">'+p.fr+'</div>'
+      +'<div style="font-size:12px;color:'+(TC[p.t]||"#ef5350")+';font-weight:700">'+p.py+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);font-style:italic;font-weight:600">« '+p.ph+' »</div>';
+    card.appendChild(left);card.appendChild(info);
+    card.appendChild(makeAudioBtn(p.zh,"abtn-md"));
+    list.appendChild(card);
+  });
+}
+
+// ── MAPS ──────────────────────────────────────────────────────
+function renderMaps(){
+  var cont=document.getElementById("spots-container");cont.innerHTML="";
+  Object.keys(SPOTS).forEach(function(cat){
+    var sec=document.createElement("div");
+    sec.innerHTML='<div class="zh-section">'+cat+'</div>';
+    var spots=SPOTS[cat];
+    spots.forEach(function(spot){
+      var row=document.createElement("div");row.className="spot-row";
+      row.innerHTML='<div class="spot-dot" style="background:'+spot.c+'"></div>'
+        +'<div class="spot-name">'+spot.n+'</div>'
+        +'<div class="spot-dist">'+spot.d+'</div>';
+      var gmapUrl="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(spot.n+' Shanghai');
+      var link=document.createElement("a");
+      link.href=gmapUrl;link.target="_blank";
+      link.style="text-decoration:none;font-size:10px;font-weight:800;color:var(--mint);padding:3px 8px;border:1px solid rgba(78,205,196,.3);border-radius:8px;white-space:nowrap";
+      link.textContent="Maps";
+      row.appendChild(link);
+      sec.appendChild(row);
+    });
+    var mapCard=document.createElement("div");mapCard.className="card";mapCard.style.padding="0";
+    var body=document.createElement("div");body.className="spot-list";
+    spots.forEach(function(spot){
+      var row=document.createElement("div");row.className="spot-row";
+      row.innerHTML='<div class="spot-dot" style="background:'+spot.c+'"></div>'
+        +'<div class="spot-name">'+spot.n+'</div>'
+        +'<div class="spot-dist">'+spot.d+'</div>';
+      var gmapUrl="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(spot.n+' Shanghai');
+      var link=document.createElement("a");
+      link.href=gmapUrl;link.target="_blank";
+      link.setAttribute("style","text-decoration:none;font-size:10px;font-weight:800;color:var(--mint);padding:3px 8px;border:1px solid rgba(78,205,196,.3);border-radius:8px;white-space:nowrap;flex-shrink:0");
+      link.textContent="↗ Maps";
+      row.appendChild(link);
+      body.appendChild(row);
+    });
+    var hdr=document.createElement("div");
+    hdr.setAttribute("style","padding:11px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:900;color:var(--text)");
+    hdr.textContent=cat;
+    mapCard.appendChild(hdr);mapCard.appendChild(body);
+    cont.appendChild(mapCard);
+  });
+}
+
+// ── ITINERARY ─────────────────────────────────────────────────
+var TAG_L={shop:"🛍️",food:"🍜",cult:"🏛️",fun:"🎮",night:"🌙",excursion:"🚄",halal:"🌙 Halal",tech:"📱"};
+var TAG_C={shop:"tag-shop",food:"tag-food",cult:"tag-cult",fun:"tag-fun",night:"tag-night",excursion:"tag-excursion",halal:"tag-halal",tech:"tag-tech"};
+function renderItinerary(){
+  var list=document.getElementById("itin-list");list.innerHTML="";
+  ITINERARY.forEach(function(day){
+    var card=document.createElement("div");card.className="day-card";
+    var hdr=document.createElement("div");hdr.className="day-header";
+    hdr.innerHTML='<div class="day-num" style="background:'+day.color+'">J'+day.day+'</div>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:800;color:var(--text)">'+day.theme+'</div>'
+      +'<div style="font-size:11px;color:var(--muted);font-weight:700">'+day.date+'</div></div>'
+      +'<span style="color:var(--dim);font-size:17px" class="d-arrow">›</span>';
+    var body=document.createElement("div");body.className="day-body";
+    day.slots.forEach(function(slot){
+      var tags=slot.tags.map(function(t){return'<span class="tag '+TAG_C[t]+'">'+TAG_L[t]+'</span>';}).join("");
+      var el=document.createElement("div");el.className="day-slot";
+      el.innerHTML='<div class="day-slot-time">'+slot.time+'</div>'
+        +'<div><div class="day-slot-title">'+slot.title+'</div>'
+        +'<div class="day-slot-desc">'+slot.desc+'</div>'
+        +(tags?'<div style="margin-top:4px">'+tags+'</div>':'')+'</div>';
+      body.appendChild(el);
+    });
+    hdr.addEventListener("click",function(){
+      var open=body.classList.contains("open");
+      body.classList.toggle("open");
+      hdr.querySelector(".d-arrow").textContent=open?"›":"↓";
+    });
+    card.appendChild(hdr);card.appendChild(body);
+    list.appendChild(card);
+  });
+}
+
+// ── FAVORITES ────────────────────────────────────────────────
+function renderFavorites(){
+  var list=document.getElementById("fav-list");list.innerHTML="";
+  if(favorites.length===0){
+    list.innerHTML='<div class="empty-state"><div class="empty-ico">☆</div><p style="font-weight:600;font-size:13px">Aucun favori.<br>Appuyez ☆ dans le Phrasebook !</p></div>';
+    return;
+  }
+  var found=[];
+  DATA.forEach(function(mod){mod.phrases.forEach(function(p){if(isFav(p.zh))found.push(p);});});
+  found.forEach(function(p){
+    var card=document.createElement("div");card.className="pb-card";
+    var wrap=document.createElement("div");wrap.className="pb-zh-wrap";
+    var zh=document.createElement("div");zh.className="pb-zh";zh.textContent=p.zh;
+    wrap.appendChild(zh);wrap.appendChild(makeAudioBtn(p.zh,"abtn-sm"));
+    var info=document.createElement("div");info.className="pb-info";
+    info.innerHTML='<div class="pb-pinyin" style="color:'+(TC[p.t]||"#ef5350")+'">'+p.py+'</div>'
+      +'<div class="pb-phon">« '+p.ph+' »</div><div class="pb-fr">'+p.fr+'</div>';
+    var fBtn=document.createElement("button");fBtn.className="fav-btn";fBtn.textContent="⭐";
+    (function(phrase){fBtn.addEventListener("click",function(){toggleFav(phrase.zh);renderFavorites();});})(p);
+    var badge=document.createElement("span");badge.innerHTML=makeBadge(p.t,false);
+    card.appendChild(wrap);card.appendChild(info);card.appendChild(badge);card.appendChild(fBtn);
+    list.appendChild(card);
+  });
+}
+
+// ── STATS ─────────────────────────────────────────────────────
+function renderStats(){
+  document.getElementById("stat-streak").textContent=statsData.currentStreak||0;
+  var grid=document.getElementById("stat-grid");grid.innerHTML="";
+  [{n:statsData.totalSessions||0,l:"Sessions",e:"🃏",c:"#ff6b9d"},
+   {n:statsData.totalKnown||0,l:"Mémorisées",e:"🌟",c:"#ffd166"},
+   {n:statsData.quizPlayed||0,l:"Quiz joués",e:"🧠",c:"#9b8ec4"},
+   {n:statsData.bestStreak||0,l:"Meilleur streak",e:"🔥",c:"#ff9a3c"}
+  ].forEach(function(it){
+    var box=document.createElement("div");box.className="stat-box";
+    box.innerHTML='<div style="font-size:22px">'+it.e+'</div><div class="stat-num" style="color:'+it.c+'">'+it.n+'</div><div class="stat-lbl">'+it.l+'</div>';
+    grid.appendChild(box);
+  });
+  var mods=document.getElementById("stat-modules");mods.innerHTML="";
+  DATA.forEach(function(mod){
+    var prog=progressMap[mod.id]||0,pct=Math.round(prog/mod.phrases.length*100);
+    var row=document.createElement("div");row.className="card";row.style.padding="11px 14px";row.style.marginBottom="9px";
+    row.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+      +'<span style="font-size:12px;font-weight:800;color:var(--text)">'+mod.emoji+' '+mod.title+'</span>'
+      +'<span style="font-size:12px;font-weight:900;color:'+mod.cs+'">'+pct+'%</span></div>'
+      +'<div class="pbar-wrap"><div class="pbar-fill" style="width:'+pct+'%;background:'+mod.cs+'"></div></div>';
+    mods.appendChild(row);
+  });
+}
+
+// ── DAILY ─────────────────────────────────────────────────────
+function renderDaily(){
+  var today=todayStr();
+  var dayNum=new Date().getDate()+new Date().getMonth()*31;
+  var all=[];DATA.forEach(function(m){m.phrases.forEach(function(p){all.push(p);});});
+  var dp=[];for(var i=0;i<5;i++)dp.push(all[(dayNum+i*13)%all.length]);
+  document.getElementById("daily-date-label").textContent="Aujourd'hui • "+new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  var cont=document.getElementById("daily-content");cont.innerHTML="";
+  var intro=document.createElement("div");intro.className="card";intro.style.marginBottom="13px";
+  intro.innerHTML='<div style="font-size:13px;font-weight:700;margin-bottom:6px;color:var(--text)">Tes 5 expressions du jour 🌟</div>'
+    +'<div style="font-size:11px;color:var(--muted);font-weight:600">Apprends-les en flashcards !</div>';
+  cont.appendChild(intro);
+  dp.forEach(function(p){
+    var card=document.createElement("div");card.className="pb-card";
+    var wrap=document.createElement("div");wrap.className="pb-zh-wrap";
+    var zh=document.createElement("div");zh.className="pb-zh";zh.textContent=p.zh;
+    wrap.appendChild(zh);wrap.appendChild(makeAudioBtn(p.zh,"abtn-sm"));
+    var info=document.createElement("div");info.className="pb-info";
+    info.innerHTML='<div class="pb-pinyin" style="color:'+(TC[p.t]||"#ef5350")+'">'+p.py+'</div>'
+      +'<div class="pb-phon">« '+p.ph+' »</div><div class="pb-fr">'+p.fr+'</div>';
+    var badge=document.createElement("span");badge.innerHTML=makeBadge(p.t,false);
+    card.appendChild(wrap);card.appendChild(info);card.appendChild(badge);
+    cont.appendChild(card);
+  });
+  var fcBtn=document.createElement("button");fcBtn.className="primary-btn";fcBtn.style.marginTop="14px";
+  fcBtn.textContent="🃏 Commencer les flashcards";
+  fcBtn.addEventListener("click",function(){
+    dailyDone=today;try{localStorage.setItem('cr_daily_date',today);}catch(e){}
+    activeModId=DATA[0].id;
+    fcState.phrases=shuffle(dp);fcState.idx=0;fcState.knownCnt=0;fcState.reviewCnt=0;
+    updateStreak();saveStats();renderFC();showScreen("fc");
+  });
+  cont.appendChild(fcBtn);
+}
+
+// ── CHINESE CARDS ─────────────────────────────────────────────
+function renderZhCards(){
+  var list=document.getElementById("zh-cards-list");list.innerHTML="";
+  ZH_CARDS.forEach(function(section){
+    var secEl=document.createElement("div");
+    secEl.innerHTML='<div class="zh-section"><span style="background:'+section.catBg+';color:'+section.catColor+';padding:4px 10px;border-radius:10px;font-size:12px">'+section.cat+'</span></div>';
+    list.appendChild(secEl);
+    section.items.forEach(function(item){
+      var card=document.createElement("div");card.className="zh-card";
+      var audioEl=makeAudioBtn(item.zh,"abtn-md");
+      var copyBtn=document.createElement("button");copyBtn.className="zh-copy";copyBtn.textContent="Copier";
+      copyBtn.addEventListener("click",function(e){
+        e.stopPropagation();
+        if(navigator.clipboard){
+          navigator.clipboard.writeText(item.zh).then(function(){
+            copyBtn.textContent="✓ Copié !";copyBtn.classList.add("copied");
+            setTimeout(function(){copyBtn.textContent="Copier";copyBtn.classList.remove("copied");},2000);
+          });
+        }
+      });
+      card.innerHTML='<div class="zh-card-header">'
+        +'<span class="zh-card-label">'+item.label+'</span>'
+        +'<span class="zh-card-cat" style="background:'+section.catBg+';color:'+section.catColor+'">'+section.cat+'</span>'
+        +'</div>'
+        +'<div class="zh-big">'+item.zh+'</div>'
+        +'<div class="zh-pinyin" style="color:var(--pink)">'+item.py+'</div>'
+        +'<div class="zh-phon">'+item.fr+'</div>';
+      var footer=document.createElement("div");footer.style="display:flex;align-items:center;gap:9px;margin-top:10px";
+      footer.appendChild(audioEl);footer.appendChild(copyBtn);
+      card.appendChild(footer);
+      card.addEventListener("click",function(){doSpeak(item.zh);});
+      list.appendChild(card);
+    });
+  });
+}
+
+// ── EVENT LISTENERS ───────────────────────────────────────────
+document.getElementById("mod-back-btn").addEventListener("click",function(){document.getElementById("topbar-text").textContent="ChinaReady 🐼";renderHome();showScreen("home");});
+document.getElementById("pb-back-btn").addEventListener("click",function(){if(activeModId)openModule(activeModId);else{document.getElementById("topbar-text").textContent="ChinaReady 🐼";showScreen("home");}});
+document.getElementById("pb-search").addEventListener("input",renderPhrasebook);
+document.getElementById("card-scene").addEventListener("click",function(){
+  fcState.isFlipped=!fcState.isFlipped;
+  document.getElementById("card-inner").classList.toggle("flipped",fcState.isFlipped);
+  document.getElementById("fc-btns").style.display=fcState.isFlipped?"flex":"none";
+  document.getElementById("fc-hint").style.display=fcState.isFlipped?"none":"block";
+});
+document.getElementById("fc-btn-known").addEventListener("click",function(){fcAdvance(true);});
+document.getElementById("fc-btn-review").addEventListener("click",function(){fcAdvance(false);});
+document.getElementById("fc-close-btn").addEventListener("click",function(){openModule(activeModId);});
+document.getElementById("fcr-back-btn").addEventListener("click",function(){renderHome();showScreen("home");});
+document.getElementById("fcr-revise-btn").addEventListener("click",function(){startFlashcards(true);});
+document.getElementById("qz-next-btn").addEventListener("click",function(){
+  qzState.idx++;
+  if(qzState.idx>=qzState.questions.length){
+    var pct=Math.round(qzState.scoreCnt/qzState.questions.length*100);
+    document.getElementById("qzr-emoji").textContent=pct>=80?"🏆":pct>=50?"🌟":"📚";
+    document.getElementById("qzr-pct").textContent=pct+"%";
+    document.getElementById("qzr-pct").style.color=pct>=80?"#56cf7a":pct>=50?"#ff9a3c":"#ff5252";
+    document.getElementById("qzr-sub").textContent=qzState.scoreCnt+" / "+qzState.questions.length+" bonnes réponses 🎯";
+    showScreen("quiz-result");
+  }else{renderQuiz();}
+});
+document.getElementById("qz-close-btn").addEventListener("click",function(){openModule(activeModId);});
+document.getElementById("qzr-back-btn").addEventListener("click",function(){openModule(activeModId);});
+document.getElementById("qzr-replay-btn").addEventListener("click",startQuiz);
+document.getElementById("tone-toggle-btn").addEventListener("click",function(e){e.stopPropagation();document.getElementById("tone-pop").classList.toggle("open");});
+document.addEventListener("click",function(){document.getElementById("tone-pop").classList.remove("open");});
+document.getElementById("nav-home").addEventListener("click",function(){navTo("home");});
+document.getElementById("nav-survival").addEventListener("click",function(){navTo("survival");});
+document.getElementById("nav-maps").addEventListener("click",function(){navTo("maps");});
+document.getElementById("nav-itinerary").addEventListener("click",function(){navTo("itinerary");});
+document.getElementById("nav-zhcards").addEventListener("click",function(){navTo("zhcards");});
+document.getElementById("nav-stats").addEventListener("click",function(){navTo("stats");});
+
+// ── INIT ──────────────────────────────────────────────────────
+renderHome();
+renderSurvival();
+renderItinerary();
+renderMaps();
+renderZhCards();
+</script>
+</body>
+</html>
