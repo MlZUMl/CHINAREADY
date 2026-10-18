@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>¥ → €</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="¥ → €">
+<meta name="theme-color" content="#7f1d1d">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  :root{
+    --bg:#1a0e0e; --card:#2a1414; --line:#4a2222; --red:#dc2626; --red2:#991b1b;
+    --gold:#fcd34d; --txt:#fff7ed; --mute:#d6b9a8; --ok:#4ade80; --warn:#fbbf24;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+  body{min-height:100dvh;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 16px);
+    display:flex;flex-direction:column;gap:14px;max-width:480px;margin:0 auto}
+  header{display:flex;align-items:center;justify-content:space-between}
+  h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.3px}
+  h1 span{color:var(--gold)}
+  .swap{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:12px;
+    padding:8px 12px;font-size:15px;font-weight:600}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px}
+  .lbl{font-size:13px;color:var(--mute);display:flex;justify-content:space-between;align-items:center}
+  .inrow{display:flex;align-items:baseline;gap:8px;margin-top:6px}
+  .cur{font-size:34px;font-weight:700;color:var(--gold);min-width:30px}
+  #amount{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--txt);
+    font-size:44px;font-weight:700;font-variant-numeric:tabular-nums;padding:0}
+  #amount::placeholder{color:#6b4a3e}
+  .clear{background:none;border:0;color:var(--mute);font-size:26px;padding:0 4px}
+  .out{font-size:46px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:4px;word-break:break-all}
+  .out small{font-size:26px;color:var(--gold);margin-left:6px}
+  .hint{font-size:12px;color:var(--mute);margin-top:6px}
+  .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .chip{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:14px;
+    padding:12px 0;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+  .chip:active,.swap:active,.btn:active{transform:scale(.96)}
+  .rate{display:flex;flex-direction:column;gap:8px}
+  .rate .big{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+  .status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--warn);flex:none}
+  .dot.ok{background:var(--ok)} .dot.err{background:var(--red)}
+  .btns{display:flex;gap:8px}
+  .btn{flex:1;background:var(--red2);border:0;color:#fff;border-radius:12px;padding:11px;font-size:15px;font-weight:600}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+  .manual{display:none;gap:8px;align-items:center}
+  .manual.show{display:flex}
+  .manual input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);color:var(--txt);
+    border-radius:10px;padding:10px;font-size:16px}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:15px}
+  td{padding:7px 2px;border-bottom:1px solid var(--line)}
+  td:last-child{text-align:right;color:var(--gold);font-weight:600}
+  tr:last-child td{border-bottom:0}
+  footer{font-size:11px;color:#8b6b5e;text-align:center;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <h1>Convertisseur <span id="title">¥ → €</span></h1>
+  <button class="swap" id="swap" aria-label="Inverser">⇅ Inverser</button>
+</header>
+
+<section class="panel">
+  <div class="lbl"><span id="inLabel">Prix en yuans (CNY)</span></div>
+  <div class="inrow">
+    <span class="cur" id="inCur">¥</span>
+    <input id="amount" inputmode="decimal" autocomplete="off" placeholder="0" aria-label="Montant">
+    <button class="clear" id="clear" aria-label="Effacer">✕</button>
+  </div>
+  <div class="hint">Astuce : tape « 35+12+8 » ou « 3*25 » pour additionner tes achats.</div>
+</section>
+
+<section class="panel">
+  <div class="lbl"><span id="outLabel">Soit en euros</span></div>
+  <div class="out"><span id="result">0,00</span><small id="outCur">€</small></div>
+</section>
+
+<div class="chips" id="chips"></div>
+
+<section class="panel rate">
+  <div class="big" id="rateTxt">1 € = — ¥</div>
+  <div class="status"><span class="dot" id="dot"></span><span id="statusTxt">Chargement du taux…</span></div>
+  <div class="btns">
+    <button class="btn" id="refresh">↻ Actualiser</button>
+    <button class="btn ghost" id="manualBtn">✎ Taux manuel</button>
+  </div>
+  <div class="manual" id="manual">
+    <span>1 € =</span>
+    <input id="manualRate" inputmode="decimal" placeholder="ex. 8,15">
+    <span>¥</span>
+    <button class="btn" id="manualOk" style="flex:none;padding:10px 14px">OK</button>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="lbl" style="margin-bottom:6px"><span>Repères rapides</span></div>
+  <table id="table"></table>
+</section>
+
+<footer>
+  Taux de référence du marché, mis à jour chaque jour. Ta banque ou Alipay/WeChat Pay
+  appliquent leur propre taux (souvent 1 à 3 % de frais).<br>
+  Fonctionne hors connexion avec le dernier taux enregistré.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var DEFAULT_RATE = 8.0;               // utilisé seulement si aucun taux n'a jamais été chargé
+  var KEY = "cny_eur_rate_v1";
+  var DIR_KEY = "cny_eur_dir_v1";
+  var TIMEOUT = 7000;
+
+  // Sources gratuites sans clé, choisies parce qu'elles ne passent pas par Google.
+  // Elles sont interrogées en parallèle : la première qui répond gagne.
+  var SOURCES = [
+    { name:"jsDelivr", url:"https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.json",
+      parse:function(d){ return { rate:d.eur && d.eur.cny, date:d.date }; } },
+    { name:"Currency-API", url:"https://latest.currency-api.pages.dev/v1/currencies/eur.json",
+      parse:function(d){ return { rate:d.eur && d.eur.cny, date:d.date }; } },
+    { name:"ExchangeRate-API", url:"https://open.er-api.com/v6/latest/EUR",
+      parse:function(d){ return { rate:d.rates && d.rates.CNY,
+        date:d.time_last_update_unix ? new Date(d.time_last_update_unix*1000).toISOString().slice(0,10) : null }; } },
+    { name:"BCE (Frankfurter)", url:"https://api.frankfurter.app/latest?from=EUR&to=CNY",
+      parse:function(d){ return { rate:d.rates && d.rates.CNY, date:d.date }; } }
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var amount=$("amount"), result=$("result");
+  var state = load() || { rate:DEFAULT_RATE, date:null, source:"défaut", fetchedAt:0, manual:false };
+  var cnyToEur = true;
+  try { cnyToEur = localStorage.getItem(DIR_KEY) !== "eur"; } catch(e){}
+
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY)); } catch(e){ return null; } }
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+  var nf2 = new Intl.NumberFormat("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2});
+  var nf4 = new Intl.NumberFormat("fr-FR",{minimumFractionDigits:4,maximumFractionDigits:4});
+  var nf0 = new Intl.NumberFormat("fr-FR",{maximumFractionDigits:2});
+
+  // Calcul sécurisé : chiffres, + - * / et parenthèses uniquement
+  function evaluate(str){
+    var s = String(str).replace(/\s/g,"").replace(/,/g,".").replace(/[x×]/gi,"*").replace(/÷/g,"/");
+    if(!s) return 0;
+    if(!/^[0-9.+\-*/()]+$/.test(s)) return NaN;
+    var i=0;
+    function num(){ var m=s.slice(i).match(/^\d*\.?\d+|^\d+\.?/); if(!m) throw 0; i+=m[0].length; return parseFloat(m[0]); }
+    function factor(){
+      if(s[i]==="-"){ i++; return -factor(); }
+      if(s[i]==="+"){ i++; return factor(); }
+      if(s[i]==="("){ i++; var v=expr(); if(s[i]===")") i++; return v; }
+      return num();
+    }
+    function term(){ var v=factor(); while(s[i]==="*"||s[i]==="/"){ var op=s[i++]; if(i>=s.length) return v; var r=factor(); v = op==="*"? v*r : v/r; } return v; }
+    function expr(){ var v=term(); while(s[i]==="+"||s[i]==="-"){ var op=s[i++]; if(i>=s.length) return v; var r=term(); v = op==="+"? v+r : v-r; } return v; }
+    try { var v=expr(); return i>=s.length && isFinite(v) ? v : NaN; } catch(e){ return NaN; }
+  }
+
+  function render(){
+    var v = evaluate(amount.value);
+    if(isNaN(v)){ result.textContent = "…"; }
+    else { result.textContent = nf2.format(cnyToEur ? v/state.rate : v*state.rate); }
+    $("rateTxt").textContent = "1 € = " + nf4.format(state.rate) + " ¥   ·   1 ¥ = " + nf4.format(1/state.rate) + " €";
+  }
+
+  function renderDir(){
+    $("title").textContent = cnyToEur ? "¥ → €" : "€ → ¥";
+    $("inCur").textContent = cnyToEur ? "¥" : "€";
+    $("outCur").textContent = cnyToEur ? "€" : "¥";
+    $("inLabel").textContent = cnyToEur ? "Prix en yuans (CNY)" : "Montant en euros (EUR)";
+    $("outLabel").textContent = cnyToEur ? "Soit en euros" : "Soit en yuans";
+    var vals = cnyToEur ? [10,20,50,100,200,500,1000,5000] : [1,5,10,20,50,100,200,500];
+    var chips = $("chips"); chips.innerHTML="";
+    vals.slice(0,8).forEach(function(n){
+      var b=document.createElement("button"); b.className="chip"; b.textContent=(cnyToEur?"¥":"€")+nf0.format(n);
+      b.onclick=function(){ amount.value=String(n); render(); };
+      chips.appendChild(b);
+    });
+    renderTable();
+    render();
+  }
+
+  function renderTable(){
+    var rows = [5,10,20,50,100,200,500,1000];
+    var t = $("table"); t.innerHTML="";
+    rows.forEach(function(n){
+      var tr=document.createElement("tr");
+      var a = cnyToEur ? ("¥ "+nf0.format(n)) : (nf0.format(n)+" €");
+      var b = cnyToEur ? (nf2.format(n/state.rate)+" €") : ("¥ "+nf2.format(n*state.rate));
+      tr.innerHTML="<td>"+a+"</td><td>"+b+"</td>";
+      t.appendChild(tr);
+    });
+  }
+
+  function setStatus(kind, text){
+    $("dot").className = "dot" + (kind ? " "+kind : "");
+    $("statusTxt").textContent = text;
+  }
+
+  function describe(){
+    if(state.manual) return "Taux saisi manuellement";
+    if(!state.fetchedAt) return "Taux par défaut (approximatif) — connecte-toi pour l'actualiser";
+    var d = new Date(state.fetchedAt);
+    var when = d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"}) + " à " +
+               d.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+    return "Source : " + state.source + (state.date ? " (cours du "+state.date.split("-").reverse().join("/")+")" : "") +
+           " · vérifié le " + when;
+  }
+
+  function fetchOne(src){
+    return new Promise(function(resolve,reject){
+      var ctrl = ("AbortController" in window) ? new AbortController() : null;
+      var to = setTimeout(function(){ if(ctrl) ctrl.abort(); reject(new Error("timeout")); }, TIMEOUT);
+      fetch(src.url + (src.url.indexOf("?")>-1?"&":"?") + "_=" + Date.now(), { cache:"no-store", signal: ctrl?ctrl.signal:undefined })
+        .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function(d){
+          clearTimeout(to);
+          var p = src.parse(d); var r = Number(p.rate);
+          if(!(r>3 && r<20)) throw new Error("taux invalide");
+          resolve({ rate:r, date:p.date, source:src.name });
+        })
+        .catch(function(e){ clearTimeout(to); reject(e); });
+    });
+  }
+
+  function anyOf(promises){
+    return new Promise(function(resolve,reject){
+      var left = promises.length;
+      promises.forEach(function(p){ p.then(resolve, function(){ if(--left===0) reject(); }); });
+    });
+  }
+
+  function refresh(){
+    setStatus("", "Recherche du taux du jour…");
+    anyOf(SOURCES.map(fetchOne)).then(function(r){
+      state = { rate:r.rate, date:r.date, source:r.source, fetchedAt:Date.now(), manual:false };
+      save(); renderTable(); render();
+      setStatus("ok", describe());
+    }, function(){
+      setStatus("err", "Hors ligne — " + describe());
+    });
+  }
+
+  amount.addEventListener("input", render);
+  $("clear").onclick = function(){ amount.value=""; render(); amount.focus(); };
+  $("swap").onclick = function(){
+    var v = evaluate(amount.value);
+    cnyToEur = !cnyToEur;
+    try { localStorage.setItem(DIR_KEY, cnyToEur ? "cny" : "eur"); } catch(e){}
+    if(!isNaN(v) && v) amount.value = (cnyToEur ? v*state.rate : v/state.rate).toFixed(2).replace(/\.00$/,"");
+    renderDir();
+  };
+  $("refresh").onclick = refresh;
+  $("manualBtn").onclick = function(){ $("manual").classList.toggle("show"); $("manualRate").value = String(state.rate.toFixed(4)).replace(".",","); };
+  $("manualOk").onclick = function(){
+    var r = parseFloat($("manualRate").value.replace(",","."));
+    if(r>3 && r<20){
+      state = { rate:r, date:null, source:"manuel", fetchedAt:Date.now(), manual:true };
+      save(); $("manual").classList.remove("show"); renderTable(); render(); setStatus("ok", describe());
+    }
+  };
+
+  renderDir();
+  setStatus(state.fetchedAt ? "" : "err", describe());
+  if(!state.manual) refresh();
+  document.addEventListener("visibilitychange", function(){
+    if(!document.hidden && Date.now() - (state.fetchedAt||0) > 3*3600*1000 && !state.manual) refresh();
+  });
+
+  if("serviceWorker" in navigator && location.protocol === "https:"){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  }
+})();
+</script>
+</body>
+</html>

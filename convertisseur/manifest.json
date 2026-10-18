@@ -1,0 +1,10 @@
+{
+  "name": "Convertisseur Yuan → Euro",
+  "short_name": "¥ → €",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#1a0e0e",
+  "theme_color": "#7f1d1d",
+  "icons": [{ "src": "icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }]
+}
