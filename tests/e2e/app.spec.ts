@@ -519,7 +519,7 @@ test('profil nutrition dès l\'accueil : objectif prêt dans le journal, premiè
 test('chaque écran principal tient sur un petit écran', async ({ page }) => {
   await onboard(page)
   for (const [path, name] of [['#/', 'accueil'], ['#/activite', 'activite'], ['#/repas', 'journal'], ['#/repas/ajouter?repas=dejeuner', 'ajouter'], ['#/repas?onglet=recettes', 'recettes'], ['#/repas/recette/tajine-poulet', 'recette'],
-    ['#/progres', 'calendrier'], ['#/progres?onglet=corps', 'corps'], ['#/progres?onglet=regularite', 'regularite'], ['#/repas?onglet=menu', 'menu'], ['#/activite/programmes', 'programmes'], ['#/progres?onglet=badges', 'badges'], ['#/progres/bilan', 'bilan'],
+    ['#/progres', 'calendrier'], ['#/progres?onglet=courbes', 'courbes'], ['#/progres?onglet=corps', 'corps'], ['#/progres?onglet=regularite', 'regularite'], ['#/repas?onglet=menu', 'menu'], ['#/activite/programmes', 'programmes'], ['#/progres?onglet=badges', 'badges'], ['#/progres/bilan', 'bilan'],
     ['#/univers?onglet=compagnon', 'compagnon'], ['#/univers?onglet=boutique', 'boutique'], ['#/progres?onglet=cycle', 'cycle'], ['#/profil', 'profil'], ['#/profil/compte', 'compte'], ['#/profil/engagements', 'engagements'], ['#/reprise', 'reprise']] as const) {
     await page.goto('./' + path)
     await expect(page.locator('main').first()).toBeVisible()
@@ -624,6 +624,42 @@ test('progrès hors balance : mensurations, sommeil, bilan du mois croisé', asy
   await expect(bilan).toContainText('1 nuit notée')
   await expect(bilan).toContainText('Pas encore assez de jours notés')
   await shot(page, '18-corps')
+  await noHorizontalScroll(page)
+})
+
+test('courbes : jauge d\'eau en pourcentage, courbe de poids, barres d\'eau et d\'activité', async ({ page }) => {
+  await onboard(page, 'Lina', true)
+  // Jauge d'eau : pourcentage et repères
+  const water = page.getByLabel('Hydratation')
+  await water.getByRole('button', { name: 'Ajouter 0,5 L' }).click()
+  await expect(water).toContainText('25 %')
+  await expect(water.getByRole('progressbar', { name: 'Eau bue' })).toHaveAttribute('aria-valuenow', '500')
+  // Deuxième pesée la semaine suivante : la courbe apparaît
+  await page.clock.setFixedTime(new Date('2026-10-27T08:00:00+01:00'))
+  await page.goto('./#/progres?onglet=corps')
+  await page.reload()
+  const poids = page.getByRole('group', { name: 'Poids' })
+  for (let i = 0; i < 5; i++) await poids.getByRole('button', { name: 'Moins' }).click()
+  await page.getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByTestId('graph-courbe').first()).toBeVisible()
+  await page.getByRole('tab', { name: 'Courbes' }).click()
+  const courbe = page.getByRole('region', { name: 'Courbe de poids' })
+  await expect(courbe).toContainText('Tendance : 69,8 kg')
+  await expect(courbe).toContainText('−0,2 kg')
+  await expect(courbe.getByTestId('graph-courbe')).toBeVisible()
+  await courbe.getByRole('tab', { name: 'Tout' }).click()
+  await expect(courbe.getByTestId('graph-courbe')).toBeVisible()
+  // Eau : sur 7 jours le 20 n'est plus visible (le 27 est la fin), sur 30 jours oui
+  const eau = page.getByRole('region', { name: 'Eau sur les derniers jours' })
+  await expect(eau.getByTestId('graph-barres')).toBeVisible()
+  await expect(eau).toContainText('0 / 7 jours')
+  await eau.getByRole('tab', { name: '30 jours' }).click()
+  await expect(eau).toContainText('0 / 30 jours')
+  await expect(eau).toContainText('0,5 L')
+  const act = page.getByRole('region', { name: 'Activité sur les derniers jours' })
+  await expect(act.getByTestId('graph-barres')).toBeVisible()
+  await expect(act).toContainText('Jours actifs')
+  await shot(page, '19-courbes')
   await noHorizontalScroll(page)
 })
 

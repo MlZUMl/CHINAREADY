@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useApp } from '../app/state'
 import { Chips, Sheet, Stepper } from '../ui/components'
+import { TrendLine } from '../ui/charts'
+import { WeightChart } from './Charts'
 import { weekStart, formatDayLong, type Day } from '../lib/dates'
 import { trendSummary, weightTrend } from '../domain/body'
 import { fmtKcal } from '../domain/nutrition'
@@ -50,7 +52,7 @@ function MeasuresCard() {
           })}
         </div>
       )}
-      {waist.length >= 2 && <MiniLine points={waist.slice(-10).map(p => p.value)} label="Évolution du tour de taille" />}
+      {waist.length >= 2 && <TrendLine days={waist.slice(-10).map(p => p.day)} line={waist.slice(-10).map(p => p.value)} unit="cm" color="var(--mousse)" label="Évolution du tour de taille" />}
       <div className="row wrap">
         <button className="btn secondary sm" onClick={() => setOpen('new')}><IconPlus /> Noter mes mesures</button>
         {last && <button className="link-btn small" onClick={() => setOpen(last)}>Modifier les dernières</button>}
@@ -94,20 +96,6 @@ function MeasureSheet({ initial, onClose }: { initial: BodyMeasurement | null; o
   )
 }
 
-function MiniLine({ points, label }: { points: number[]; label: string }) {
-  const lo = Math.min(...points) - 0.5, hi = Math.max(...points) + 0.5
-  const W = 320, H = 70
-  const x = (i: number) => 10 + (i * (W - 20)) / Math.max(1, points.length - 1)
-  const y = (v: number) => H - 8 - ((v - lo) / (hi - lo)) * (H - 16)
-  return (
-    <div className="chart" role="img" aria-label={label}>
-      <svg viewBox={`0 0 ${W} ${H}`}>
-        <polyline points={points.map((p, i) => `${x(i)},${y(p)}`).join(' ')} fill="none" stroke="var(--mousse)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        {points.map((p, i) => <circle key={i} cx={x(i)} cy={y(p)} r="3.5" fill="var(--vert)" />)}
-      </svg>
-    </div>
-  )
-}
 
 // ------------------------------------------------------------------ poids
 export function WeightCard() {
@@ -125,7 +113,7 @@ export function WeightCard() {
         <div className="card-head"><div><div className="kicker">Pesée hebdomadaire · le {['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'][weighDay - 1]}</div>
           <h2>{lastWeight ? `Tendance : ${lastWeight.trend} kg` : 'Pas encore de pesée'}</h2></div></div>
         <p className="muted small">{summary ?? 'Une pesée par semaine suffit. La courbe lisse les variations d\'eau, normales d\'un jour à l\'autre.'}</p>
-        {trend.length >= 2 && <TrendChart points={trend} />}
+        <WeightChart />
         {thisWeek && !editing ? (
           <div className="row between"><span className="small">Cette semaine : <strong>{thisWeek.kg} kg</strong></span><button className="link-btn" onClick={() => { setKg(Number(thisWeek.kg)); setEditing(true) }}>Modifier</button></div>
         ) : (
@@ -137,23 +125,6 @@ export function WeightCard() {
         <p className="muted small">Le poids n'est qu'un indicateur parmi d'autres : aucune récompense n'en dépend.</p>
       </section>
     </>
-  )
-}
-
-export function TrendChart({ points }: { points: { day: string; kg: number; trend: number }[] }) {
-  const pts = points.slice(-12)
-  const vals = pts.flatMap(p => [p.kg, p.trend])
-  const lo = Math.min(...vals) - 0.5, hi = Math.max(...vals) + 0.5
-  const W = 320, H = 110
-  const x = (i: number) => 10 + (i * (W - 20)) / Math.max(1, pts.length - 1)
-  const y = (v: number) => H - 10 - ((v - lo) / (hi - lo)) * (H - 20)
-  return (
-    <div className="chart" aria-label="Courbe de poids">
-      <svg viewBox={`0 0 ${W} ${H}`}>
-        <polyline points={pts.map((p, i) => `${x(i)},${y(p.trend)}`).join(' ')} fill="none" stroke="var(--prune)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        {pts.map((p, i) => <circle key={p.day} cx={x(i)} cy={y(p.kg)} r="3.5" fill="var(--vieux-rose)" opacity=".6" />)}
-      </svg>
-    </div>
   )
 }
 

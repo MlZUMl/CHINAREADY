@@ -12,6 +12,7 @@ import { SYMPTOMS, trendSummary, weightTrend } from '../domain/body'
 import { forecast } from '../domain/cycle'
 import { CyclePanel } from './Cycle'
 import { BodyPanel } from './Body'
+import { ChartsPanel } from './Charts'
 import { capsuleAccess } from '../domain/capsules'
 import { ENERGY_LABELS } from '../domain/recommend'
 import { EXTERNAL_ACTIVITIES, FOCUS_LABELS, type Focus } from '../domain/exercises'
@@ -19,7 +20,7 @@ import { IconBack, IconChevron, IconLock, IconPlus, IconUser } from '../ui/icons
 import type { Obstacle } from '../data/types'
 import { Stepper } from '../ui/components'
 
-type Tab = 'calendrier' | 'corps' | 'cycle' | 'regularite' | 'badges' | 'capsules'
+type Tab = 'calendrier' | 'courbes' | 'corps' | 'cycle' | 'regularite' | 'badges' | 'capsules'
 
 export function Progress({ query }: { query: URLSearchParams }) {
   const tab = (query.get('onglet') as Tab) || 'calendrier'
@@ -29,9 +30,10 @@ export function Progress({ query }: { query: URLSearchParams }) {
       <TopBar title="Progrès" right={<button className="icon-btn" aria-label="Profil et réglages" onClick={() => navigate('/profil')}><IconUser /></button>} />
       <main className="content">
         <Segmented label="Sections progrès" value={tab} onChange={t => navigate('/progres?onglet=' + t, true)} options={[
-          { id: 'calendrier', label: 'Calendrier' }, { id: 'corps', label: 'Corps' }, { id: 'cycle', label: 'Cycle' }, { id: 'regularite', label: 'Régularité' }, { id: 'badges', label: 'Badges' }, { id: 'capsules', label: 'Capsules' },
+          { id: 'calendrier', label: 'Calendrier' }, { id: 'courbes', label: 'Courbes' }, { id: 'corps', label: 'Corps' }, { id: 'cycle', label: 'Cycle' }, { id: 'regularite', label: 'Régularité' }, { id: 'badges', label: 'Badges' }, { id: 'capsules', label: 'Capsules' },
         ]} />
         {tab === 'calendrier' && <Calendar initialDay={day} />}
+        {tab === 'courbes' && <ChartsPanel />}
         {tab === 'corps' && <BodyPanel />}
         {tab === 'cycle' && <CyclePanel />}
         {tab === 'regularite' && <Regularity />}

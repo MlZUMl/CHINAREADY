@@ -277,6 +277,14 @@ textarea.input { min-height: 90px; resize: vertical; line-height: 1.4; }
 .bars .bar i.rest { background: #cfe3e8; }
 .bars .bar span { font-size: .68rem; font-weight: 800; color: var(--texte-doux); }
 
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .74rem; font-weight: 700; color: var(--texte-doux); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.kpis.two { grid-template-columns: repeat(2, 1fr); }
+.kpi { background: var(--surface); border-radius: var(--r-s); padding: 8px 10px; display: flex; flex-direction: column; min-width: 0; }
+.kpi strong { font-size: 1.02rem; line-height: 1.25; }
+
 /* Eau */
 .glasses { display: flex; flex-wrap: wrap; gap: 6px; }
 
@@ -302,8 +310,13 @@ ol.steps li::before { content: counter(s); flex: none; width: 28px; height: 28px
 
 /* ---------------------------------------------------------------- lot 1 : journal, eau, recettes */
 .kicker-nuit { font-size: .74rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--nuit); }
-.water-bar { height: 14px; border-radius: 999px; background: #e3eff1; overflow: hidden; }
-.water-bar > div { height: 100%; background: var(--nuit); border-radius: 999px; transition: width .4s ease; }
+.water-bar { position: relative; height: 22px; border-radius: 999px; background: #e3eff1; overflow: hidden; }
+.water-bar > div { height: 100%; background: linear-gradient(90deg, #3c8797, var(--nuit)); border-radius: 999px; transition: width .4s ease; }
+.water-bar.done > div { background: var(--vert); }
+.water-bar > i { position: absolute; top: 5px; bottom: 5px; width: 2px; margin-left: -1px; border-radius: 1px; background: rgba(255, 255, 255, .85); mix-blend-mode: normal; }
+.water-scale { display: flex; justify-content: space-between; margin-top: -4px; font-weight: 700; }
+.water-sum { display: flex; flex-direction: column; align-items: flex-end; margin-left: auto; line-height: 1.15; }
+.water-sum strong { font-family: var(--titre); font-size: 1.35rem; color: var(--nuit); }
 .water-quick { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
 .water-quick button { min-height: 48px; border-radius: 14px; border: 1.5px solid #cfe3e8; background: #fff; color: var(--nuit); font-weight: 800; font-size: .8rem; white-space: nowrap; cursor: pointer; padding: 4px 2px; }
 .water-quick button:active { background: #e3eff1; }

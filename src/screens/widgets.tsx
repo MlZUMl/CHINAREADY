@@ -171,9 +171,13 @@ export function WaterWidget({ day, compact = false }: { day: Day; compact?: bool
       <div className="card-head">
         <span className="emoji-bubble" style={{ background: '#e3eff1' }} aria-hidden="true"><IconDrop style={{ width: 22, color: 'var(--nuit)' }} /></span>
         <div><div className="kicker">Eau</div><strong data-testid="eau-total">{formatLitres(ml)} sur {formatLitres(goal, 1)}</strong></div>
-        <span className="small muted">{goal > ml ? `encore ${formatLitres(goal - ml)}` : 'objectif atteint'}</span>
+        <div className="water-sum"><strong>{Math.round(Math.min(1, ml / goal) * 100)} %</strong><span className="small muted">{goal > ml ? `encore ${formatLitres(goal - ml)}` : 'objectif atteint'}</span></div>
       </div>
-      <div className="water-bar" role="progressbar" aria-label="Eau bue" aria-valuemin={0} aria-valuemax={goal} aria-valuenow={ml}><div style={{ width: Math.min(100, (ml / goal) * 100) + '%' }} /></div>
+      <div className={`water-bar ${ml >= goal ? 'done' : ''}`} role="progressbar" aria-label="Eau bue" aria-valuemin={0} aria-valuemax={goal} aria-valuenow={ml}>
+        <div style={{ width: Math.min(100, (ml / goal) * 100) + '%' }} />
+        <i style={{ left: '25%' }} /><i style={{ left: '50%' }} /><i style={{ left: '75%' }} />
+      </div>
+      <div className="water-scale small muted" aria-hidden="true"><span>0</span><span>{formatLitres(goal / 2, 1)}</span><span>{formatLitres(goal, 1)}</span></div>
       <div className="water-quick" role="group" aria-label="Ajouter de l'eau">
         {WATER_QUICK.map(q => <button key={q} onClick={() => add(q)} aria-label={`Ajouter ${formatLitres(q)}`}>{formatLitres(q)}</button>)}
         <button onClick={() => setCustom(true)} aria-label="Autre quantité">Autre</button>
