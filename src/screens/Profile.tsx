@@ -9,6 +9,7 @@ import { EquipmentPicker } from './widgets'
 import { GoalSheet } from './food-parts'
 import { calorieGoal, fmtKcal } from '../domain/nutrition'
 import { HYDRATION_TIMES } from '../domain/defaults'
+import { TABLES } from '../data/types'
 
 export function Profile() {
   const { snap, actions, cloud, store, toast } = useApp()
@@ -20,7 +21,29 @@ export function Profile() {
   const [pushError, setPushError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [wipe, setWipe] = useState(false)
+  const [reset, setReset] = useState(false)
+  const [resetting, setResetting] = useState(false)
+  const [resetErr, setResetErr] = useState<string | null>(null)
   const [goal, setGoal] = useState(false)
+
+  /** Remise à zéro complète : efface en ligne (si connectée) puis sur ce téléphone, et repart de l'accueil. */
+  const resetEverything = async () => {
+    setResetting(true); setResetErr(null)
+    try {
+      if (cloud.user) {
+        const ops = TABLES.flatMap(t => (store.all(t) as { id: string }[]).map(r => ({ type: 'delete' as const, table: t, id: r.id })))
+        if (ops.length) await store.commit(ops, { derive: false })
+        await cloud.syncNow()
+        if ((await store.outboxCount()) > 0) throw new Error('La suppression en ligne n\'a pas pu se terminer. Vérifie ta connexion et réessaie : rien n\'a été effacé sur ce téléphone.')
+        await cloud.signOut()
+      }
+      await store.wipe()
+      try { localStorage.clear(); sessionStorage.clear() } catch { /* ignoré */ }
+      location.hash = '#/'; location.reload()
+    } catch (e) {
+      setResetErr(e instanceof Error ? e.message : String(e)); setResetting(false)
+    }
+  }
   const goalInfo = calorieGoal(snap, toDay())
   useEffect(() => { currentSubscription().then(s => setSubscribed(Boolean(s))).catch(() => setSubscribed(false)) }, [])
 
@@ -133,10 +156,16 @@ export function Profile() {
           <Toggle label="Analyse de mes habitudes" hint="Calculée sur ton téléphone, à partir de tes propres données" checked={p.analysis_consent} onChange={v => actions.updateProfile({ analysis_consent: v })} />
           <button className="btn secondary" onClick={exportData}>Télécharger mes données</button>
           <button className="btn danger" onClick={() => setWipe(true)}>Effacer les données de ce téléphone</button>
+          <button className="btn danger" onClick={() => { setResetErr(null); setReset(true) }}>Tout remettre à zéro (appli comme neuve)</button>
         </section>
         <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.4</p>
       </main>
       {goal && <GoalSheet onClose={() => setGoal(false)} />}
+      {reset && <Confirm danger title="Tout remettre à zéro ?" confirmLabel={resetting ? 'Effacement…' : 'Oui, tout effacer'}
+        text={cloud.user ? 'Toutes tes données seront supprimées, en ligne et sur ce téléphone : repas, séances, poids, choix, compagnon, points, photos. C\'est définitif. L\'appli repartira comme neuve, avec l\'accueil de départ.' : 'Toutes les données de ce téléphone seront supprimées, définitivement. L\'appli repartira comme neuve.'}
+        onClose={() => { if (!resetting) setReset(false) }} onConfirm={() => { if (!resetting) void resetEverything() }}>
+        {resetErr && <p className="error small" role="alert">{resetErr}</p>}
+      </Confirm>}
       {wipe && <Confirm danger title="Effacer ce téléphone ?" confirmLabel="Tout effacer ici"
         text={cloud.user ? 'Les données de ce téléphone seront effacées et tu seras déconnectée. Ta sauvegarde en ligne reste intacte : reconnecte-toi pour tout récupérer.' : 'Sans compte, rien n\'est sauvegardé ailleurs : tout sera définitivement perdu.'}
         onClose={() => setWipe(false)} onConfirm={async () => { if (cloud.user) { await cloud.syncNow(); await cloud.signOut() } await store.wipe(); location.hash = '#/'; location.reload() }} />}
