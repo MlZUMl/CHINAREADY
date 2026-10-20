@@ -1,0 +1,5662 @@
+{
+ "version": 1,
+ "genere_le": "2026-10-20",
+ "sources": {
+  "nutrition": "Table de composition nutritionnelle Ciqual 2020 (Anses), Licence Ouverte Etalab 2.0",
+  "photos": "Pexels (licence Pexels : usage libre, attribution appréciée)",
+  "cout": "Estimation à partir de prix moyens en grande surface, 2026"
+ },
+ "recettes": [
+  {
+   "id": "poulet-citron-four",
+   "titre": "Poulet rôti au citron et légumes du four",
+   "minutes": 45,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "four",
+    "batch"
+   ],
+   "emoji": "🍋",
+   "photo": {
+    "id": 4589140,
+    "url": "https://images.pexels.com/photos/4589140/pexels-photo-4589140.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/4589140/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Hauts de cuisse de poulet sans peau",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 180,
+     "ciqual": 36019,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Pommes de terre grenaille",
+     "qty": 200,
+     "unit": "g",
+     "grams": 200,
+     "ciqual": 4023,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 1,
+     "unit": "gousse",
+     "grams": 5,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Thym",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11038,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Sel",
+     "qty": 1,
+     "unit": "pincée",
+     "grams": 0.5,
+     "ciqual": 11082,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "grams": 0.3,
+     "ciqual": 11015,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 200 °C.",
+    "Coupe les pommes de terre en deux, la carotte en bâtonnets et l'oignon en quartiers.",
+    "Dispose légumes et poulet sur une plaque, arrose d'huile, ajoute l'ail écrasé, le thym, du sel et du poivre.",
+    "Presse le demi-citron dessus et glisse les écorces entre les légumes.",
+    "Enfourne 35 à 40 minutes, jusqu'à ce que le poulet soit doré et bien cuit à cœur."
+   ],
+   "nutrition": {
+    "kcal": 537,
+    "proteines": 40.9,
+    "glucides": 45.2,
+    "lipides": 18.4,
+    "fibres": 7.1,
+    "sucres": 9.8
+   },
+   "cout": 2.99,
+   "allergenes": [],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "bowl-teriyaki",
+   "titre": "Bowl de poulet teriyaki, riz et brocoli",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "rapide"
+   ],
+   "emoji": "🥢",
+   "photo": {
+    "id": 105588,
+    "url": "https://images.pexels.com/photos/105588/pexels-photo-105588.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/105588/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 130,
+     "unit": "g",
+     "grams": 130,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Riz basmati",
+     "qty": 70,
+     "unit": "g",
+     "grams": 70,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Brocoli",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20057,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Sauce soja",
+     "qty": 1.5,
+     "unit": "c. à soupe",
+     "grams": 22,
+     "ciqual": 11104,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Miel",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 7,
+     "ciqual": 31008,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Gingembre frais",
+     "qty": 1,
+     "unit": "cm",
+     "grams": 5,
+     "ciqual": 11074,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Graines de sésame",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 4,
+     "ciqual": 15010,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais cuire le riz selon le paquet.",
+    "Cuis le brocoli en fleurettes 5 minutes à la vapeur.",
+    "Coupe le poulet en morceaux et fais-le dorer 6 à 8 minutes à la poêle avec l'huile.",
+    "Mélange soja, miel et gingembre râpé, verse sur le poulet et laisse napper 1 minute.",
+    "Sers riz, brocoli et poulet dans un bol, parsème de sésame."
+   ],
+   "nutrition": {
+    "kcal": 543,
+    "proteines": 44.2,
+    "glucides": 64.1,
+    "lipides": 10.3,
+    "fibres": 5.9,
+    "sucres": 8.6
+   },
+   "cout": 2.86,
+   "allergenes": [
+    "gluten",
+    "soja",
+    "sésame"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "salade-grecque-poulet",
+   "titre": "Salade grecque au poulet grillé",
+   "minutes": 20,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "rapide",
+    "fraicheur"
+   ],
+   "emoji": "🥗",
+   "photo": {
+    "id": 17194483,
+    "url": "https://images.pexels.com/photos/17194483/pexels-photo-17194483.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/17194483/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Concombre",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20019,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 200,
+     "ciqual": 20047,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Feta",
+     "qty": 40,
+     "unit": "g",
+     "grams": 40,
+     "ciqual": 12061,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Olives noires",
+     "qty": 6,
+     "unit": "pièce",
+     "grams": 20,
+     "ciqual": 13032,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Oignon rouge",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 30,
+     "ciqual": 20238,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Origan",
+     "qty": 1,
+     "unit": "pincée",
+     "grams": 0.5,
+     "ciqual": 11035,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Pain pita",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 7180,
+     "rayon": "Boulangerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Fais griller le poulet assaisonné d'origan 5 à 6 minutes de chaque côté.",
+    "Coupe le concombre, les tomates et l'oignon rouge.",
+    "Ajoute la feta en cubes et les olives.",
+    "Arrose d'huile d'olive, sale légèrement et poivre.",
+    "Tranche le poulet sur la salade et sers avec la pita tiède."
+   ],
+   "nutrition": {
+    "kcal": 596,
+    "proteines": 41.9,
+    "glucides": 43.4,
+    "lipides": 25.8,
+    "fibres": 7.1,
+    "sucres": 10.9
+   },
+   "cout": 3.87,
+   "allergenes": [
+    "lait",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "shakshuka",
+   "titre": "Shakshuka aux œufs et poivrons",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "rapide"
+   ],
+   "emoji": "🍳",
+   "photo": {
+    "id": 35672958,
+    "url": "https://images.pexels.com/photos/35672958/pexels-photo-35672958.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/35672958/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 110,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 200,
+     "unit": "g",
+     "grams": 200,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Poivron rouge",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 20087,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 1,
+     "unit": "gousse",
+     "grams": 5,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Cumin",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11042,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Paprika doux",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Pain complet",
+     "qty": 1,
+     "unit": "tranche",
+     "grams": 40,
+     "ciqual": 7110,
+     "rayon": "Boulangerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Fais revenir l'oignon et le poivron émincés 5 minutes dans l'huile.",
+    "Ajoute l'ail, les épices et les tomates, laisse mijoter 8 minutes.",
+    "Creuse deux puits et casse les œufs dedans.",
+    "Couvre et laisse cuire 5 à 6 minutes, jusqu'à ce que les blancs soient pris.",
+    "Sers avec le pain grillé."
+   ],
+   "nutrition": {
+    "kcal": 398,
+    "proteines": 21.7,
+    "glucides": 31.8,
+    "lipides": 17.8,
+    "fibres": 9.7,
+    "sucres": 11.9
+   },
+   "cout": 1.89,
+   "allergenes": [
+    "œufs",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "saumon-patate-douce",
+   "titre": "Saumon au four, patate douce et haricots verts",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "poisson",
+    "four"
+   ],
+   "emoji": "🐟",
+   "photo": {
+    "id": 5670958,
+    "url": "https://images.pexels.com/photos/5670958/pexels-photo-5670958.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/5670958/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pavé de saumon",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 120,
+     "ciqual": 26036,
+     "rayon": "Poissonnerie",
+     "placard": false
+    },
+    {
+     "label": "Patate douce",
+     "qty": 1,
+     "unit": "petite",
+     "grams": 200,
+     "ciqual": 4101,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Haricots verts",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20061,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 25,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Aneth",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 2,
+     "ciqual": 11093,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Sel",
+     "qty": 1,
+     "unit": "pincée",
+     "grams": 0.5,
+     "ciqual": 11082,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Poivre",
+     "qty": 1,
+     "unit": "pincée",
+     "grams": 0.3,
+     "ciqual": 11015,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 200 °C.",
+    "Coupe la patate douce en cubes, arrose d'huile et enfourne 15 minutes.",
+    "Ajoute le saumon sur la plaque avec l'aneth et un filet de citron, poursuis 12 minutes.",
+    "Pendant ce temps, cuis les haricots verts 8 minutes à l'eau bouillante.",
+    "Sers le tout ensemble."
+   ],
+   "nutrition": {
+    "kcal": 507,
+    "proteines": 30.6,
+    "glucides": 43.3,
+    "lipides": 20.4,
+    "fibres": 10.3,
+    "sucres": 16.4
+   },
+   "cout": 4.59,
+   "allergenes": [
+    "poissons"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "curry-pois-chiches",
+   "titre": "Curry doux de pois chiches au lait de coco",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "batch"
+   ],
+   "emoji": "🍛",
+   "photo": {
+    "id": 4149256,
+    "url": "https://images.pexels.com/photos/4149256/pexels-photo-4149256.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/4149256/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pois chiches en conserve, égouttés",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 20532,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Lait de coco",
+     "qty": 100,
+     "unit": "ml",
+     "grams": 100,
+     "ciqual": 18041,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Curry doux",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11005,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Riz basmati",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Coriandre fraîche",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 3,
+     "ciqual": 11094,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Lance la cuisson du riz.",
+    "Fais revenir l'oignon et la carotte en dés 5 minutes, ajoute le curry.",
+    "Ajoute les tomates, le lait de coco et les pois chiches.",
+    "Laisse mijoter 15 minutes à feu doux.",
+    "Sers sur le riz avec la coriandre."
+   ],
+   "nutrition": {
+    "kcal": 634,
+    "proteines": 17.2,
+    "glucides": 81.4,
+    "lipides": 23.1,
+    "fibres": 13.9,
+    "sucres": 13.7
+   },
+   "cout": 1.78,
+   "allergenes": [],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "tajine-poulet",
+   "titre": "Tajine de poulet aux carottes et olives",
+   "minutes": 50,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "batch",
+    "mijote"
+   ],
+   "emoji": "🫕",
+   "photo": {
+    "id": 2291603,
+    "url": "https://images.pexels.com/photos/2291603/pexels-photo-2291603.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/2291603/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Hauts de cuisse de poulet sans peau",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 180,
+     "ciqual": 36019,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Carottes",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 200,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Olives vertes",
+     "qty": 6,
+     "unit": "pièce",
+     "grams": 25,
+     "ciqual": 13033,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 25,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ras el hanout (ou curcuma et cumin)",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11089,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Coriandre fraîche",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 3,
+     "ciqual": 11094,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Semoule",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9681,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais dorer le poulet dans une cocotte avec l'huile, réserve.",
+    "Fais revenir l'oignon émincé avec les épices.",
+    "Remets le poulet, ajoute les carottes en rondelles et un verre d'eau.",
+    "Couvre et laisse mijoter 30 minutes ; ajoute les olives et le citron les 10 dernières minutes.",
+    "Sers avec la semoule et la coriandre."
+   ],
+   "nutrition": {
+    "kcal": 628,
+    "proteines": 45.1,
+    "glucides": 63.9,
+    "lipides": 17.6,
+    "fibres": 10.4,
+    "sucres": 17
+   },
+   "cout": 2.88,
+   "allergenes": [
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "boulettes-boeuf",
+   "titre": "Boulettes de bœuf sauce tomate et semoule",
+   "minutes": 35,
+   "moment": "midi-soir",
+   "tags": [
+    "boeuf",
+    "batch"
+   ],
+   "emoji": "🍅",
+   "photo": {
+    "id": 36958915,
+    "url": "https://images.pexels.com/photos/36958915/pexels-photo-36958915.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/36958915/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Bœuf haché 5 %",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 6250,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 200,
+     "unit": "g",
+     "grams": 200,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Persil",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 4,
+     "ciqual": 11014,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Cumin",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11042,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Semoule",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9681,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Mélange le bœuf avec le persil haché, le cumin, du sel et du poivre ; forme des boulettes.",
+    "Fais-les dorer 5 minutes à la poêle avec l'huile.",
+    "Ajoute l'oignon émincé et les tomates, laisse mijoter 15 minutes.",
+    "Prépare la semoule avec de l'eau bouillante.",
+    "Sers les boulettes nappées de sauce sur la semoule."
+   ],
+   "nutrition": {
+    "kcal": 485,
+    "proteines": 36.7,
+    "glucides": 52,
+    "lipides": 12.6,
+    "fibres": 6.5,
+    "sucres": 8.5
+   },
+   "cout": 2.69,
+   "allergenes": [
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "wraps-poulet",
+   "titre": "Wraps de poulet croustillant et crudités",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "rapide"
+   ],
+   "emoji": "🌯",
+   "photo": {
+    "id": 12464909,
+    "url": "https://images.pexels.com/photos/12464909/pexels-photo-12464909.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/12464909/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Tortillas de blé",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 7815,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Laitue",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 30,
+     "ciqual": 20031,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomate",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20047,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Yaourt nature",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 40,
+     "ciqual": 19593,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Chapelure",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 7500,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Paprika",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 210 °C.",
+    "Coupe le poulet en lanières et roule-les dans la chapelure et le paprika.",
+    "Enfourne 15 minutes en retournant à mi-cuisson.",
+    "Mélange le yaourt avec du sel, du poivre et un peu de citron si tu veux.",
+    "Garnis les tortillas de salade, tomate, poulet et sauce."
+   ],
+   "nutrition": {
+    "kcal": 495,
+    "proteines": 39.5,
+    "glucides": 56.3,
+    "lipides": 10,
+    "fibres": 5.7,
+    "sucres": 6.2
+   },
+   "cout": 2.73,
+   "allergenes": [
+    "gluten",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "omelette-champignons",
+   "titre": "Omelette aux champignons et persil",
+   "minutes": 15,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "rapide"
+   ],
+   "emoji": "🍄",
+   "photo": {
+    "id": 27331092,
+    "url": "https://images.pexels.com/photos/27331092/pexels-photo-27331092.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/27331092/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Œufs",
+     "qty": 3,
+     "unit": "pièce",
+     "grams": 165,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Champignons de Paris",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20056,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Persil",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 4,
+     "ciqual": 11014,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Salade verte",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 40,
+     "ciqual": 25604,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Pain complet",
+     "qty": 1,
+     "unit": "tranche",
+     "grams": 40,
+     "ciqual": 7110,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais revenir les champignons émincés 5 minutes dans l'huile.",
+    "Bats les œufs avec le persil, du sel et du poivre.",
+    "Verse sur les champignons et cuis à feu doux 3 à 4 minutes.",
+    "Plie l'omelette et sers avec la salade et le pain."
+   ],
+   "nutrition": {
+    "kcal": 409,
+    "proteines": 27.5,
+    "glucides": 22.1,
+    "lipides": 22.3,
+    "fibres": 4.5,
+    "sucres": 4.2
+   },
+   "cout": 2.05,
+   "allergenes": [
+    "œufs",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "soupe-lentilles",
+   "titre": "Soupe de lentilles corail au cumin",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "batch",
+    "reconfort"
+   ],
+   "emoji": "🥣",
+   "photo": {
+    "id": 40135526,
+    "url": "https://images.pexels.com/photos/40135526/pexels-photo-40135526.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/40135526/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Lentilles corail",
+     "qty": 70,
+     "unit": "g",
+     "grams": 70,
+     "ciqual": 20535,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Cumin",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11042,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Citron",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 25,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Pain complet",
+     "qty": 1,
+     "unit": "tranche",
+     "grams": 40,
+     "ciqual": 7110,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais revenir l'oignon et la carotte en dés avec le cumin.",
+    "Ajoute les lentilles rincées, les tomates et 400 ml d'eau.",
+    "Laisse cuire 20 minutes.",
+    "Mixe, ajuste le sel et ajoute un filet de citron.",
+    "Sers avec le pain."
+   ],
+   "nutrition": {
+    "kcal": 469,
+    "proteines": 25.5,
+    "glucides": 63.4,
+    "lipides": 7.4,
+    "fibres": 18.8,
+    "sucres": 12.8
+   },
+   "cout": 1.29,
+   "allergenes": [
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "bowl-thon",
+   "titre": "Bowl de thon, riz, avocat et concombre",
+   "minutes": 20,
+   "moment": "midi-soir",
+   "tags": [
+    "poisson",
+    "rapide",
+    "fraicheur"
+   ],
+   "emoji": "🥑",
+   "photo": {
+    "id": 4828099,
+    "url": "https://images.pexels.com/photos/4828099/pexels-photo-4828099.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/4828099/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Thon au naturel",
+     "qty": 1,
+     "unit": "boîte",
+     "grams": 110,
+     "ciqual": 26039,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Riz",
+     "qty": 70,
+     "unit": "g",
+     "grams": 70,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Avocat",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 70,
+     "ciqual": 13004,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Concombre",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20019,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 6,
+     "unit": "pièce",
+     "grams": 90,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Sauce soja",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 11104,
+     "rayon": "Épicerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Fais cuire le riz et laisse-le tiédir.",
+    "Coupe l'avocat, le concombre et les tomates.",
+    "Égoutte le thon.",
+    "Dresse le bol et arrose d'un peu de sauce soja."
+   ],
+   "nutrition": {
+    "kcal": 574,
+    "proteines": 39.1,
+    "glucides": 64.4,
+    "lipides": 15.6,
+    "fibres": 5.3,
+    "sucres": 7.5
+   },
+   "cout": 3.42,
+   "allergenes": [
+    "poissons",
+    "gluten",
+    "soja"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "chili-boeuf",
+   "titre": "Chili au bœuf et haricots rouges",
+   "minutes": 40,
+   "moment": "midi-soir",
+   "tags": [
+    "boeuf",
+    "batch"
+   ],
+   "emoji": "🌶️",
+   "photo": {
+    "id": 6358974,
+    "url": "https://images.pexels.com/photos/6358974/pexels-photo-6358974.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/6358974/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Bœuf haché 5 %",
+     "qty": 110,
+     "unit": "g",
+     "grams": 110,
+     "ciqual": 6250,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Haricots rouges en conserve",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20524,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Poivron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 20041,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Paprika et cumin",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Riz",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais revenir l'oignon et le poivron 5 minutes.",
+    "Ajoute le bœuf et fais-le colorer.",
+    "Ajoute les épices, les tomates et les haricots égouttés.",
+    "Laisse mijoter 20 minutes.",
+    "Sers avec le riz."
+   ],
+   "nutrition": {
+    "kcal": 586,
+    "proteines": 40.2,
+    "glucides": 70.6,
+    "lipides": 12.8,
+    "fibres": 12.4,
+    "sucres": 9.2
+   },
+   "cout": 2.97,
+   "allergenes": [],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "pates-poulet-tomates",
+   "titre": "Pâtes complètes au poulet, tomates cerises et basilic",
+   "minutes": 20,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "rapide"
+   ],
+   "emoji": "🍝",
+   "photo": {
+    "id": 10456299,
+    "url": "https://images.pexels.com/photos/10456299/pexels-photo-10456299.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/10456299/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pâtes complètes",
+     "qty": 80,
+     "unit": "g",
+     "grams": 80,
+     "ciqual": 9870,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Blanc de poulet",
+     "qty": 110,
+     "unit": "g",
+     "grams": 110,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 10,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 1,
+     "unit": "gousse",
+     "grams": 5,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Basilic",
+     "qty": 0.5,
+     "unit": "bouquet",
+     "grams": 5,
+     "ciqual": 11033,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Parmesan",
+     "qty": 15,
+     "unit": "g",
+     "grams": 15,
+     "ciqual": 12120,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Cuis les pâtes.",
+    "Fais dorer le poulet en dés avec l'ail dans l'huile.",
+    "Ajoute les tomates cerises coupées en deux et laisse compoter 4 minutes.",
+    "Mélange avec les pâtes, le basilic et le parmesan."
+   ],
+   "nutrition": {
+    "kcal": 568,
+    "proteines": 42.2,
+    "glucides": 63.5,
+    "lipides": 13.1,
+    "fibres": 7.1,
+    "sucres": 8.7
+   },
+   "cout": 3.24,
+   "allergenes": [
+    "gluten",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "brochettes-yaourt",
+   "titre": "Brochettes de poulet au yaourt et taboulé",
+   "minutes": 35,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "fraicheur"
+   ],
+   "emoji": "🍢",
+   "photo": {
+    "id": 15388077,
+    "url": "https://images.pexels.com/photos/15388077/pexels-photo-15388077.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/15388077/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 130,
+     "unit": "g",
+     "grams": 130,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Yaourt nature",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 40,
+     "ciqual": 19593,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Semoule",
+     "qty": 50,
+     "unit": "g",
+     "grams": 50,
+     "ciqual": 9681,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Tomate",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20047,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Concombre",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 75,
+     "ciqual": 20019,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Menthe fraîche",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 3,
+     "ciqual": 11027,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Paprika",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Mélange le poulet en cubes avec le yaourt, le paprika et du sel ; laisse reposer 10 minutes.",
+    "Prépare la semoule et laisse refroidir.",
+    "Ajoute la tomate, le concombre, la menthe, l'huile et le jus de citron.",
+    "Enfile le poulet sur des pics et fais-le griller 10 à 12 minutes.",
+    "Sers avec le taboulé."
+   ],
+   "nutrition": {
+    "kcal": 439,
+    "proteines": 39.6,
+    "glucides": 42.9,
+    "lipides": 8.8,
+    "fibres": 4.4,
+    "sucres": 7
+   },
+   "cout": 2.8,
+   "allergenes": [
+    "lait",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "parmentier-patate-douce",
+   "titre": "Parmentier de patate douce au bœuf",
+   "minutes": 50,
+   "moment": "midi-soir",
+   "tags": [
+    "boeuf",
+    "four",
+    "batch",
+    "reconfort"
+   ],
+   "emoji": "🥧",
+   "photo": {
+    "id": 36040894,
+    "url": "https://images.pexels.com/photos/36040894/pexels-photo-36040894.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/36040894/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Bœuf haché 5 %",
+     "qty": 110,
+     "unit": "g",
+     "grams": 110,
+     "ciqual": 6250,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Patate douce",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 250,
+     "ciqual": 4101,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Lait demi-écrémé",
+     "qty": 30,
+     "unit": "ml",
+     "grams": 30,
+     "ciqual": 19041,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Emmental râpé",
+     "qty": 15,
+     "unit": "g",
+     "grams": 15,
+     "ciqual": 12118,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Cuis la patate douce en cubes 15 minutes et écrase-la avec le lait.",
+    "Fais revenir l'oignon, la carotte râpée et le bœuf.",
+    "Préchauffe le four à 200 °C.",
+    "Dans un plat : la viande, puis la purée, puis le fromage.",
+    "Gratine 15 minutes."
+   ],
+   "nutrition": {
+    "kcal": 490,
+    "proteines": 34.3,
+    "glucides": 58.8,
+    "lipides": 10.4,
+    "fibres": 11,
+    "sucres": 24.3
+   },
+   "cout": 2.77,
+   "allergenes": [
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "cabillaud-papillote",
+   "titre": "Cabillaud en papillote, légumes et riz",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "poisson",
+    "four",
+    "leger"
+   ],
+   "emoji": "🐠",
+   "photo": {
+    "id": 12918197,
+    "url": "https://images.pexels.com/photos/12918197/pexels-photo-12918197.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/12918197/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Dos de cabillaud",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 140,
+     "ciqual": 26043,
+     "rayon": "Poissonnerie",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Poireau",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 20039,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Riz",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 190 °C et lance le riz.",
+    "Émince la carotte et le poireau en julienne.",
+    "Sur une feuille de papier cuisson : légumes, poisson, citron, huile, sel et poivre.",
+    "Ferme la papillote et enfourne 18 minutes.",
+    "Sers avec le riz."
+   ],
+   "nutrition": {
+    "kcal": 446,
+    "proteines": 31.8,
+    "glucides": 59,
+    "lipides": 6.5,
+    "fibres": 5.1,
+    "sucres": 9
+   },
+   "cout": 4.36,
+   "allergenes": [
+    "poissons"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "salade-quinoa",
+   "titre": "Salade de quinoa, pois chiches et feta",
+   "minutes": 20,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "rapide",
+    "batch",
+    "fraicheur"
+   ],
+   "emoji": "🫘",
+   "photo": {
+    "id": 36143709,
+    "url": "https://images.pexels.com/photos/36143709/pexels-photo-36143709.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/36143709/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Quinoa",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9340,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Pois chiches en conserve, égouttés",
+     "qty": 80,
+     "unit": "g",
+     "grams": 80,
+     "ciqual": 20532,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 8,
+     "unit": "pièce",
+     "grams": 120,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Concombre",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 75,
+     "ciqual": 20019,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Feta",
+     "qty": 30,
+     "unit": "g",
+     "grams": 30,
+     "ciqual": 12061,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Cuis le quinoa 12 minutes, puis rince-le à l'eau froide.",
+    "Coupe les tomates et le concombre, émiette la feta.",
+    "Mélange le tout avec les pois chiches.",
+    "Assaisonne d'huile d'olive, de citron, de sel et de poivre."
+   ],
+   "nutrition": {
+    "kcal": 551,
+    "proteines": 19.7,
+    "glucides": 57,
+    "lipides": 22.7,
+    "fibres": 10.5,
+    "sucres": 8.2
+   },
+   "cout": 2.41,
+   "allergenes": [
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "frittata",
+   "titre": "Frittata pommes de terre et poivrons",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "batch"
+   ],
+   "emoji": "🥚",
+   "photo": {
+    "id": 5639217,
+    "url": "https://images.pexels.com/photos/5639217/pexels-photo-5639217.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/5639217/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Œufs",
+     "qty": 3,
+     "unit": "pièce",
+     "grams": 165,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Pomme de terre",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 4008,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Poivron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 20041,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 30,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Salade verte",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 40,
+     "ciqual": 25604,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Cuis les pommes de terre en fines rondelles 8 minutes à la poêle avec l'huile.",
+    "Ajoute le poivron et l'oignon émincés, 5 minutes.",
+    "Verse les œufs battus et assaisonnés.",
+    "Couvre et cuis à feu doux 10 minutes.",
+    "Sers en parts avec la salade."
+   ],
+   "nutrition": {
+    "kcal": 435,
+    "proteines": 25.6,
+    "glucides": 30.9,
+    "lipides": 21.9,
+    "fibres": 4.9,
+    "sucres": 5.6
+   },
+   "cout": 1.85,
+   "allergenes": [
+    "œufs"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "kefta-agneau",
+   "titre": "Kefta d'agneau, sauce yaourt-menthe et salade",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "agneau"
+   ],
+   "emoji": "🥙",
+   "photo": {
+    "id": 32986492,
+    "url": "https://images.pexels.com/photos/32986492/pexels-photo-32986492.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/32986492/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Agneau haché (épaule)",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 21504,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Yaourt nature",
+     "qty": 3,
+     "unit": "c. à soupe",
+     "grams": 60,
+     "ciqual": 19593,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Menthe fraîche",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 3,
+     "ciqual": 11027,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomate",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20047,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Concombre",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 75,
+     "ciqual": 20019,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Pain pita",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 7180,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Cumin",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11042,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Mélange l'agneau avec le cumin, la menthe hachée, du sel et du poivre ; forme des rouleaux allongés.",
+    "Fais-les griller 8 à 10 minutes.",
+    "Mélange le yaourt avec un peu de menthe.",
+    "Sers avec la tomate, le concombre et la pita."
+   ],
+   "nutrition": {
+    "kcal": 424,
+    "proteines": 30.5,
+    "glucides": 38.8,
+    "lipides": 14.8,
+    "fibres": 3.6,
+    "sucres": 6.8
+   },
+   "cout": 3.31,
+   "allergenes": [
+    "lait",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "riz-saute",
+   "titre": "Riz sauté aux œufs et petits légumes",
+   "minutes": 20,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "rapide",
+    "anti-gaspi"
+   ],
+   "emoji": "🍚",
+   "photo": {
+    "id": 32845321,
+    "url": "https://images.pexels.com/photos/32845321/pexels-photo-32845321.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/32845321/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Riz cuit (de la veille)",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 9104,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 110,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Petits pois surgelés",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 20084,
+     "rayon": "Surgelés",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon nouveau",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 20,
+     "ciqual": 20323,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Sauce soja",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 11104,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais sauter la carotte en dés et les petits pois 4 minutes dans l'huile.",
+    "Ajoute le riz et fais-le dorer.",
+    "Pousse sur le côté, brouille les œufs, puis mélange tout.",
+    "Ajoute la sauce soja et l'oignon nouveau."
+   ],
+   "nutrition": {
+    "kcal": 514,
+    "proteines": 23.7,
+    "glucides": 62.2,
+    "lipides": 16.7,
+    "fibres": 8.6,
+    "sucres": 9.4
+   },
+   "cout": 1.41,
+   "allergenes": [
+    "œufs",
+    "gluten",
+    "soja"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "poulet-basquaise",
+   "titre": "Poulet basquaise et riz",
+   "minutes": 40,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "batch",
+    "mijote"
+   ],
+   "emoji": "🫑",
+   "photo": {
+    "id": 35156470,
+    "url": "https://images.pexels.com/photos/35156470/pexels-photo-35156470.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/35156470/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Hauts de cuisse de poulet sans peau",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 180,
+     "ciqual": 36019,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Poivrons",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20041,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 1,
+     "unit": "gousse",
+     "grams": 5,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Paprika",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Riz",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais dorer le poulet dans l'huile, réserve.",
+    "Fais revenir l'oignon, l'ail et les poivrons en lanières.",
+    "Ajoute les tomates, le paprika et le poulet ; couvre.",
+    "Laisse mijoter 25 minutes.",
+    "Sers avec le riz."
+   ],
+   "nutrition": {
+    "kcal": 565,
+    "proteines": 44,
+    "glucides": 61.1,
+    "lipides": 14.2,
+    "fibres": 6.4,
+    "sucres": 10.1
+   },
+   "cout": 3.14,
+   "allergenes": [],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "veloute-butternut",
+   "titre": "Velouté de butternut et tartine au fromage frais",
+   "minutes": 35,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "reconfort",
+    "batch"
+   ],
+   "emoji": "🎃",
+   "photo": {
+    "id": 4663236,
+    "url": "https://images.pexels.com/photos/4663236/pexels-photo-4663236.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/4663236/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Butternut",
+     "qty": 300,
+     "unit": "g",
+     "grams": 300,
+     "ciqual": 20138,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Fromage de chèvre frais",
+     "qty": 30,
+     "unit": "g",
+     "grams": 30,
+     "ciqual": 12805,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Pain complet",
+     "qty": 2,
+     "unit": "tranche",
+     "grams": 80,
+     "ciqual": 7110,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Œuf dur",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 55,
+     "ciqual": 22010,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Fais revenir l'oignon, ajoute la butternut et la carotte en cubes.",
+    "Couvre d'eau et cuis 20 minutes.",
+    "Mixe, sale et poivre.",
+    "Tartine le pain de fromage frais.",
+    "Sers ensemble, avec l'œuf dur pour plus de tenue."
+   ],
+   "nutrition": {
+    "kcal": 491,
+    "proteines": 22.8,
+    "glucides": 63.8,
+    "lipides": 12.4,
+    "fibres": 15.2,
+    "sucres": 18.1
+   },
+   "cout": 2.19,
+   "allergenes": [
+    "lait",
+    "gluten",
+    "œufs"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "poulet-curry-coco",
+   "titre": "Poulet au curry, lait de coco et riz",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "batch",
+    "reconfort"
+   ],
+   "emoji": "🍛",
+   "photo": {
+    "id": 10692534,
+    "url": "https://images.pexels.com/photos/10692534/pexels-photo-10692534.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/10692534/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 130,
+     "unit": "g",
+     "grams": 130,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Lait de coco",
+     "qty": 80,
+     "unit": "ml",
+     "grams": 80,
+     "ciqual": 18041,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Épinards frais",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 50,
+     "ciqual": 20059,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Curry",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11005,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Gingembre frais",
+     "qty": 1,
+     "unit": "cm",
+     "grams": 5,
+     "ciqual": 11074,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Riz basmati",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Lance la cuisson du riz.",
+    "Fais revenir l'oignon et le gingembre, ajoute le curry puis le poulet en cubes.",
+    "Ajoute les tomates et le lait de coco, laisse mijoter 12 minutes.",
+    "Incorpore les épinards à la fin, juste le temps qu'ils tombent.",
+    "Sers sur le riz."
+   ],
+   "nutrition": {
+    "kcal": 613,
+    "proteines": 39.9,
+    "glucides": 56.3,
+    "lipides": 23.4,
+    "fibres": 5.7,
+    "sucres": 6.8
+   },
+   "cout": 3.22,
+   "allergenes": [],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "saumon-poireaux",
+   "titre": "Saumon, fondue de poireaux et riz complet",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "poisson",
+    "reconfort"
+   ],
+   "emoji": "🐟",
+   "photo": {
+    "id": 27672770,
+    "url": "https://images.pexels.com/photos/27672770/pexels-photo-27672770.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/27672770/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pavé de saumon",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 120,
+     "ciqual": 26036,
+     "rayon": "Poissonnerie",
+     "placard": false
+    },
+    {
+     "label": "Poireaux",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20039,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Crème légère 15 %",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 30,
+     "ciqual": 19436,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Riz complet",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9102,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 25,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Lance la cuisson du riz complet.",
+    "Émince les poireaux et fais-les fondre 12 minutes à feu doux avec l'huile et un fond d'eau.",
+    "Ajoute la crème, sale et poivre.",
+    "Cuis le saumon 4 minutes de chaque côté à la poêle.",
+    "Sers le saumon sur la fondue, avec le riz et un filet de citron."
+   ],
+   "nutrition": {
+    "kcal": 588,
+    "proteines": 31.9,
+    "glucides": 51.9,
+    "lipides": 25.9,
+    "fibres": 6.5,
+    "sucres": 6.5
+   },
+   "cout": 3.95,
+   "allergenes": [
+    "poissons",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "pates-crevettes-citron",
+   "titre": "Pâtes aux crevettes, ail et citron",
+   "minutes": 20,
+   "moment": "midi-soir",
+   "tags": [
+    "poisson",
+    "rapide"
+   ],
+   "emoji": "🦐",
+   "photo": {
+    "id": 4518889,
+    "url": "https://images.pexels.com/photos/4518889/pexels-photo-4518889.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/4518889/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Crevettes décortiquées crues",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 10021,
+     "rayon": "Poissonnerie",
+     "placard": false
+    },
+    {
+     "label": "Pâtes (linguine)",
+     "qty": 80,
+     "unit": "g",
+     "grams": 80,
+     "ciqual": 9810,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 2,
+     "unit": "gousse",
+     "grams": 10,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Persil",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 4,
+     "ciqual": 11014,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 6,
+     "unit": "pièce",
+     "grams": 90,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Cuis les pâtes.",
+    "Fais revenir l'ail émincé 1 minute dans l'huile, ajoute les tomates coupées.",
+    "Ajoute les crevettes et cuis 3 minutes, jusqu'à ce qu'elles soient roses.",
+    "Mélange avec les pâtes, le zeste et le jus de citron, puis le persil."
+   ],
+   "nutrition": {
+    "kcal": 535,
+    "proteines": 34.7,
+    "glucides": 64.3,
+    "lipides": 12.4,
+    "fibres": 4.2,
+    "sucres": 6.6
+   },
+   "cout": 3.87,
+   "allergenes": [
+    "crustacés",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "dhal-lentilles",
+   "titre": "Dhal de lentilles corail aux épinards",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "batch",
+    "reconfort"
+   ],
+   "emoji": "🥘",
+   "photo": {
+    "id": 28674710,
+    "url": "https://images.pexels.com/photos/28674710/pexels-photo-28674710.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/28674710/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Lentilles corail",
+     "qty": 70,
+     "unit": "g",
+     "grams": 70,
+     "ciqual": 20535,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Lait de coco",
+     "qty": 60,
+     "unit": "ml",
+     "grams": 60,
+     "ciqual": 18041,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Épinards frais",
+     "qty": 2,
+     "unit": "poignée",
+     "grams": 80,
+     "ciqual": 20059,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 1,
+     "unit": "gousse",
+     "grams": 5,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Gingembre frais",
+     "qty": 1,
+     "unit": "cm",
+     "grams": 5,
+     "ciqual": 11074,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Curcuma et cumin",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11089,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Riz basmati",
+     "qty": 50,
+     "unit": "g",
+     "grams": 50,
+     "ciqual": 9119,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Lance la cuisson du riz.",
+    "Fais revenir l'oignon, l'ail et le gingembre avec les épices.",
+    "Ajoute les lentilles rincées et 300 ml d'eau, laisse cuire 15 minutes.",
+    "Ajoute le lait de coco et les épinards, mélange 2 minutes.",
+    "Sers avec le riz."
+   ],
+   "nutrition": {
+    "kcal": 623,
+    "proteines": 27.6,
+    "glucides": 79.8,
+    "lipides": 17.9,
+    "fibres": 15.4,
+    "sucres": 5.6
+   },
+   "cout": 1.78,
+   "allergenes": [],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "fajitas-poulet",
+   "titre": "Fajitas de poulet aux poivrons",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "rapide"
+   ],
+   "emoji": "🌮",
+   "photo": {
+    "id": 33332968,
+    "url": "https://images.pexels.com/photos/33332968/pexels-photo-33332968.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/33332968/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Poivrons",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20041,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon rouge",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20238,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tortillas de blé",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 7815,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Yaourt grec",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 40,
+     "ciqual": 19860,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Paprika et cumin",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Citron vert",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 30,
+     "ciqual": 13067,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Coupe le poulet, les poivrons et l'oignon en lanières.",
+    "Fais sauter le tout 8 à 10 minutes dans l'huile avec les épices.",
+    "Arrose de jus de citron vert.",
+    "Réchauffe les tortillas et garnis-les, avec une cuillère de yaourt grec."
+   ],
+   "nutrition": {
+    "kcal": 564,
+    "proteines": 38.6,
+    "glucides": 54.8,
+    "lipides": 18,
+    "fibres": 8.9,
+    "sucres": 10.8
+   },
+   "cout": 3.37,
+   "allergenes": [
+    "gluten",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "burger-boeuf-maison",
+   "titre": "Burger de bœuf maison et salade croquante",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "boeuf",
+    "plaisir"
+   ],
+   "emoji": "🍔",
+   "photo": {
+    "id": 4253700,
+    "url": "https://images.pexels.com/photos/4253700/pexels-photo-4253700.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/4253700/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Steak haché 5 %",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 125,
+     "ciqual": 6250,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Pain à burger complet",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 70,
+     "ciqual": 7262,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Tomate",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 20047,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Laitue",
+     "qty": 1,
+     "unit": "feuille",
+     "grams": 15,
+     "ciqual": 20031,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon rouge",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 30,
+     "ciqual": 20238,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Emmental",
+     "qty": 1,
+     "unit": "tranche",
+     "grams": 20,
+     "ciqual": 12118,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Ketchup",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 11008,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Salade verte",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 50,
+     "ciqual": 25604,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Fais cuire le steak 3 à 4 minutes de chaque côté.",
+    "Pose le fromage dessus la dernière minute pour qu'il fonde.",
+    "Toaste le pain.",
+    "Monte le burger : ketchup, salade, steak, tomate, oignon.",
+    "Sers avec la salade verte."
+   ],
+   "nutrition": {
+    "kcal": 480,
+    "proteines": 41,
+    "glucides": 39.9,
+    "lipides": 15.9,
+    "fibres": 5.7,
+    "sucres": 10.2
+   },
+   "cout": 3.15,
+   "allergenes": [
+    "gluten",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison",
+    "plaisir"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "risotto-champignons",
+   "titre": "Risotto aux champignons et parmesan",
+   "minutes": 35,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "reconfort"
+   ],
+   "emoji": "🍄",
+   "photo": {
+    "id": 31779539,
+    "url": "https://images.pexels.com/photos/31779539/pexels-photo-31779539.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/31779539/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Riz rond (arborio)",
+     "qty": 70,
+     "unit": "g",
+     "grams": 70,
+     "ciqual": 9121,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Champignons de Paris",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20056,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 30,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Bouillon de légumes",
+     "qty": 300,
+     "unit": "ml",
+     "grams": 300,
+     "ciqual": 25948,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Parmesan",
+     "qty": 20,
+     "unit": "g",
+     "grams": 20,
+     "ciqual": 12120,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Persil",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 4,
+     "ciqual": 11014,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais revenir l'oignon dans l'huile, ajoute le riz et nacre-le 2 minutes.",
+    "Verse le bouillon chaud louche par louche en remuant, pendant 18 minutes.",
+    "À part, fais dorer les champignons émincés.",
+    "Incorpore les champignons et le parmesan hors du feu.",
+    "Parsème de persil."
+   ],
+   "nutrition": {
+    "kcal": 445,
+    "proteines": 16.5,
+    "glucides": 63.4,
+    "lipides": 13.3,
+    "fibres": 3.2,
+    "sucres": 6.2
+   },
+   "cout": 1.93,
+   "allergenes": [
+    "céleri",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "gnocchis-tomate-mozza",
+   "titre": "Gnocchis poêlés, tomates et mozzarella",
+   "minutes": 20,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "rapide",
+    "plaisir"
+   ],
+   "emoji": "🍅",
+   "photo": {
+    "id": 31911031,
+    "url": "https://images.pexels.com/photos/31911031/pexels-photo-31911031.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/31911031/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Gnocchis à la pomme de terre",
+     "qty": 200,
+     "unit": "g",
+     "grams": 200,
+     "ciqual": 26264,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 10,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Mozzarella",
+     "qty": 50,
+     "unit": "g",
+     "grams": 50,
+     "ciqual": 19590,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Basilic",
+     "qty": 0.5,
+     "unit": "bouquet",
+     "grams": 5,
+     "ciqual": 11033,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 1,
+     "unit": "gousse",
+     "grams": 5,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Jeunes pousses d'épinards",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 40,
+     "ciqual": 20270,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais dorer les gnocchis 6 à 8 minutes à la poêle dans l'huile.",
+    "Ajoute l'ail et les tomates coupées, laisse compoter 3 minutes.",
+    "Ajoute les pousses d'épinards, puis la mozzarella en morceaux.",
+    "Couvre 1 minute pour qu'elle fonde, parsème de basilic."
+   ],
+   "nutrition": {
+    "kcal": 621,
+    "proteines": 20.9,
+    "glucides": 79.9,
+    "lipides": 21.8,
+    "fibres": 7.6,
+    "sucres": 14
+   },
+   "cout": 3.03,
+   "allergenes": [
+    "gluten",
+    "œufs",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison",
+    "plaisir"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "poulet-moutarde",
+   "titre": "Poulet à la moutarde, haricots verts et pommes de terre",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "reconfort"
+   ],
+   "emoji": "🍗",
+   "photo": {
+    "id": 31987728,
+    "url": "https://images.pexels.com/photos/31987728/pexels-photo-31987728.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/31987728/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 130,
+     "unit": "g",
+     "grams": 130,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Moutarde à l'ancienne",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 11021,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Crème légère 15 %",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 30,
+     "ciqual": 19436,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Haricots verts",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20061,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Pommes de terre",
+     "qty": 200,
+     "unit": "g",
+     "grams": 200,
+     "ciqual": 4008,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Cuis les pommes de terre en morceaux 15 minutes à l'eau, puis les haricots verts 8 minutes.",
+    "Fais dorer le poulet en morceaux dans l'huile.",
+    "Ajoute la moutarde, la crème et un fond d'eau, laisse napper 3 minutes.",
+    "Sers le poulet avec les légumes."
+   ],
+   "nutrition": {
+    "kcal": 463,
+    "proteines": 39.6,
+    "glucides": 40.2,
+    "lipides": 13.2,
+    "fibres": 8.6,
+    "sucres": 8.1
+   },
+   "cout": 3.11,
+   "allergenes": [
+    "moutarde",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "boeuf-brocoli-nouilles",
+   "titre": "Bœuf sauté au brocoli et nouilles",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "boeuf",
+    "rapide"
+   ],
+   "emoji": "🥡",
+   "photo": {
+    "id": 5836630,
+    "url": "https://images.pexels.com/photos/5836630/pexels-photo-5836630.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/5836630/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Bœuf (rumsteck) en lanières",
+     "qty": 120,
+     "unit": "g",
+     "grams": 120,
+     "ciqual": 6201,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Brocoli",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20057,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Nouilles de blé",
+     "qty": 70,
+     "unit": "g",
+     "grams": 70,
+     "ciqual": 9863,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Sauce soja",
+     "qty": 1.5,
+     "unit": "c. à soupe",
+     "grams": 22,
+     "ciqual": 11104,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Ail",
+     "qty": 1,
+     "unit": "gousse",
+     "grams": 5,
+     "ciqual": 11000,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Gingembre frais",
+     "qty": 1,
+     "unit": "cm",
+     "grams": 5,
+     "ciqual": 11074,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Graines de sésame",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 4,
+     "ciqual": 15010,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Cuis les nouilles selon le paquet.",
+    "Fais sauter le brocoli 4 minutes à feu vif avec un peu d'eau.",
+    "Ajoute le bœuf, l'ail et le gingembre, saisis 2 minutes.",
+    "Ajoute les nouilles et la sauce soja, mélange 1 minute.",
+    "Parsème de sésame."
+   ],
+   "nutrition": {
+    "kcal": 663,
+    "proteines": 40,
+    "glucides": 54.5,
+    "lipides": 29.4,
+    "fibres": 8.4,
+    "sucres": 3.3
+   },
+   "cout": 4.3,
+   "allergenes": [
+    "gluten",
+    "œufs",
+    "soja",
+    "sésame"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "colin-pane-puree",
+   "titre": "Colin en croûte dorée, purée de patate douce",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "poisson",
+    "four"
+   ],
+   "emoji": "🐟",
+   "photo": {
+    "id": 18303027,
+    "url": "https://images.pexels.com/photos/18303027/pexels-photo-18303027.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/18303027/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Filet de colin",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 140,
+     "ciqual": 26129,
+     "rayon": "Poissonnerie",
+     "placard": false
+    },
+    {
+     "label": "Chapelure",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 7500,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Parmesan",
+     "qty": 10,
+     "unit": "g",
+     "grams": 10,
+     "ciqual": 12120,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Patate douce",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 200,
+     "ciqual": 4101,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Lait demi-écrémé",
+     "qty": 30,
+     "unit": "ml",
+     "grams": 30,
+     "ciqual": 19041,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Haricots verts",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20061,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 200 °C ; cuis la patate douce en cubes 15 minutes à l'eau.",
+    "Mélange la chapelure, le parmesan et l'huile ; dépose-les sur le poisson.",
+    "Enfourne le colin 15 minutes.",
+    "Écrase la patate douce avec le lait ; cuis les haricots verts.",
+    "Sers ensemble."
+   ],
+   "nutrition": {
+    "kcal": 466,
+    "proteines": 35.6,
+    "glucides": 52.6,
+    "lipides": 10.2,
+    "fibres": 9.4,
+    "sucres": 16.9
+   },
+   "cout": 4.01,
+   "allergenes": [
+    "poissons",
+    "gluten",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "buddha-bowl",
+   "titre": "Buddha bowl pois chiches, patate douce et avocat",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "fraicheur",
+    "batch"
+   ],
+   "emoji": "🥗",
+   "photo": {
+    "id": 17597408,
+    "url": "https://images.pexels.com/photos/17597408/pexels-photo-17597408.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/17597408/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pois chiches en conserve, égouttés",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20532,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Patate douce",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 4101,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Avocat",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 70,
+     "ciqual": 13004,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Quinoa",
+     "qty": 50,
+     "unit": "g",
+     "grams": 50,
+     "ciqual": 9340,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Chou rouge",
+     "qty": 50,
+     "unit": "g",
+     "grams": 50,
+     "ciqual": 20014,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tahin",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 15203,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Paprika",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 200 °C ; rôtis la patate douce en cubes et les pois chiches au paprika 25 minutes.",
+    "Cuis le quinoa 12 minutes.",
+    "Émince finement le chou rouge, tranche l'avocat.",
+    "Mélange le tahin, le jus de citron et un peu d'eau pour la sauce.",
+    "Dresse le bol et nappe de sauce."
+   ],
+   "nutrition": {
+    "kcal": 744,
+    "proteines": 20,
+    "glucides": 77.3,
+    "lipides": 33.5,
+    "fibres": 18.7,
+    "sucres": 11.7
+   },
+   "cout": 2.3,
+   "allergenes": [
+    "sésame"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "quiche-sans-pate",
+   "titre": "Quiche sans pâte aux poireaux et chèvre",
+   "minutes": 40,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "four",
+    "batch"
+   ],
+   "emoji": "🥧",
+   "photo": {
+    "id": 65173,
+    "url": "https://images.pexels.com/photos/65173/pexels-photo-65173.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/65173/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 110,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Poireaux",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20039,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Fromage de chèvre frais",
+     "qty": 30,
+     "unit": "g",
+     "grams": 30,
+     "ciqual": 12805,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Lait demi-écrémé",
+     "qty": 80,
+     "unit": "ml",
+     "grams": 80,
+     "ciqual": 19041,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Salade verte",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 50,
+     "ciqual": 25604,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Noix de muscade",
+     "qty": 1,
+     "unit": "pincée",
+     "grams": 0.3,
+     "ciqual": 11048,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 180 °C.",
+    "Fais fondre les poireaux émincés 10 minutes dans l'huile.",
+    "Bats les œufs avec le lait, la muscade, du sel et du poivre.",
+    "Mets les poireaux et le chèvre émietté dans un plat, verse les œufs.",
+    "Enfourne 25 minutes ; sers avec la salade."
+   ],
+   "nutrition": {
+    "kcal": 363,
+    "proteines": 23.8,
+    "glucides": 13,
+    "lipides": 23,
+    "fibres": 4.2,
+    "sucres": 9.7
+   },
+   "cout": 2.04,
+   "allergenes": [
+    "œufs",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "salade-lentilles-feta",
+   "titre": "Salade tiède de lentilles, feta et légumes",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "batch",
+    "fraicheur"
+   ],
+   "emoji": "🥗",
+   "photo": {
+    "id": 39148701,
+    "url": "https://images.pexels.com/photos/39148701/pexels-photo-39148701.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/39148701/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Lentilles vertes cuites",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20587,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Feta",
+     "qty": 30,
+     "unit": "g",
+     "grams": 30,
+     "ciqual": 12061,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 6,
+     "unit": "pièce",
+     "grams": 90,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon rouge",
+     "qty": 0.25,
+     "unit": "pièce",
+     "grams": 30,
+     "ciqual": 20238,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Persil",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 4,
+     "ciqual": 11014,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Moutarde",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 5,
+     "ciqual": 11013,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Vinaigre",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 11018,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Réchauffe doucement les lentilles.",
+    "Râpe la carotte, coupe les tomates et l'oignon.",
+    "Prépare la vinaigrette : moutarde, vinaigre, huile, sel, poivre.",
+    "Mélange le tout et ajoute la feta et le persil."
+   ],
+   "nutrition": {
+    "kcal": 456,
+    "proteines": 22.2,
+    "glucides": 39.8,
+    "lipides": 18.4,
+    "fibres": 17.3,
+    "sucres": 12.6
+   },
+   "cout": 2.13,
+   "allergenes": [
+    "lait",
+    "moutarde",
+    "sulfites"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "soupe-poulet-nouilles",
+   "titre": "Soupe de poulet aux nouilles et gingembre",
+   "minutes": 30,
+   "moment": "midi-soir",
+   "tags": [
+    "poulet",
+    "reconfort",
+    "leger"
+   ],
+   "emoji": "🍜",
+   "photo": {
+    "id": 34326230,
+    "url": "https://images.pexels.com/photos/34326230/pexels-photo-34326230.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/34326230/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Blanc de poulet",
+     "qty": 110,
+     "unit": "g",
+     "grams": 110,
+     "ciqual": 36017,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Nouilles de blé",
+     "qty": 50,
+     "unit": "g",
+     "grams": 50,
+     "ciqual": 9863,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Bouillon de volaille",
+     "qty": 400,
+     "unit": "ml",
+     "grams": 400,
+     "ciqual": 25947,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Champignons de Paris",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 20056,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Gingembre frais",
+     "qty": 2,
+     "unit": "cm",
+     "grams": 10,
+     "ciqual": 11074,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon nouveau",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 20,
+     "ciqual": 20323,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Sauce soja",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 11104,
+     "rayon": "Épicerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Porte le bouillon à frémissement avec le gingembre en lamelles.",
+    "Ajoute le poulet en fines tranches, la carotte et les champignons émincés, 8 minutes.",
+    "Ajoute les nouilles et cuis 4 minutes.",
+    "Assaisonne de sauce soja et parsème d'oignon nouveau."
+   ],
+   "nutrition": {
+    "kcal": 403,
+    "proteines": 37.6,
+    "glucides": 48.6,
+    "lipides": 4,
+    "fibres": 6.3,
+    "sucres": 9.4
+   },
+   "cout": 2.63,
+   "allergenes": [
+    "gluten",
+    "œufs",
+    "céleri",
+    "soja"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "tajine-legumes",
+   "titre": "Tajine de légumes aux pois chiches",
+   "minutes": 45,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "batch",
+    "mijote"
+   ],
+   "emoji": "🫕",
+   "photo": {
+    "id": 2287528,
+    "url": "https://images.pexels.com/photos/2287528/pexels-photo-2287528.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/2287528/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pois chiches en conserve, égouttés",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20532,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Courgette",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 20020,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Navet",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 20064,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Oignon",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20034,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates pelées en conserve",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20048,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Raisins secs",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 13046,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Ras el hanout (ou curcuma et cumin)",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11089,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Semoule",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9681,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais revenir l'oignon avec les épices dans l'huile.",
+    "Ajoute les légumes en gros morceaux, les tomates et un verre d'eau.",
+    "Couvre et laisse mijoter 25 minutes.",
+    "Ajoute les pois chiches et les raisins secs, 5 minutes.",
+    "Sers avec la semoule."
+   ],
+   "nutrition": {
+    "kcal": 550,
+    "proteines": 19.2,
+    "glucides": 86.5,
+    "lipides": 9.9,
+    "fibres": 17.1,
+    "sucres": 25.9
+   },
+   "cout": 1.82,
+   "allergenes": [
+    "sulfites",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "escalope-dinde-champignons",
+   "titre": "Escalope de dinde aux champignons et riz complet",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "dinde",
+    "rapide"
+   ],
+   "emoji": "🍽️",
+   "photo": {
+    "id": 18265289,
+    "url": "https://images.pexels.com/photos/18265289/pexels-photo-18265289.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/18265289/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Escalope de dinde",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 130,
+     "ciqual": 36304,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Champignons de Paris",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 20056,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Crème légère 15 %",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 30,
+     "ciqual": 19436,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Échalote",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 25,
+     "ciqual": 20097,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Riz complet",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9102,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Haricots verts",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20061,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 0.5,
+     "unit": "c. à soupe",
+     "grams": 5,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Lance la cuisson du riz complet et des haricots verts.",
+    "Fais dorer l'escalope 3 minutes de chaque côté dans l'huile, réserve.",
+    "Fais revenir l'échalote et les champignons émincés 5 minutes.",
+    "Ajoute la crème, remets l'escalope et laisse napper 2 minutes.",
+    "Sers avec le riz et les haricots."
+   ],
+   "nutrition": {
+    "kcal": 532,
+    "proteines": 42.7,
+    "glucides": 56.6,
+    "lipides": 13.1,
+    "fibres": 8.1,
+    "sucres": 9.9
+   },
+   "cout": 3.62,
+   "allergenes": [
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "steak-frites-four",
+   "titre": "Steak de bœuf, frites au four et salade",
+   "minutes": 35,
+   "moment": "midi-soir",
+   "tags": [
+    "boeuf",
+    "four",
+    "plaisir"
+   ],
+   "emoji": "🥩",
+   "photo": {
+    "id": 27643030,
+    "url": "https://images.pexels.com/photos/27643030/pexels-photo-27643030.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/27643030/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Steak de bœuf",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 130,
+     "ciqual": 6201,
+     "rayon": "Boucherie",
+     "placard": false
+    },
+    {
+     "label": "Pommes de terre",
+     "qty": 250,
+     "unit": "g",
+     "grams": 250,
+     "ciqual": 4008,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Paprika",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11049,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Salade verte",
+     "qty": 1,
+     "unit": "poignée",
+     "grams": 50,
+     "ciqual": 25604,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 6,
+     "unit": "pièce",
+     "grams": 90,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 220 °C.",
+    "Coupe les pommes de terre en frites, mélange avec l'huile et le paprika.",
+    "Enfourne 25 à 30 minutes en remuant à mi-cuisson.",
+    "Saisis le steak 2 à 3 minutes de chaque côté.",
+    "Sers avec les frites et la salade."
+   ],
+   "nutrition": {
+    "kcal": 621,
+    "proteines": 32.3,
+    "glucides": 46.5,
+    "lipides": 31.7,
+    "fibres": 6.6,
+    "sucres": 6.8
+   },
+   "cout": 4.77,
+   "allergenes": [],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison",
+    "plaisir"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "saumon-sesame-nouilles",
+   "titre": "Saumon au sésame, nouilles et légumes croquants",
+   "minutes": 25,
+   "moment": "midi-soir",
+   "tags": [
+    "poisson",
+    "rapide"
+   ],
+   "emoji": "🍜",
+   "photo": {
+    "id": 39641630,
+    "url": "https://images.pexels.com/photos/39641630/pexels-photo-39641630.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/39641630/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pavé de saumon",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 120,
+     "ciqual": 26036,
+     "rayon": "Poissonnerie",
+     "placard": false
+    },
+    {
+     "label": "Nouilles de blé",
+     "qty": 60,
+     "unit": "g",
+     "grams": 60,
+     "ciqual": 9863,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Poivron rouge",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 80,
+     "ciqual": 20087,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Carotte",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Sauce soja",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 15,
+     "ciqual": 11104,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Miel",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 7,
+     "ciqual": 31008,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Graines de sésame",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 4,
+     "ciqual": 15010,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Cuis les nouilles selon le paquet.",
+    "Badigeonne le saumon de soja et de miel, parsème de sésame.",
+    "Cuis-le 4 minutes de chaque côté à la poêle.",
+    "Fais sauter le poivron et la carotte en lanières 3 minutes.",
+    "Sers le saumon sur les nouilles et les légumes."
+   ],
+   "nutrition": {
+    "kcal": 578,
+    "proteines": 35,
+    "glucides": 61.7,
+    "lipides": 18.7,
+    "fibres": 8.4,
+    "sucres": 15.9
+   },
+   "cout": 4.13,
+   "allergenes": [
+    "poissons",
+    "gluten",
+    "œufs",
+    "soja",
+    "sésame"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "chou-fleur-roti-pois-chiches",
+   "titre": "Chou-fleur rôti, pois chiches et sauce yaourt",
+   "minutes": 35,
+   "moment": "midi-soir",
+   "tags": [
+    "vegetarien",
+    "four",
+    "leger"
+   ],
+   "emoji": "🥦",
+   "photo": {
+    "id": 29283884,
+    "url": "https://images.pexels.com/photos/29283884/pexels-photo-29283884.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/29283884/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Chou-fleur",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 300,
+     "ciqual": 20016,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Pois chiches en conserve, égouttés",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 20532,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Yaourt grec",
+     "qty": 3,
+     "unit": "c. à soupe",
+     "grams": 60,
+     "ciqual": 19860,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Citron",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 50,
+     "ciqual": 13009,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Curcuma et cumin",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 2,
+     "ciqual": 11089,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Coriandre fraîche",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 3,
+     "ciqual": 11094,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Pain pita",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 7180,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Huile d'olive",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 10,
+     "ciqual": 17270,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 210 °C.",
+    "Mélange le chou-fleur en fleurettes et les pois chiches avec l'huile et les épices.",
+    "Rôtis 25 minutes.",
+    "Mélange le yaourt avec le jus de citron et du sel.",
+    "Sers avec la sauce, la coriandre et la pita."
+   ],
+   "nutrition": {
+    "kcal": 534,
+    "proteines": 18.8,
+    "glucides": 57.3,
+    "lipides": 20.9,
+    "fibres": 14.3,
+    "sucres": 9.8
+   },
+   "cout": 2.31,
+   "allergenes": [
+    "lait",
+    "gluten"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "bol-petit-dej",
+   "titre": "Bol yaourt, flocons d'avoine, fruits et dattes",
+   "minutes": 5,
+   "moment": "matin",
+   "tags": [
+    "vegetarien",
+    "rapide",
+    "sans cuisson"
+   ],
+   "emoji": "🥣",
+   "photo": {
+    "id": 15378364,
+    "url": "https://images.pexels.com/photos/15378364/pexels-photo-15378364.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/15378364/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Yaourt grec",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 19860,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Flocons d'avoine",
+     "qty": 30,
+     "unit": "g",
+     "grams": 30,
+     "ciqual": 9311,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Pomme",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 150,
+     "ciqual": 13039,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Dattes",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 16,
+     "ciqual": 13011,
+     "rayon": "Épicerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Verse le yaourt dans un bol.",
+    "Ajoute les flocons, la pomme coupée et les dattes en morceaux."
+   ],
+   "nutrition": {
+    "kcal": 403,
+    "proteines": 9.5,
+    "glucides": 51.4,
+    "lipides": 16.1,
+    "fibres": 6.3,
+    "sucres": 30.5
+   },
+   "cout": 1.25,
+   "allergenes": [
+    "lait",
+    "gluten"
+   ],
+   "marqueurs": [
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "tartine-avocat-oeuf",
+   "titre": "Tartine avocat et œuf mollet",
+   "minutes": 10,
+   "moment": "matin",
+   "tags": [
+    "vegetarien",
+    "rapide"
+   ],
+   "emoji": "🥑",
+   "photo": {
+    "id": 7936964,
+    "url": "https://images.pexels.com/photos/7936964/pexels-photo-7936964.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/7936964/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pain complet",
+     "qty": 1,
+     "unit": "tranche",
+     "grams": 40,
+     "ciqual": 7110,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Avocat",
+     "qty": 0.5,
+     "unit": "pièce",
+     "grams": 70,
+     "ciqual": 13004,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Œuf",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 55,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Tomates cerises",
+     "qty": 4,
+     "unit": "pièce",
+     "grams": 60,
+     "ciqual": 20172,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Fais griller le pain.",
+    "Cuis l'œuf 6 minutes dans l'eau bouillante.",
+    "Écrase l'avocat sur la tartine, ajoute l'œuf et les tomates."
+   ],
+   "nutrition": {
+    "kcal": 339,
+    "proteines": 12.2,
+    "glucides": 21.8,
+    "lipides": 20.5,
+    "fibres": 6,
+    "sucres": 4.2
+   },
+   "cout": 1.33,
+   "allergenes": [
+    "gluten",
+    "œufs"
+   ],
+   "marqueurs": [
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "porridge-fruits-rouges",
+   "titre": "Porridge crémeux aux fruits rouges",
+   "minutes": 10,
+   "moment": "matin",
+   "tags": [
+    "vegetarien",
+    "rapide",
+    "reconfort"
+   ],
+   "emoji": "🫐",
+   "photo": {
+    "id": 11532336,
+    "url": "https://images.pexels.com/photos/11532336/pexels-photo-11532336.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/11532336/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Flocons d'avoine",
+     "qty": 40,
+     "unit": "g",
+     "grams": 40,
+     "ciqual": 9311,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Lait demi-écrémé",
+     "qty": 200,
+     "unit": "ml",
+     "grams": 200,
+     "ciqual": 19041,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Fruits rouges (frais ou surgelés)",
+     "qty": 80,
+     "unit": "g",
+     "grams": 80,
+     "ciqual": 13997,
+     "rayon": "Surgelés",
+     "placard": false
+    },
+    {
+     "label": "Miel",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 7,
+     "ciqual": 31008,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Amandes",
+     "qty": 5,
+     "unit": "pièce",
+     "grams": 7,
+     "ciqual": 15000,
+     "rayon": "Épicerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Fais chauffer le lait avec les flocons 5 minutes en remuant.",
+    "Verse dans un bol.",
+    "Ajoute les fruits rouges, le miel et les amandes concassées."
+   ],
+   "nutrition": {
+    "kcal": 345,
+    "proteines": 14.4,
+    "glucides": 45.5,
+    "lipides": 9.6,
+    "fibres": 9.2,
+    "sucres": 21.6
+   },
+   "cout": 1.25,
+   "allergenes": [
+    "gluten",
+    "lait",
+    "fruits à coque"
+   ],
+   "marqueurs": [
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "pancakes-avoine-banane",
+   "titre": "Pancakes avoine et banane",
+   "minutes": 15,
+   "moment": "matin",
+   "tags": [
+    "vegetarien",
+    "rapide",
+    "plaisir"
+   ],
+   "emoji": "🥞",
+   "photo": {
+    "id": 14263510,
+    "url": "https://images.pexels.com/photos/14263510/pexels-photo-14263510.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/14263510/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Banane",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 120,
+     "ciqual": 13005,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Œuf",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 55,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Flocons d'avoine",
+     "qty": 40,
+     "unit": "g",
+     "grams": 40,
+     "ciqual": 9311,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Lait demi-écrémé",
+     "qty": 50,
+     "unit": "ml",
+     "grams": 50,
+     "ciqual": 19041,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Myrtilles",
+     "qty": 50,
+     "unit": "g",
+     "grams": 50,
+     "ciqual": 13028,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Huile",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 3,
+     "ciqual": 17130,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Mixe la banane, l'œuf, les flocons et le lait.",
+    "Fais cuire de petites louches de pâte 2 minutes de chaque côté dans une poêle légèrement huilée.",
+    "Sers avec les myrtilles."
+   ],
+   "nutrition": {
+    "kcal": 411,
+    "proteines": 15.8,
+    "glucides": 54.7,
+    "lipides": 11.9,
+    "fibres": 8.5,
+    "sucres": 26.6
+   },
+   "cout": 1.43,
+   "allergenes": [
+    "œufs",
+    "gluten",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "fruit",
+    "fait_maison",
+    "plaisir"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "oeufs-brouilles-toast",
+   "titre": "Œufs brouillés, toast complet et tomates",
+   "minutes": 10,
+   "moment": "matin",
+   "tags": [
+    "vegetarien",
+    "rapide"
+   ],
+   "emoji": "🍳",
+   "photo": {
+    "id": 27221311,
+    "url": "https://images.pexels.com/photos/27221311/pexels-photo-27221311.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/27221311/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Œufs",
+     "qty": 2,
+     "unit": "pièce",
+     "grams": 110,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Pain complet",
+     "qty": 1,
+     "unit": "tranche",
+     "grams": 40,
+     "ciqual": 7110,
+     "rayon": "Boulangerie",
+     "placard": false
+    },
+    {
+     "label": "Tomate",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 100,
+     "ciqual": 20047,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Ciboulette",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 3,
+     "ciqual": 11003,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Beurre",
+     "qty": 1,
+     "unit": "noisette",
+     "grams": 5,
+     "ciqual": 16400,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Bats les œufs avec du sel et du poivre.",
+    "Cuis-les à feu doux avec le beurre en remuant sans cesse, 3 minutes.",
+    "Fais griller le pain.",
+    "Sers avec la tomate en tranches et la ciboulette."
+   ],
+   "nutrition": {
+    "kcal": 309,
+    "proteines": 18.3,
+    "glucides": 20.7,
+    "lipides": 16,
+    "fibres": 4.1,
+    "sucres": 3.8
+   },
+   "cout": 1.22,
+   "allergenes": [
+    "œufs",
+    "gluten",
+    "lait"
+   ],
+   "marqueurs": [
+    "proteines",
+    "legumes",
+    "feculents",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "mousse-chocolat",
+   "titre": "Mousse au chocolat noir",
+   "minutes": 15,
+   "moment": "gouter",
+   "tags": [
+    "dessert",
+    "plaisir",
+    "vegetarien"
+   ],
+   "emoji": "🍫",
+   "photo": {
+    "id": 32172000,
+    "url": "https://images.pexels.com/photos/32172000/pexels-photo-32172000.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/32172000/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Chocolat noir 70 %",
+     "qty": 25,
+     "unit": "g",
+     "grams": 25,
+     "ciqual": 31074,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Œuf",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 55,
+     "ciqual": 22000,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Fleur de sel",
+     "qty": 1,
+     "unit": "pincée",
+     "grams": 0.2,
+     "ciqual": 11082,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    }
+   ],
+   "etapes": [
+    "Fais fondre le chocolat doucement.",
+    "Sépare le blanc du jaune ; mélange le jaune au chocolat tiédi.",
+    "Monte le blanc en neige avec une pincée de sel.",
+    "Incorpore délicatement et verse dans une verrine.",
+    "Laisse prendre 2 heures au frais, puis savoure."
+   ],
+   "nutrition": {
+    "kcal": 225,
+    "proteines": 9.6,
+    "glucides": 6.9,
+    "lipides": 17,
+    "fibres": 3.2,
+    "sucres": 4.6
+   },
+   "cout": 0.65,
+   "allergenes": [
+    "œufs"
+   ],
+   "marqueurs": [
+    "fait_maison",
+    "plaisir"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "pomme-four",
+   "titre": "Pomme au four à la cannelle",
+   "minutes": 25,
+   "moment": "gouter",
+   "tags": [
+    "dessert",
+    "plaisir",
+    "vegetarien"
+   ],
+   "emoji": "🍎",
+   "photo": {
+    "id": 39780581,
+    "url": "https://images.pexels.com/photos/39780581/pexels-photo-39780581.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/39780581/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Pomme",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 180,
+     "ciqual": 13039,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Cannelle",
+     "qty": 0.5,
+     "unit": "c. à café",
+     "grams": 1,
+     "ciqual": 11025,
+     "rayon": "Placard (à vérifier)",
+     "placard": true
+    },
+    {
+     "label": "Miel",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 7,
+     "ciqual": 31008,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Yaourt nature",
+     "qty": 2,
+     "unit": "c. à soupe",
+     "grams": 40,
+     "ciqual": 19593,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Préchauffe le four à 180 °C.",
+    "Évide la pomme, saupoudre de cannelle et ajoute le miel.",
+    "Enfourne 20 minutes.",
+    "Sers tiède avec le yaourt."
+   ],
+   "nutrition": {
+    "kcal": 137,
+    "proteines": 2,
+    "glucides": 27.9,
+    "lipides": 1,
+    "fibres": 3.1,
+    "sucres": 23.4
+   },
+   "cout": 0.66,
+   "allergenes": [
+    "lait"
+   ],
+   "marqueurs": [
+    "fruit",
+    "fait_maison",
+    "plaisir"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "fromage-blanc-fruits",
+   "titre": "Fromage blanc, fruits frais et amandes",
+   "minutes": 5,
+   "moment": "gouter",
+   "tags": [
+    "vegetarien",
+    "rapide",
+    "sans cuisson"
+   ],
+   "emoji": "🍓",
+   "photo": {
+    "id": 29516115,
+    "url": "https://images.pexels.com/photos/29516115/pexels-photo-29516115.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/29516115/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Fromage blanc 3 %",
+     "qty": 150,
+     "unit": "g",
+     "grams": 150,
+     "ciqual": 19646,
+     "rayon": "Crèmerie et œufs",
+     "placard": false
+    },
+    {
+     "label": "Fraises",
+     "qty": 100,
+     "unit": "g",
+     "grams": 100,
+     "ciqual": 13014,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Kiwi",
+     "qty": 1,
+     "unit": "pièce",
+     "grams": 75,
+     "ciqual": 13021,
+     "rayon": "Fruits et légumes",
+     "placard": false
+    },
+    {
+     "label": "Amandes",
+     "qty": 6,
+     "unit": "pièce",
+     "grams": 8,
+     "ciqual": 15000,
+     "rayon": "Épicerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Verse le fromage blanc dans un bol.",
+    "Ajoute les fruits coupés et les amandes concassées."
+   ],
+   "nutrition": {
+    "kcal": 248,
+    "proteines": 14.8,
+    "glucides": 20.3,
+    "lipides": 9.5,
+    "fibres": 6.6,
+    "sucres": 17.9
+   },
+   "cout": 1.69,
+   "allergenes": [
+    "lait",
+    "fruits à coque"
+   ],
+   "marqueurs": [
+    "fruit",
+    "fait_maison"
+   ],
+   "sans_porc": true
+  },
+  {
+   "id": "bouchees-dattes-cacao",
+   "titre": "Bouchées dattes, amandes et cacao",
+   "minutes": 15,
+   "moment": "gouter",
+   "tags": [
+    "vegetarien",
+    "plaisir",
+    "sans cuisson",
+    "batch"
+   ],
+   "emoji": "🌰",
+   "photo": {
+    "id": 27850069,
+    "url": "https://images.pexels.com/photos/27850069/pexels-photo-27850069.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "page": "https://www.pexels.com/photo/27850069/",
+    "credit": "Pexels"
+   },
+   "ingredients": [
+    {
+     "label": "Dattes",
+     "qty": 3,
+     "unit": "pièce",
+     "grams": 24,
+     "ciqual": 13011,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Amandes",
+     "qty": 8,
+     "unit": "pièce",
+     "grams": 10,
+     "ciqual": 15000,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Cacao non sucré",
+     "qty": 1,
+     "unit": "c. à café",
+     "grams": 3,
+     "ciqual": 18100,
+     "rayon": "Épicerie",
+     "placard": false
+    },
+    {
+     "label": "Flocons d'avoine",
+     "qty": 1,
+     "unit": "c. à soupe",
+     "grams": 8,
+     "ciqual": 9311,
+     "rayon": "Épicerie",
+     "placard": false
+    }
+   ],
+   "etapes": [
+    "Mixe les dattes dénoyautées, les amandes, le cacao et les flocons.",
+    "Forme 3 petites boules avec les mains légèrement humides.",
+    "Garde-les au frais jusqu'à 5 jours."
+   ],
+   "nutrition": {
+    "kcal": 169,
+    "proteines": 4,
+    "glucides": 21.5,
+    "lipides": 6.3,
+    "fibres": 4.7,
+    "sucres": 16.1
+   },
+   "cout": 0.43,
+   "allergenes": [
+    "fruits à coque",
+    "gluten"
+   ],
+   "marqueurs": [
+    "fait_maison",
+    "plaisir"
+   ],
+   "sans_porc": true
+  }
+ ]
+}
