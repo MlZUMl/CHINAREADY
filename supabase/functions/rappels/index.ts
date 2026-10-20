@@ -5,7 +5,7 @@
 import postgres from 'npm:postgres@3.4.5'
 import webpush from 'npm:web-push@3.6.7'
 
-const APP_URL = 'https://mlzuml.github.io/CHINAREADY/elan/'
+const APP_URL = 'https://mlzuml.github.io/EMMAMIAM/elan/'
 const sql = postgres(Deno.env.get('SUPABASE_DB_URL')!, { prepare: false, max: 1, idle_timeout: 20 })
 
 const json = (data: unknown, status = 200) =>

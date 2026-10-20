@@ -4,7 +4,7 @@ Application web installable (Android, Chrome) pour construire une routine sport,
 qui tient **même les jours sans motivation** : rendez-vous concrets, version minimale, reprise
 après une pause, et un univers qui grandit avec les habitudes réelles.
 
-- Appli en ligne : https://mlzuml.github.io/CHINAREADY/elan/
+- Appli en ligne : https://mlzuml.github.io/EMMAMIAM/elan/
 - Données : sur le téléphone (IndexedDB) + sauvegarde privée Supabase (projet `elan`, Paris).
 - Rappels : notifications push envoyées par Supabase chaque minute, appli fermée.
 
