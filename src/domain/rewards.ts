@@ -9,8 +9,9 @@ import { dayRitual, sportCommitment } from './ritual'
 import { activeWeeks, reprises, waterReached, entryMl, foodDays, recipeLogs } from './discipline'
 import { LEVEL_ITEMS, MYSTERY_ITEMS, zoneOrder } from './catalog'
 import { missionDef, missionOps } from './missions'
+import { expectedPoints } from './shop'
 
-export interface GrantSpec { id: string; kind: GrantKind; ref: string; xp: number; reason: string }
+export interface GrantSpec { id: string; kind: GrantKind; ref: string; xp: number; points?: number; reason: string }
 
 // ------------------------------------------------------------------ niveaux
 /** XP cumulée nécessaire pour atteindre un niveau : 0, 60, 160, 300, 480, 700… */
@@ -126,7 +127,7 @@ export function expectedGrants(s: Snapshot, today: Day, missions: UserMission[] 
   const g: GrantSpec[] = []
   const xp = (id: string, amount: number, reason: string, ref = id.split(':')[1]) => g.push({ id: 'xp:' + id, kind: 'xp', ref, xp: amount, reason })
   const has = new Set<string>()
-  const add = (kind: Exclude<GrantKind, 'xp'>, ref: string, reason: string, cond: boolean) => {
+  const add = (kind: Exclude<GrantKind, 'xp' | 'points'>, ref: string, reason: string, cond: boolean) => {
     const id = `${kind}:${ref}`
     if (cond && !has.has(id)) { has.add(id); g.push({ id, kind, ref, xp: 0, reason }) }
   }
@@ -239,6 +240,9 @@ export function expectedGrants(s: Snapshot, today: Day, missions: UserMission[] 
   add('badge', 'cent-verres', '25 litres d\'eau', st.totalMl >= 25000)
   const secretBadges = ['retour-gagnant', 'petite-victoire', 'pluie-ou-soleil', 'deuxieme-souffle', 'fidele-vendredi', 'chasseuse-mysteres', 'lever-soleil', 'constance-douce', 'joueuse', 'cent-verres']
   add('accessory', 'cape', 'Un badge secret', secretBadges.some(b => has.has('badge:' + b)))
+
+  // Points de la boutique (voir shop.ts) : une fois par objectif et par jour
+  for (const p of expectedPoints(s, today)) g.push({ id: p.id, kind: 'points', ref: p.ref, xp: 0, points: p.points, reason: p.reason })
 
   return g
 }

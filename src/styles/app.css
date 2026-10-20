@@ -353,4 +353,19 @@ ol.steps li::before { content: counter(s); flex: none; width: 28px; height: 28px
 .scan-box .aim { position: absolute; inset: 30% 12%; border: 3px solid #fff; border-radius: 14px; box-shadow: 0 0 0 999px rgba(0,0,0,.35); }
 .equip-summary { background: var(--surface); border: 1px solid var(--ligne); border-radius: var(--r-s); padding: 10px 12px; font-size: .9rem; }
 .warn { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: var(--r-s); background: #fbf1e8; color: #6b3d12; font-size: .9rem; font-weight: 600; }
+/* Points et boutique */
+.points-pill { border: 1.5px solid var(--ligne); background: #fff; cursor: pointer; min-height: 40px; padding: 6px 12px; font-size: .86rem; white-space: nowrap; }
+.topbar .points-pill { min-height: 36px; }
+.shop-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+.shop-card { position: relative; padding-top: 22px; min-height: 140px; }
+.shop-card .name { font-size: .78rem; line-height: 1.15; }
+.shop-card .price { font-weight: 800; color: var(--vert); display: inline-flex; align-items: center; gap: 3px; }
+.shop-card .price.short { color: var(--texte-doux); }
+.shop-card .price.owned { color: var(--nuit); }
+.tier { position: absolute; top: 6px; left: 6px; font-size: .62rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; padding: 2px 6px; border-radius: 999px; }
+.tier-commun { background: var(--surface); color: var(--texte-doux); }
+.tier-rare { background: #e3eff1; color: var(--nuit); }
+.tier-premium { background: #f6ead2; color: #7a5518; }
+.goal-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--ligne); display: grid; place-items: center; flex: none; color: #fff; }
+.goal-dot.ok { background: var(--vert); border-color: var(--vert); }
 .ok-note { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: var(--r-s); background: var(--mousse-clair); color: var(--vert); font-size: .85rem; font-weight: 700; }

@@ -125,7 +125,7 @@ export function Profile() {
           <button className="btn secondary" onClick={exportData}>Télécharger mes données</button>
           <button className="btn danger" onClick={() => setWipe(true)}>Effacer les données de ce téléphone</button>
         </section>
-        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.1</p>
+        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.2</p>
       </main>
       {goal && <GoalSheet onClose={() => setGoal(false)} />}
       {wipe && <Confirm danger title="Effacer ce téléphone ?" confirmLabel="Tout effacer ici"

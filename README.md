@@ -72,6 +72,27 @@ Le bouton « Voir sur HelloFresh » ouvre une simple recherche sur leur site ; a
 Objectif en litres (2,0 L par défaut), boutons 0,15 / 0,25 / 0,33 / 0,5 L et quantité libre,
 entrées modifiables et supprimables, 5 rappels par jour (9 h 30, 11 h 30, 13 h 30, 15 h 30, 18 h 30).
 
+## Points et boutique
+
+Règles dans `src/domain/shop.ts` (testées), attribuées par le moteur de récompenses existant :
+
+| Objectif du jour (une fois par jour) | Points |
+| --- | --- |
+| Séance du jour (rendez-vous honoré, version minimale comprise) | 300 |
+| Calories notées (au moins 2 repas du journal avec des calories) | 50 |
+| Objectif d'eau atteint | 50 |
+| Bonus de régularité : 3 journées complètes dans la semaine (une fois par semaine) | 200 |
+
+- Clés déterministes (`points:seance:2026-10-20`) : impossible d'obtenir deux fois le même gain, même
+  sur deux téléphones. Les points d'un jour ne sont attribués que ce jour-là ou le lendemain.
+- Rien n'expire, rien ne se perd, pas de série à protéger.
+- Boutique (onglet Univers > Boutique) : 22 objets en 3 rayons (tenues, coiffures, accessoires) et
+  3 raretés — Commun 300–500 pts (1 à 2 jours), Rare 1 200–1 800 pts (≈ 1 semaine), Premium
+  3 500–8 000 pts (2 à 5 semaines). Collection complète ≈ 45 000 pts. Un objet rare ou premium
+  est en sélection à −20 % chaque semaine.
+- Les objets sont des calques vectoriels posés sur le compagnon : sa forme et son visage ne changent pas.
+- Achats : table `shop_purchases` (un objet = une ligne), solde = points gagnés − prix payés.
+
 ## Remplacer les illustrations
 
 Dépose tes images dans `public/art/` puis déclare-les dans `public/config.js` (clé `art`) :

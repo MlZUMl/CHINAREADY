@@ -144,7 +144,8 @@ export function SessionDone({ query }: { query: URLSearchParams }) {
   const t0 = Date.parse(w.created_at)
   const grants = snap.reward_grants.filter(g => Math.abs(Date.parse(g.granted_at) - t0) < 5000)
   const xp = grants.reduce((n, g) => n + g.xp, 0)
-  const notable = grants.filter(g => g.kind !== 'xp')
+  const notable = grants.filter(g => g.kind !== 'xp' && g.kind !== 'points')
+  const points = grants.reduce((n, g) => n + (g.kind === 'points' ? g.points ?? 0 : 0), 0)
   const minutes = w.actual_minutes
   const planned = w.planned_minutes ?? minutes
   const msg = comp ? messageFor(comp.species, { context: 'seance-faite', expression: 'fier', reason: '' }, snap.companion_interactions, today) : null
@@ -163,6 +164,7 @@ export function SessionDone({ query }: { query: URLSearchParams }) {
           <div className="list">
             <div className="list-item"><span className="emoji-bubble">⏱️</span><div className="grow"><div className="title">{minutes} minutes</div><div className="muted small">{w.program ?? 'Séance'} · enregistrée dans ton historique</div></div></div>
             {xp > 0 && <div className="list-item"><span className="emoji-bubble">✨</span><div className="grow"><div className="title">+{xp} points d'expérience</div><div className="muted small">Ton univers grandit</div></div></div>}
+            {points > 0 && <button className="list-item" style={{ border: 0, background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }} onClick={() => navigate('/univers?onglet=boutique')}><span className="emoji-bubble">💎</span><div className="grow"><div className="title">+{points} points pour la boutique</div><div className="muted small">De quoi habiller ton compagnon · voir la boutique</div></div></button>}
             {notable.map(g => {
               const label = g.kind === 'badge' ? badgeDef(g.ref)?.name : g.kind === 'item' ? itemDef(g.ref.split('~')[0])?.name : g.kind === 'zone' ? `Nouvelle zone : ${ZONES.find(z => z.id === g.ref)?.name ?? ''}` : `Accessoire pour ton compagnon : ${ACCESSORIES.find(a => a.id === g.ref)?.name ?? ''}`
               const emoji = g.kind === 'badge' ? badgeDef(g.ref)?.emoji : g.kind === 'item' ? itemDef(g.ref.split('~')[0])?.emoji : '🎁'

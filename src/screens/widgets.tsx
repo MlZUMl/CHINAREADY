@@ -14,6 +14,7 @@ import { navigate } from '../lib/router'
 import { EXTERNAL_ACTIVITIES, EQUIPMENT } from '../domain/exercises'
 import type { Need, WaterLog, Equipment } from '../data/types'
 import { IconDrop, IconSparkle } from '../ui/icons'
+import { PointsPill } from './Shop'
 
 // ------------------------------------------------------------------ compagnon
 export function CompanionCard() {
@@ -45,6 +46,7 @@ export function CompanionCard() {
       <div className="chips" style={{ paddingLeft: 4 }}>
         <button className="chip soft" onClick={() => setExtra(nextActionHint(snap))}>Je fais quoi maintenant ?</button>
         <button className="chip soft" onClick={() => setExtra(memoryOf(snap, today + nudge) ?? 'Nos premiers souvenirs arrivent bientôt : chaque petit pas en crée un.')}>Un souvenir</button>
+        <PointsPill />
       </div>
     </section>
   )

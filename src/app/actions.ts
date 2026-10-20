@@ -16,6 +16,7 @@ import { RECIPES, recipeById } from '../domain/recipes'
 import { multiply } from '../domain/nutrition'
 import { HYDRATION_TIMES } from '../domain/defaults'
 import { porkInText, recipeHasPork } from '../domain/pork'
+import { balance, equipList, ownedItems, priceOf, shopItem } from '../domain/shop'
 import { hash } from '../lib/ids'
 
 const put = (table: Op['table'], row: any): Op => ({ type: 'put', table, row })
@@ -283,6 +284,32 @@ export function createActions(store: DataStore) {
     async updateCompanion(patch: Partial<CompanionProfile>) { return store.commit([put('companion_profiles', { ...s().companion_profiles[0], ...patch })], { derive: false }) },
     async recordInteraction(context: string, messageKey: string, expression: string) {
       return store.commit([put('companion_interactions', { id: uid(), at: nowIso(), context, message_key: messageKey, expression })], { derive: false })
+    },
+
+    // ---------------------------------------------------------------- boutique
+    /**
+     * Achète un objet : vérifie le solde au moment de l'achat, déduit le prix (ligne d'achat
+     * enregistrée et synchronisée), puis l'équipe directement. Erreurs : INCONNU, DEJA, SOLDE.
+     */
+    async buyItem(itemId: string, equip = true) {
+      const item = shopItem(itemId)
+      if (!item) throw new Error('INCONNU')
+      const snap = s()
+      if (ownedItems(snap).has(itemId)) throw new Error('DEJA')
+      const price = priceOf(item, toDay())
+      if (balance(snap) < price) throw new Error('SOLDE')
+      const ops: Op[] = [put('shop_purchases', { id: itemId, item_id: itemId, price, purchased_at: nowIso() })]
+      const comp = snap.companion_profiles[0]
+      if (equip && comp) ops.push(put('companion_profiles', { ...comp, accessories: equipList(comp.accessories.filter(id => id !== itemId), itemId) }))
+      await store.commit(ops, { derive: false })
+      return price
+    },
+
+    /** Met ou retire un objet de la boutique (un seul par emplacement). */
+    async toggleCosmetic(itemId: string) {
+      const comp = s().companion_profiles[0]
+      if (!comp || !ownedItems(s()).has(itemId)) return []
+      return store.commit([put('companion_profiles', { ...comp, accessories: equipList(comp.accessories, itemId) })], { derive: false })
     },
 
     // ---------------------------------------------------------------- missions

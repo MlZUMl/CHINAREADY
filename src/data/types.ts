@@ -273,13 +273,22 @@ export interface CompanionInteraction extends Row {
   expression: string
 }
 
-export type GrantKind = 'xp' | 'badge' | 'item' | 'zone' | 'accessory'
+export type GrantKind = 'xp' | 'badge' | 'item' | 'zone' | 'accessory' | 'points'
 export interface RewardGrant extends Row {
   kind: GrantKind
   ref: string
   xp: number
+  /** points de la boutique (0 pour les autres récompenses ; absent sur les anciennes lignes) */
+  points?: number
   reason: string
   granted_at: string
+}
+
+/** Achat dans la boutique : identifiant = objet (un objet ne s'achète qu'une fois). */
+export interface ShopPurchase extends Row {
+  item_id: string
+  price: number
+  purchased_at: string
 }
 
 export type MissionStatus = 'disponible' | 'active' | 'terminee' | 'expiree' | 'ignoree'
@@ -368,6 +377,7 @@ export interface Tables {
   companion_profiles: CompanionProfile
   companion_interactions: CompanionInteraction
   reward_grants: RewardGrant
+  shop_purchases: ShopPurchase
   user_missions: UserMission
   progress_capsules: ProgressCapsule
   habit_insights: HabitInsight
@@ -382,7 +392,7 @@ export const TABLES: TableName[] = [
   'daily_checkins', 'workouts', 'ritual_events', 'obstacle_reports', 'water_logs', 'meals',
   'food_entries', 'custom_foods', 'user_recipes', 'meal_plans', 'weights', 'cycle_days', 'journal_entries', 'day_presence',
   'weekly_reviews', 'avatar_profiles', 'companion_profiles', 'companion_interactions',
-  'reward_grants', 'user_missions', 'progress_capsules', 'habit_insights', 'scheduled_pushes',
+  'reward_grants', 'shop_purchases', 'user_missions', 'progress_capsules', 'habit_insights', 'scheduled_pushes',
 ]
 
 /** Vue en mémoire de toutes les données : c'est l'unique source de vérité côté écran. */

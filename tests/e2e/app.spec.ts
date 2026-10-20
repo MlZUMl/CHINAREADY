@@ -343,11 +343,54 @@ test('reprise après une pause : rien de perdu, un seul petit pas proposé', asy
   await expect(page.getByTestId('eau-total')).toHaveText('0,25 L sur 2,0 L')
 })
 
+test('points et boutique : 300 points pour la séance, achat, objet porté, solde conservé', async ({ page }) => {
+  await onboard(page)
+  await expect(page.getByTestId('solde-points')).toHaveText('0 pts')
+  // Pas assez de points : l'achat est impossible et l'écart est expliqué
+  await page.getByRole('button', { name: /Mes points : 0/ }).click()
+  await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+  await page.getByRole('tab', { name: 'Coiffures' }).click()
+  await page.getByRole('button', { name: /^Petite frange/ }).click()
+  await expect(page.getByText('Il te manque')).toBeVisible()
+  await expect(page.getByRole('button', { name: /^Acheter/ })).toBeDisabled()
+  await page.getByRole('button', { name: 'Fermer' }).click()
+
+  // Séance réelle de 10 minutes (version minimale) => +300 points, une seule fois
+  await page.goto('./#/seance?min=10&focus=mobilite&version=min&source=rituel')
+  await page.getByRole('button', { name: 'Démarrer' }).click()
+  await page.clock.fastForward(10 * 60_000 + 2_000)
+  await expect(page.getByRole('heading', { name: '10 min pour toi' })).toBeVisible()
+  await expect(page.getByText('+300 points pour la boutique')).toBeVisible()
+  await page.reload()
+  await page.goto('./#/univers?onglet=boutique')
+  await expect(page.getByTestId('solde-boutique')).toHaveText('300 pts')
+  await expect(page.getByTestId('points-seance')).toHaveText('+300')
+  await shot(page, '13-boutique')
+  await noHorizontalScroll(page)
+
+  // Achat d'un objet commun : le prix est déduit et l'objet est porté
+  await page.getByRole('tab', { name: 'Coiffures' }).click()
+  await page.getByRole('button', { name: /^Petite frange/ }).click()
+  await expect(page.getByText('Solde après achat : 0 pts')).toBeVisible()
+  await page.getByRole('button', { name: 'Acheter · 300 pts' }).click()
+  await expect(page.getByRole('status').filter({ hasText: /Petite frange : acheté/ })).toBeVisible()
+  await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+  await expect(page.getByRole('button', { name: /Petite frange, Commun, porté/ })).toBeVisible()
+  // Persistance : rechargement
+  await page.reload()
+  await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+  await page.getByRole('tab', { name: /Ma garde-robe \(1\)/ }).click()
+  await page.getByRole('button', { name: /Petite frange/ }).click()
+  await page.getByRole('button', { name: 'Retirer' }).click()
+  await expect(page.getByRole('button', { name: /Petite frange, Commun, acheté/ })).toBeVisible()
+  await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+})
+
 test('chaque écran principal tient sur un petit écran', async ({ page }) => {
   await onboard(page)
   for (const [path, name] of [['#/', 'accueil'], ['#/activite', 'activite'], ['#/repas', 'journal'], ['#/repas/ajouter?repas=dejeuner', 'ajouter'], ['#/repas?onglet=recettes', 'recettes'], ['#/repas/recette/tajine-poulet', 'recette'],
     ['#/progres', 'calendrier'], ['#/progres?onglet=regularite', 'regularite'], ['#/progres?onglet=badges', 'badges'], ['#/progres/bilan', 'bilan'],
-    ['#/univers?onglet=compagnon', 'compagnon'], ['#/profil', 'profil'], ['#/profil/compte', 'compte'], ['#/profil/engagements', 'engagements'], ['#/reprise', 'reprise']] as const) {
+    ['#/univers?onglet=compagnon', 'compagnon'], ['#/univers?onglet=boutique', 'boutique'], ['#/profil', 'profil'], ['#/profil/compte', 'compte'], ['#/profil/engagements', 'engagements'], ['#/reprise', 'reprise']] as const) {
     await page.goto('./' + path)
     await expect(page.locator('main').first()).toBeVisible()
     await noHorizontalScroll(page)

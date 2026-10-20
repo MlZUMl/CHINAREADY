@@ -12,17 +12,18 @@ import { SPECIES, memoryOf } from '../domain/companion'
 import { missionDef } from '../domain/missions'
 import { IconLock, IconUser } from '../ui/icons'
 import type { Species } from '../data/types'
+import { PointsPill, ShopPanel } from './Shop'
 
 export function Universe({ query }: { query: URLSearchParams }) {
   const { snap } = useApp()
   const avatar = snap.avatar_profiles[0]
-  const tab = (query.get('onglet') as 'univers' | 'compagnon') || 'univers'
+  const tab = (query.get('onglet') as 'univers' | 'compagnon' | 'boutique') || 'univers'
   return (
     <>
-      <TopBar title="Mon univers" right={<button className="icon-btn" aria-label="Profil et réglages" onClick={() => navigate('/profil')}><IconUser /></button>} />
+      <TopBar title="Mon univers" right={<><PointsPill onClick={() => navigate('/univers?onglet=boutique', true)} /><button className="icon-btn" aria-label="Profil et réglages" onClick={() => navigate('/profil')}><IconUser /></button></>} />
       <main className="content">
-        <Segmented label="Sections univers" value={tab} onChange={t => navigate('/univers?onglet=' + t, true)} options={[{ id: 'univers', label: 'Univers' }, { id: 'compagnon', label: 'Compagnon' }]} />
-        {tab === 'compagnon' ? <CompanionPanel /> : avatar ? <World /> : <AvatarCreate />}
+        <Segmented label="Sections univers" value={tab} onChange={t => navigate('/univers?onglet=' + t, true)} options={[{ id: 'univers', label: 'Univers' }, { id: 'compagnon', label: 'Compagnon' }, { id: 'boutique', label: 'Boutique' }]} />
+        {tab === 'boutique' ? <ShopPanel /> : tab === 'compagnon' ? <CompanionPanel /> : avatar ? <World /> : <AvatarCreate />}
       </main>
     </>
   )
@@ -223,6 +224,7 @@ function CompanionPanel() {
             )
           })}
         </div>
+        <button className="btn secondary" onClick={() => navigate('/univers?onglet=boutique', true)}>👕 Tenues et coiffures : la boutique</button>
         <strong>Messages</strong>
         <Chips label="Fréquence des messages" value={comp.frequency} onChange={v => v && actions.updateCompanion({ frequency: v })} options={[{ id: 'normal', label: 'Bavard' }, { id: 'discret', label: 'Discret' }]} />
       </section>
