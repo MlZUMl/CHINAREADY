@@ -25,6 +25,7 @@ export default defineConfig({
         short_name: 'Élan',
         description: 'Des rendez-vous concrets, une version minimale pour les jours difficiles, et un univers qui grandit avec tes habitudes.',
         lang: 'fr',
+        id: './?app=elan-v14',
         start_url: './#/',
         scope: './',
         display: 'standalone',
