@@ -8,7 +8,9 @@ import { automaticity, BUCKET_LABELS, commitmentRate, completionByDuration, best
 import { dayTotals, fmtKcal } from '../domain/nutrition'
 import { analyze, type Insight } from '../domain/analysis'
 import { BADGES } from '../domain/catalog'
-import { cycleInfo, predictedPeriod, SYMPTOMS, trendSummary, weightTrend } from '../domain/body'
+import { SYMPTOMS, trendSummary, weightTrend } from '../domain/body'
+import { forecast } from '../domain/cycle'
+import { CyclePanel } from './Cycle'
 import { capsuleAccess } from '../domain/capsules'
 import { ENERGY_LABELS } from '../domain/recommend'
 import { EXTERNAL_ACTIVITIES, FOCUS_LABELS, type Focus } from '../domain/exercises'
@@ -16,7 +18,7 @@ import { IconBack, IconChevron, IconLock, IconPlus, IconUser } from '../ui/icons
 import type { Obstacle } from '../data/types'
 import { Stepper } from '../ui/components'
 
-type Tab = 'calendrier' | 'regularite' | 'badges' | 'capsules'
+type Tab = 'calendrier' | 'cycle' | 'regularite' | 'badges' | 'capsules'
 
 export function Progress({ query }: { query: URLSearchParams }) {
   const tab = (query.get('onglet') as Tab) || 'calendrier'
@@ -26,9 +28,10 @@ export function Progress({ query }: { query: URLSearchParams }) {
       <TopBar title="Progrès" right={<button className="icon-btn" aria-label="Profil et réglages" onClick={() => navigate('/profil')}><IconUser /></button>} />
       <main className="content">
         <Segmented label="Sections progrès" value={tab} onChange={t => navigate('/progres?onglet=' + t, true)} options={[
-          { id: 'calendrier', label: 'Calendrier' }, { id: 'regularite', label: 'Régularité' }, { id: 'badges', label: 'Badges' }, { id: 'capsules', label: 'Capsules' },
+          { id: 'calendrier', label: 'Calendrier' }, { id: 'cycle', label: 'Cycle' }, { id: 'regularite', label: 'Régularité' }, { id: 'badges', label: 'Badges' }, { id: 'capsules', label: 'Capsules' },
         ]} />
         {tab === 'calendrier' && <Calendar initialDay={day} />}
+        {tab === 'cycle' && <CyclePanel />}
         {tab === 'regularite' && <Regularity />}
         {tab === 'badges' && <Badges />}
         {tab === 'capsules' && <CapsuleList />}
@@ -43,8 +46,7 @@ function Calendar({ initialDay }: { initialDay: string | null }) {
   const [month, setMonth] = useState(() => { const d = parseDay(initialDay ?? today); return { y: d.getFullYear(), m: d.getMonth() } })
   const [open, setOpen] = useState<Day | null>(initialDay)
   const grid = monthGrid(month.y, month.m)
-  const info = cycleInfo(snap.cycle_days)
-  const predicted = new Set(predictedPeriod(info))
+  const predicted = new Set(forecast(snap.cycle_days, today).predictedPeriod)
   const period = new Set(snap.cycle_days.filter(c => c.period).map(c => c.day))
   const move = (k: number) => setMonth(({ y, m }) => { const d = new Date(y, m + k, 1); return { y: d.getFullYear(), m: d.getMonth() } })
   return (
@@ -87,7 +89,7 @@ function BodyCard() {
   const { snap, today, actions, toast } = useApp()
   const trend = weightTrend(snap.weights)
   const summary = trendSummary(trend)
-  const info = cycleInfo(snap.cycle_days)
+  const fc = forecast(snap.cycle_days, today)
   const lastWeight = trend[trend.length - 1]
   const weighDay = snap.profiles[0]?.weigh_day ?? 1
   const thisWeek = snap.weights.find(w => w.day >= weekStart(today) && w.day <= today)
@@ -110,11 +112,12 @@ function BodyCard() {
         )}
         <p className="muted small">Le poids n'est qu'un indicateur parmi d'autres : aucune récompense n'en dépend.</p>
       </section>
-      <section className="card">
+      <button className="card" style={{ textAlign: 'left', cursor: 'pointer' }} onClick={() => navigate('/progres?onglet=cycle', true)}>
         <div className="card-head"><div><div className="kicker">Cycle</div>
-          <h2>{info.nextStart ? `Prochaines règles estimées vers le ${parseDay(info.nextStart).getDate()} ${MONTHS[parseDay(info.nextStart).getMonth()]}` : 'Note tes règles dans le calendrier'}</h2></div></div>
-        <p className="muted small">{info.avgCycle ? `Cycle moyen d'environ ${info.avgCycle} jours sur tes données. C'est une estimation, pas un avis médical.` : 'Touche un jour du calendrier pour indiquer tes règles. Après deux cycles, Élan estime le suivant.'}</p>
-      </section>
+          <h2>{fc.nextStart && !fc.ongoing ? `Prochaines règles estimées vers le ${parseDay(fc.nextStart).getDate()} ${MONTHS[parseDay(fc.nextStart).getMonth()]}` : fc.ongoing ? 'Règles en cours' : 'Commencer le suivi du cycle'}</h2></div>
+          <IconChevron style={{ width: 20 }} /></div>
+        <p className="muted small">Calendrier, statistiques, prévisions et historique dans l'onglet Cycle.</p>
+      </button>
     </>
   )
 }

@@ -93,6 +93,22 @@ Règles dans `src/domain/shop.ts` (testées), attribuées par le moteur de réco
 - Les objets sont des calques vectoriels posés sur le compagnon : sa forme et son visage ne changent pas.
 - Achats : table `shop_purchases` (un objet = une ligne), solde = points gagnés − prix payés.
 
+## Suivi du cycle
+
+Règles dans `src/domain/cycle.ts` (testées), écran `src/screens/Cycle.tsx` (Progrès > Cycle) et carte sur l'accueil.
+
+- Dates réelles = jours notés ; tout le reste est une prévision affichée comme telle, avec son degré de
+  certitude (faible tant qu'il y a moins de deux cycles complets ; fourchette si les cycles varient).
+- Prochaines règles = dernier début + cycle moyen (6 derniers cycles valides ; 28 jours par défaut).
+  Ovulation estimée ≈ 14 jours avant, fenêtre fertile de 7 jours. Une ovulation confirmée (test, suivi
+  médical) est notée à part. Jamais présenté comme une méthode de contraception ; affichage désactivable.
+- Statistiques façon Flo : cycle et règles précédents, variations, régularité (repères FIGO : 24–38 jours,
+  règles ≤ 8 jours, écart ≤ 7 jours), historique prévu / réel, tendance.
+- Retard : message nuancé, aucune conclusion (jamais de grossesse déduite).
+- Rapports : facultatifs, table `intimate_logs` séparée, privée (RLS), visibles uniquement dans le calendrier du cycle.
+- Rappels (désactivables) : règles dans 2 jours, retard de 5 jours, fin des règles à noter — programmés par
+  l'appli dans `scheduled_pushes` et recalés à chaque changement.
+
 ## Remplacer les illustrations
 
 Dépose tes images dans `public/art/` puis déclare-les dans `public/config.js` (clé `art`) :

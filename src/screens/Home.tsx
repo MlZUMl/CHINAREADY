@@ -9,6 +9,7 @@ import { habitState, isHabitDay, resumeState } from '../domain/discipline'
 import { quoteOfDay } from '../domain/quotes'
 import { CheckinCard, CompanionCard, MissionCard, WaterWidget, WeekStrip } from './widgets'
 import { CalorieSummary } from './food-parts'
+import { CycleCard } from './Cycle'
 import { defaultMealSlot } from '../domain/nutrition'
 
 export function Home({ query }: { query?: URLSearchParams }) {
@@ -83,6 +84,8 @@ export function Home({ query }: { query?: URLSearchParams }) {
         <button className="btn secondary" onClick={() => navigate(`/repas/ajouter?repas=${defaultMealSlot()}`)}>Ajouter un aliment</button>
 
         <WaterWidget day={today} compact />
+
+        <CycleCard />
 
         <section className="card" aria-label="Ma semaine">
           <div className="card-head"><div><div className="kicker">Ma semaine</div></div>

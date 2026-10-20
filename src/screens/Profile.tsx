@@ -83,6 +83,7 @@ export function Profile() {
           <div className="divider" />
           <Toggle label="Rappel de mon rendez-vous sportif" hint={sport ? `${sport.days.map(d => WEEKDAYS[d - 1].slice(0, 3)).join(', ')} à ${sport.cue_time}` : undefined} checked={notif.ritual} onChange={v => actions.updateNotifPrefs({ ritual: v })} />
           <Toggle label="Rappels d'eau (5 par jour)" hint={notif.hydration_times.map(t => t.replace(':', ' h ')).join(' · ')} checked={notif.hydration} onChange={v => actions.updateNotifPrefs({ hydration: v, hydration_times: v && notif.hydration_times.length < 5 ? [...HYDRATION_TIMES] : notif.hydration_times })} />
+          <Toggle label="Rappels du cycle" hint="Règles dans 2 jours, retard, penser à noter la fin" checked={notif.cycle !== false} onChange={v => actions.updateNotifPrefs({ cycle: v })} />
           <Toggle label="Ouverture de mes capsules" checked={notif.capsules} onChange={v => actions.updateNotifPrefs({ capsules: v })} />
           <Toggle label="Rappel mensuel de capsule" hint="Le 1er de chaque mois" checked={notif.monthly_capsule} onChange={v => actions.updateNotifPrefs({ monthly_capsule: v })} />
           <Toggle label="Bilan de la semaine" hint="Le dimanche à 18 h" checked={notif.weekly_review} onChange={v => actions.updateNotifPrefs({ weekly_review: v })} />
@@ -98,6 +99,7 @@ export function Profile() {
           <h2>Journée sans énergie</h2>
           <Toggle label="Adapter mes séances à mon énergie" hint="Le check-in du jour ajuste la durée et l'intensité proposées. Il ne touche jamais à l'alimentation." checked={energy.enabled} onChange={v => actions.updateEnergyPrefs({ enabled: v })} />
           <Toggle label="Moins de notifications les jours d'épuisement" checked={energy.quiet_when_low} onChange={v => actions.updateEnergyPrefs({ quiet_when_low: v })} />
+          <Toggle label="Afficher la fertilité estimée" hint="Ovulation et fenêtre fertile dans le suivi du cycle (estimations, pas une contraception)" checked={p.settings.show_fertility !== false} onChange={v => actions.updateProfile({ settings: { ...p.settings, show_fertility: v } })} />
           <Toggle label="Version douce mise en avant pendant mes règles" checked={Boolean(p.settings.gentle_on_period)} onChange={v => actions.updateProfile({ settings: { ...p.settings, gentle_on_period: v } })} />
           {(p.settings.minimum_weekdays?.length ?? 0) > 0 && (
             <div className="row between"><span className="small">Version minimale d'office le {p.settings.minimum_weekdays!.map(d => WEEKDAYS[d - 1]).join(', ')}</span>
@@ -125,7 +127,7 @@ export function Profile() {
           <button className="btn secondary" onClick={exportData}>Télécharger mes données</button>
           <button className="btn danger" onClick={() => setWipe(true)}>Effacer les données de ce téléphone</button>
         </section>
-        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.2</p>
+        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.3</p>
       </main>
       {goal && <GoalSheet onClose={() => setGoal(false)} />}
       {wipe && <Confirm danger title="Effacer ce téléphone ?" confirmLabel="Tout effacer ici"

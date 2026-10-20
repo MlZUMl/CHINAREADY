@@ -27,6 +27,8 @@ export interface Profile extends Row {
     minimum_weekdays?: number[]
     /** mettre la version douce en avant les jours de règles notés */
     gentle_on_period?: boolean
+    /** afficher l'ovulation et la fenêtre fertile estimées (par défaut : oui, sobrement) */
+    show_fertility?: boolean
     equipment?: Equipment[]
     /** réglages du calcul de l'objectif calorique */
     nutrition?: NutritionSettings
@@ -63,6 +65,8 @@ export interface NotificationPreferences extends Row {
   capsules: boolean
   monthly_capsule: boolean
   weekly_review: boolean
+  /** rappels du cycle (règles dans 2 jours, retard, fin des règles à noter) */
+  cycle?: boolean
   tone: 'auto' | 'direct' | 'doux'
   timezone: string
 }
@@ -225,6 +229,16 @@ export interface CycleDay extends Row {
   flow: 'spotting' | 'leger' | 'moyen' | 'abondant' | null
   symptoms: string[]
   note: string | null
+  /** dernier jour des règles indiqué explicitement */
+  period_end?: boolean
+  /** ovulation confirmée par l'utilisatrice (test, suivi médical) — différente d'une estimation */
+  ovulation_confirmed?: boolean
+}
+
+/** Rapport sexuel (facultatif, privé) : un enregistrement par jour, note facultative. */
+export interface IntimateLog extends Row {
+  day: Day
+  note: string | null
 }
 
 export interface JournalEntry extends Row {
@@ -345,7 +359,7 @@ export interface HabitInsight extends Row {
 
 export interface ScheduledPush extends Row {
   send_at: string
-  kind: 'report' | 'test'
+  kind: 'report' | 'test' | 'cycle'
   title: string
   body: string
   url: string
@@ -370,6 +384,7 @@ export interface Tables {
   meal_plans: MealPlan
   weights: Weight
   cycle_days: CycleDay
+  intimate_logs: IntimateLog
   journal_entries: JournalEntry
   day_presence: DayPresence
   weekly_reviews: WeeklyReview
@@ -390,7 +405,7 @@ export type TableName = keyof Tables
 export const TABLES: TableName[] = [
   'profiles', 'energy_preferences', 'notification_preferences', 'commitments', 'habit_checks',
   'daily_checkins', 'workouts', 'ritual_events', 'obstacle_reports', 'water_logs', 'meals',
-  'food_entries', 'custom_foods', 'user_recipes', 'meal_plans', 'weights', 'cycle_days', 'journal_entries', 'day_presence',
+  'food_entries', 'custom_foods', 'user_recipes', 'meal_plans', 'weights', 'cycle_days', 'intimate_logs', 'journal_entries', 'day_presence',
   'weekly_reviews', 'avatar_profiles', 'companion_profiles', 'companion_interactions',
   'reward_grants', 'shop_purchases', 'user_missions', 'progress_capsules', 'habit_insights', 'scheduled_pushes',
 ]

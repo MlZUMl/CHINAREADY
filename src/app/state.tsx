@@ -91,6 +91,10 @@ export function AppProvider({ store, children }: { store: DataStore; children: R
   // Catalogue de recettes : la version en ligne (modifiable sans reconstruire) remplace la copie embarquée.
   useEffect(() => { loadRemoteCatalog().then(changed => { if (changed) force(x => x + 1) }) }, [])
 
+  // Rappels du cycle : recalés au démarrage et chaque jour (une date prévue passée, un retard…).
+  const cycleSig = hasProfileSig(snap)
+  useEffect(() => { if (cycleSig) actions.syncCyclePushes() }, [cycleSig, today, actions])
+
   // Mises à niveau locales (eau en litres, 5 rappels d'eau) — une seule fois par profil.
   const upgraded = snap.profiles[0]?.settings.upgrades?.includes('lot1')
   const hasProfile = Boolean(snap.profiles[0])
@@ -183,6 +187,11 @@ export function AppProvider({ store, children }: { store: DataStore; children: R
   }
 
   return <Ctx.Provider value={{ store, snap, today, actions, cloud, toasts, toast }}>{children}</Ctx.Provider>
+}
+
+function hasProfileSig(s: Snapshot): string | null {
+  if (!s.profiles[0]) return null
+  return `${s.cycle_days.length}:${s.notification_preferences[0]?.cycle !== false}`
 }
 
 function translateAuthError(msg: string): string {

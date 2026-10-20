@@ -6,7 +6,8 @@ import type {
   EnergyPreferences, NotificationPreferences, Workout, RitualAction, RestReason, Obstacle, HabitInsight, Snapshot, UserRecipe, CycleDay,
   FoodEntry, CustomFood, MealSlot, Equipment, NutritionSettings,
 } from '../data/types'
-import { toDay, nowIso, weekStart, addDays, type Day } from '../lib/dates'
+import { toDay, nowIso, weekStart, addDays, daysBetween, type Day } from '../lib/dates'
+import { desiredCyclePushes, forecast, periodRuns } from '../domain/cycle'
 import { uid } from '../lib/ids'
 import { defaultCommitments, defaultEnergyPrefs, defaultNotificationPrefs, defaultProfile, type RitualSetup } from '../domain/defaults'
 import { chooseMission, missionId, isMysteryDay } from '../domain/missions'
@@ -26,6 +27,16 @@ export const UPGRADES = ['lot1']
 export function createActions(store: DataStore) {
   const s = () => store.snapshot()
   const profile = () => s().profiles[0]
+
+  /** Ligne de cycle mise à jour (ou suppression si le jour ne contient plus rien). */
+  const cycleOp = (day: Day, patch: Partial<CycleDay>): Op | null => {
+    const prev = s().cycle_days.find(c => c.day === day)
+    const row = { id: day, day, period: false, flow: null, symptoms: [], note: null, period_end: false, ovulation_confirmed: false, ...prev, ...patch }
+    if (!row.period) { row.period_end = false; row.flow = null }
+    const empty = !row.period && !row.symptoms.length && !row.note && !row.ovulation_confirmed
+    if (empty) return prev ? { type: 'delete', table: 'cycle_days', id: day } : null
+    return put('cycle_days', row)
+  }
 
   const api = {
     // ---------------------------------------------------------------- accueil
@@ -257,11 +268,76 @@ export function createActions(store: DataStore) {
     },
     async deleteWeight(day: Day) { return store.remove('weights', day) },
 
-    async saveCycleDay(day: Day, patch: Partial<Pick<CycleDay, 'period' | 'flow' | 'symptoms' | 'note'>>) {
-      const prev = s().cycle_days.find(c => c.day === day)
-      const row = { id: day, day, period: false, flow: null, symptoms: [], note: null, ...prev, ...patch }
-      if (!row.period && !row.symptoms.length && !row.note && !row.flow) return prev ? store.remove('cycle_days', day) : []
-      return store.commit([put('cycle_days', row)])
+    async saveCycleDay(day: Day, patch: Partial<Pick<CycleDay, 'period' | 'flow' | 'symptoms' | 'note' | 'period_end' | 'ovulation_confirmed'>>) {
+      const op = cycleOp(day, patch)
+      if (!op) return []
+      const res = await store.commit([op])
+      await api.syncCyclePushes()
+      return res
+    },
+
+    /**
+     * Enregistre des règles : du premier jour au dernier (ou jusqu'à aujourd'hui si elles sont en cours).
+     * Les ressentis déjà notés sur ces jours sont conservés.
+     */
+    async logPeriod(start: Day, end: Day | null, flow: CycleDay['flow'] = 'moyen') {
+      const today = toDay()
+      const last = end ?? today
+      if (start > today || last < start || last > today || daysBetween(start, last) > 14) throw new Error('DATES')
+      const ops: Op[] = []
+      for (let d = start; d <= last; d = addDays(d, 1)) {
+        const prev = s().cycle_days.find(c => c.day === d)
+        const op = cycleOp(d, { period: true, flow: prev?.period ? prev.flow ?? flow : flow, period_end: end !== null && d === end })
+        if (op) ops.push(op)
+      }
+      await store.commit(ops)
+      await api.syncCyclePushes()
+    },
+
+    /** Indique le dernier jour des règles en cours (complète les jours non notés jusqu'à cette date). */
+    async endPeriod(day: Day) {
+      const f = forecast(s().cycle_days, toDay())
+      const run = f.ongoing ?? periodRuns(s().cycle_days, toDay()).slice(-1)[0]
+      if (!run || day < run.start) throw new Error('DATES')
+      const ops: Op[] = []
+      for (let d = run.start; d <= day; d = addDays(d, 1)) {
+        const prev = s().cycle_days.find(c => c.day === d)
+        const op = cycleOp(d, { period: true, flow: prev?.flow ?? 'moyen', period_end: d === day })
+        if (op) ops.push(op)
+      }
+      // jours notés après la fin choisie : retirés des règles
+      for (const c of s().cycle_days) if (c.period && c.day > day && c.day <= run.last) { const op = cycleOp(c.day, { period: false, flow: null, period_end: false }); if (op) ops.push(op) }
+      await store.commit(ops)
+      await api.syncCyclePushes()
+    },
+
+    /** Supprime une période de règles enregistrée par erreur (les ressentis restent). */
+    async deletePeriod(start: Day) {
+      const run = periodRuns(s().cycle_days, toDay()).find(r => r.start === start)
+      if (!run) return
+      const ops: Op[] = []
+      for (let d = run.start; d <= run.last; d = addDays(d, 1)) { const op = cycleOp(d, { period: false, flow: null, period_end: false }); if (op) ops.push(op) }
+      await store.commit(ops)
+      await api.syncCyclePushes()
+    },
+
+    /** Rapport sexuel (facultatif, privé). */
+    async setIntimate(day: Day, on: boolean, note: string | null = null) {
+      if (!on) return s().intimate_logs.some(l => l.id === day) ? store.remove('intimate_logs', day) : []
+      return store.commit([put('intimate_logs', { id: day, day, note: note?.trim() ? note.trim().slice(0, 500) : null })], { derive: false })
+    },
+
+    /** Programme / annule les rappels du cycle pour qu'ils correspondent aux données actuelles. */
+    async syncCyclePushes() {
+      const desired = desiredCyclePushes(s(), toDay())
+      const want = new Map(desired.map(p => [p.id, p]))
+      const ops: Op[] = []
+      for (const p of s().scheduled_pushes) if (p.kind === 'cycle' && !p.sent_at && !want.has(p.id)) ops.push({ type: 'delete', table: 'scheduled_pushes', id: p.id })
+      for (const p of desired) {
+        const cur = s().scheduled_pushes.find(x => x.id === p.id)
+        if (!cur || (!cur.sent_at && (cur.send_at !== p.send_at || cur.body !== p.body))) ops.push(put('scheduled_pushes', { ...p, kind: 'cycle', sent_at: cur?.sent_at ?? null }))
+      }
+      if (ops.length) await store.commit(ops, { derive: false })
     },
 
     async saveJournal(day: Day, text: string, mood: string | null) {

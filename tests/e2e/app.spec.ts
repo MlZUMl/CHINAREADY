@@ -8,7 +8,8 @@ const shot = async (page: Page, name: string) => { if (SHOTS) await page.screens
 const TUESDAY_1720 = new Date('2026-10-20T17:20:00+02:00')
 
 async function noHorizontalScroll(page: Page) {
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
+  // largeur réelle de l'écran (visualViewport) : un contenu trop large agrandit la page sur mobile, innerWidth le masquerait
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - (window.visualViewport?.width ?? window.innerWidth))
   expect(overflow, 'aucun défilement horizontal').toBeLessThanOrEqual(0)
 }
 
@@ -386,11 +387,72 @@ test('points et boutique : 300 points pour la séance, achat, objet porté, sold
   await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
 })
 
+test('cycle : règles réelles vs prévues, statistiques, fertilité estimée, rapport privé, retard nuancé', async ({ page }) => {
+  await onboard(page)
+  await expect(page.getByTestId('cycle-sous-titre')).toHaveText('Note le premier jour de tes règles pour commencer le suivi.')
+  await page.goto('./#/progres?onglet=cycle')
+  // Trois règles passées : 27 juil. (4 j), 26 août (5 j), 27 sept. (4 j)
+  for (const [start, end] of [['2026-07-27', '2026-07-30'], ['2026-08-26', '2026-08-30'], ['2026-09-27', '2026-09-30']]) {
+    await page.getByRole('button', { name: /Noter les règles/ }).click()
+    await page.getByLabel('Premier jour des règles').fill(start)
+    await page.getByRole('switch', { name: 'Toujours en cours' }).uncheck()
+    await page.getByLabel('Dernier jour des règles').fill(end)
+    await page.getByRole('button', { name: 'Enregistrer' }).click()
+    await expect(page.getByRole('status').filter({ hasText: 'Règles notées' }).last()).toBeVisible()
+  }
+  // Statistiques calculées sur les données notées
+  await expect(page.getByTestId('stat-cycle')).toHaveText('32 jours')
+  await expect(page.getByTestId('stat-regles')).toHaveText('4 jours')
+  await expect(page.getByTestId('stat-variation')).toHaveText('30-32 jours')
+  await expect(page.getByText('RÉGULIER', { exact: false }).first()).toBeVisible()
+  await expect(page.getByTestId('stat-moyenne')).toHaveText('31 jours')
+  // Prévisions présentées comme telles, avec leur incertitude
+  await expect(page.getByTestId('cycle-jour')).toHaveText('Jour 24')
+  await expect(page.getByTestId('prevision-regles')).toHaveText('entre le 27 octobre et le 29 octobre')
+  await expect(page.getByTestId('prevision-ovulation')).toHaveText('vers le 14 octobre')
+  await expect(page.getByTestId('certitude')).toContainText('Estimation indicative')
+  await expect(page.getByText(/pas une méthode de contraception/)).toBeVisible()
+  // Calendrier : réel ≠ prévu
+  const cal = page.getByLabel('Calendrier du cycle')
+  await expect(cal.getByRole('button', { name: /mercredi 28 octobre, règles prévues \(estimation\)/ })).toHaveAttribute('data-cycle', 'prevu')
+  await expect(cal.getByRole('button', { name: /mercredi 14 octobre, ovulation estimée/ })).toHaveAttribute('data-cycle', 'ovu')
+  await cal.getByRole('button', { name: 'Mois précédent' }).click()
+  await expect(cal.getByRole('button', { name: /dimanche 27 septembre, règles notées/ })).toHaveAttribute('data-cycle', 'reel')
+  await cal.getByRole('button', { name: 'Mois suivant' }).click()
+  await expect(page.getByText('Prévues le 25 septembre, arrivées le 27 septembre (+2 j)')).toBeVisible()
+  await shot(page, '14-cycle')
+  await noHorizontalScroll(page)
+
+  // Rapport : facultatif, privé, visible seulement dans le calendrier du cycle
+  await page.getByRole('button', { name: 'Rapport (privé)' }).click()
+  await expect(page.getByText(/Privé : visible uniquement par toi/)).toBeVisible()
+  await page.getByRole('button', { name: 'Noter un rapport' }).click()
+  await expect(cal.getByRole('button', { name: /mardi 20 octobre.*rapport noté/ })).toBeVisible()
+  await page.goto('./#/progres?onglet=calendrier')
+  expect(await page.locator('main').innerText()).not.toMatch(/rapport/i)
+
+  // Retard : 6 jours après la date estimée, message nuancé, jamais de conclusion
+  await page.clock.setSystemTime(new Date('2026-11-03T10:00:00+01:00'))
+  await page.goto('./#/progres?onglet=cycle')
+  await page.reload()
+  await expect(page.getByLabel('Retard').getByText('Retard estimé de 6 jours')).toBeVisible()
+  expect(await page.locator('main').innerText()).not.toMatch(/enceinte|grossesse/i)
+  await page.getByRole('button', { name: 'Mes règles sont arrivées' }).click()
+  await page.getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByTestId('cycle-jour')).toHaveText('Règles · jour 1')
+  // Persistance et accueil
+  await page.reload()
+  await expect(page.getByTestId('cycle-jour')).toHaveText('Règles · jour 1')
+  await page.goto('./#/')
+  await expect(page.getByTestId('cycle-titre')).toHaveText('Règles · jour 1')
+  await expect(page.getByRole('button', { name: 'Fin des règles' })).toBeVisible()
+})
+
 test('chaque écran principal tient sur un petit écran', async ({ page }) => {
   await onboard(page)
   for (const [path, name] of [['#/', 'accueil'], ['#/activite', 'activite'], ['#/repas', 'journal'], ['#/repas/ajouter?repas=dejeuner', 'ajouter'], ['#/repas?onglet=recettes', 'recettes'], ['#/repas/recette/tajine-poulet', 'recette'],
     ['#/progres', 'calendrier'], ['#/progres?onglet=regularite', 'regularite'], ['#/progres?onglet=badges', 'badges'], ['#/progres/bilan', 'bilan'],
-    ['#/univers?onglet=compagnon', 'compagnon'], ['#/univers?onglet=boutique', 'boutique'], ['#/profil', 'profil'], ['#/profil/compte', 'compte'], ['#/profil/engagements', 'engagements'], ['#/reprise', 'reprise']] as const) {
+    ['#/univers?onglet=compagnon', 'compagnon'], ['#/univers?onglet=boutique', 'boutique'], ['#/progres?onglet=cycle', 'cycle'], ['#/profil', 'profil'], ['#/profil/compte', 'compte'], ['#/profil/engagements', 'engagements'], ['#/reprise', 'reprise']] as const) {
     await page.goto('./' + path)
     await expect(page.locator('main').first()).toBeVisible()
     await noHorizontalScroll(page)

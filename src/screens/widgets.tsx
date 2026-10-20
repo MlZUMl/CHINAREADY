@@ -8,7 +8,7 @@ import { NEED_LABELS } from '../domain/recommend'
 import { addDays, isoWeekday, toDay, weekStart, type Day, parseDay, nowIso } from '../lib/dates'
 import { dayRitual } from '../domain/ritual'
 import { waterMl, waterGoalMl, waterReached, hasFoodOn, entryMl, formatLitres } from '../domain/discipline'
-import { cycleInfo, predictedPeriod } from '../domain/body'
+import { forecast } from '../domain/cycle'
 import { missionDef } from '../domain/missions'
 import { navigate } from '../lib/router'
 import { EXTERNAL_ACTIVITIES, EQUIPMENT } from '../domain/exercises'
@@ -124,8 +124,7 @@ export function MissionCard() {
 export function WeekStrip({ onDay }: { onDay?: (d: Day) => void }) {
   const { snap, today } = useApp()
   const ws = weekStart(today)
-  const info = cycleInfo(snap.cycle_days)
-  const predicted = new Set(predictedPeriod(info))
+  const predicted = new Set(forecast(snap.cycle_days, today).predictedPeriod)
   const period = new Set(snap.cycle_days.filter(c => c.period).map(c => c.day))
   return (
     <div className="week-strip" role="list" aria-label="Ta semaine">
