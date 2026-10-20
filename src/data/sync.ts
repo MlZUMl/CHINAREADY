@@ -21,6 +21,21 @@ export type SyncStatus = 'hors-ligne' | 'pret' | 'en-cours' | 'erreur'
 
 const time = (iso: string | null | undefined) => (iso ? Date.parse(iso) : 0)
 
+/** Colonnes « not null » ajoutées par les migrations 0005 à 0008 : valeur envoyée si l'ancienne ligne ne l'a pas. */
+const NEW_COLUMN_DEFAULTS: Partial<Record<TableName, Record<string, unknown>>> = {
+  reward_grants: { points: 0 },
+  notification_preferences: { cycle: true, meal_reminders: true, lunch_time: '13:30', dinner_time: '20:30' },
+  profiles: { water_goal_ml: 2000 },
+  cycle_days: { period_end: false, ovulation_confirmed: false },
+}
+export function fillDefaults<T extends Row>(table: TableName, row: T): T {
+  const defaults = NEW_COLUMN_DEFAULTS[table]
+  if (!defaults) return row
+  const out = { ...row } as unknown as Record<string, unknown>
+  for (const [k, v] of Object.entries(defaults)) if (out[k] == null) out[k] = v
+  return out as T
+}
+
 export class SyncEngine {
   status: SyncStatus = 'pret'
   lastError: string | null = null
@@ -100,6 +115,8 @@ export class SyncEngine {
       const rows = slot.puts
         .map(id => this.store.get(t, id) as Row | undefined)
         .filter((r): r is Row => Boolean(r))
+        // Anciennes lignes sans les colonnes ajoutées plus tard : le serveur les exige, on met la valeur par défaut.
+        .map(r => fillDefaults(t, r))
         .map(r => ({ ...r, user_id: this.userId }))
       for (let i = 0; i < rows.length; i += 400) await this.remote.upsert(t, rows.slice(i, i + 400))
     }
