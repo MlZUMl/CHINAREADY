@@ -29,6 +29,12 @@ export interface Profile extends Row {
     gentle_on_period?: boolean
     /** afficher l'ovulation et la fenêtre fertile estimées (par défaut : oui, sobrement) */
     show_fertility?: boolean
+    /** allergènes à éviter dans le menu automatique */
+    menu_avoid?: string[]
+    /** programme sportif suivi */
+    program?: { id: string; start: Day } | null
+    /** signal sonore et vibration pendant les séances guidées */
+    session_sound?: boolean
     equipment?: Equipment[]
     /** réglages du calcul de l'objectif calorique */
     nutrition?: NutritionSettings
@@ -67,6 +73,10 @@ export interface NotificationPreferences extends Row {
   weekly_review: boolean
   /** rappels du cycle (règles dans 2 jours, retard, fin des règles à noter) */
   cycle?: boolean
+  /** rappels pour noter le déjeuner et le dîner s'ils ne sont pas encore notés */
+  meal_reminders?: boolean
+  lunch_time?: string
+  dinner_time?: string
   tone: 'auto' | 'direct' | 'doux'
   timezone: string
 }
@@ -100,6 +110,9 @@ export interface DailyCheckin extends Row {
   energy: Energy | null
   minutes: 5 | 10 | 15 | 20 | 30 | 45 | null
   need: Need | null
+  /** sommeil de la nuit précédente (facultatif) */
+  sleep_hours?: number | null
+  sleep_quality?: 1 | 2 | 3 | 4 | 5 | null
 }
 
 export type WorkoutVersion = 'min' | 'usual' | 'plus' | 'libre'
@@ -174,6 +187,24 @@ export interface FoodEntry extends Row {
   at: string
 }
 
+/** Repas favori : un ensemble d'aliments à rajouter en un geste. */
+export interface FavoriteMeal extends Row {
+  name: string
+  meal: MealSlot
+  items: Omit<FoodEntry, 'id' | 'created_at' | 'updated_at' | 'day' | 'meal' | 'at'>[]
+}
+
+/** Mensurations (progrès hors balance) : une ligne par jour de mesure. */
+export interface BodyMeasurement extends Row {
+  day: Day
+  waist_cm: number | null
+  hips_cm: number | null
+  chest_cm: number | null
+  thigh_cm: number | null
+  arm_cm: number | null
+  note: string | null
+}
+
 export interface CustomFood extends Row {
   name: string
   brand: string | null
@@ -210,7 +241,7 @@ export interface UserRecipe extends Row {
   nutrition?: Nutrients | null
 }
 
-export interface PlanSlot { day: Day; moment: 'midi' | 'soir'; recipe_id: string; portions: number }
+export interface PlanSlot { day: Day; moment: 'matin' | 'midi' | 'soir'; recipe_id: string; portions: number }
 export interface MealPlan extends Row {
   week_start: Day
   slots: PlanSlot[]
@@ -380,6 +411,8 @@ export interface Tables {
   meals: Meal
   food_entries: FoodEntry
   custom_foods: CustomFood
+  favorite_meals: FavoriteMeal
+  body_measurements: BodyMeasurement
   user_recipes: UserRecipe
   meal_plans: MealPlan
   weights: Weight
@@ -405,7 +438,7 @@ export type TableName = keyof Tables
 export const TABLES: TableName[] = [
   'profiles', 'energy_preferences', 'notification_preferences', 'commitments', 'habit_checks',
   'daily_checkins', 'workouts', 'ritual_events', 'obstacle_reports', 'water_logs', 'meals',
-  'food_entries', 'custom_foods', 'user_recipes', 'meal_plans', 'weights', 'cycle_days', 'intimate_logs', 'journal_entries', 'day_presence',
+  'food_entries', 'custom_foods', 'favorite_meals', 'user_recipes', 'meal_plans', 'weights', 'body_measurements', 'cycle_days', 'intimate_logs', 'journal_entries', 'day_presence',
   'weekly_reviews', 'avatar_profiles', 'companion_profiles', 'companion_interactions',
   'reward_grants', 'shop_purchases', 'user_missions', 'progress_capsules', 'habit_insights', 'scheduled_pushes',
 ]

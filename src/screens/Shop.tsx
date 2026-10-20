@@ -3,12 +3,13 @@ import { useMemo, useState } from 'react'
 import { useApp } from '../app/state'
 import { Segmented, Sheet } from '../ui/components'
 import { CompanionArt } from '../art/Companion'
+import { AvatarArt } from '../art/Avatar'
 import { IconCheck, IconLock } from '../ui/icons'
 import { navigate } from '../lib/router'
 import { weekStart } from '../lib/dates'
 import {
   DAILY_POINTS, GOAL_HINTS, GOAL_LABELS, SHOP, SLOT_LABELS, TIER_LABELS, WEEKLY_BONUS, WEEKLY_BONUS_DAYS, balance, completeDays, etaText,
-  equipList, featuredItem, goalsDone, ownedItems, pointsGrantId, priceOf, weeklyBonusId, type DailyGoal, type ShopItem, type Slot,
+  equipList, featuredItem, goalsDone, ownedItems, pointsGrantId, priceOf, weeklyBonusId, avatarKey, avatarLook, isWorn, type DailyGoal, type ShopItem, type Slot, type Target,
 } from '../domain/shop'
 
 export const fmtPts = (n: number) => `${n.toLocaleString('fr-FR')} pts`
@@ -23,14 +24,32 @@ export function PointsPill({ onClick }: { onClick?: () => void }) {
   )
 }
 
+/** Aperçu d'un objet porté : sur l'avatar ou sur le compagnon (le reste de la tenue actuelle est conservé). */
+export function ItemPreview({ item, size, worn = false }: { item: ShopItem; size: number; worn?: boolean }) {
+  const { snap } = useApp()
+  const comp = snap.companion_profiles[0]
+  const avatar = snap.avatar_profiles[0]
+  if (item.target === 'avatar') {
+    const a = avatar ?? { character: 'aube', style: 'longs', outfit: 'jogging', equipped: {} as Record<string, string> }
+    const look = avatarLook({ ...a, equipped: worn ? a.equipped : { ...a.equipped, [avatarKey(item)]: item.id } })
+    return <AvatarArt character={a.character} style={look.style} outfit={look.outfit} extras={look.extras} size={size} />
+  }
+  if (!comp) return null
+  const preview = worn ? comp.accessories : equipList(comp.accessories.filter(id => id !== item.id), item.id)
+  return <CompanionArt species={comp.species} expression={size > 100 ? 'fier' : 'content'} color={comp.color} accessories={preview} size={size} />
+}
+
 export function ShopPanel() {
   const { snap, today } = useApp()
   const comp = snap.companion_profiles[0]
+  const avatar = snap.avatar_profiles[0]
+  const [target, setTarget] = useState<Target>('avatar')
   const [slot, setSlot] = useState<Slot | 'garde-robe'>('tenue')
   const [pick, setPick] = useState<ShopItem | null>(null)
   const owned = ownedItems(snap)
   const featured = featuredItem(weekStart(today))
-  const list = useMemo(() => (slot === 'garde-robe' ? SHOP.filter(i => owned.has(i.id)) : SHOP.filter(i => i.slot === slot)), [slot, owned])
+  const list = useMemo(() => SHOP.filter(i => i.target === target && (slot === 'garde-robe' ? owned.has(i.id) : i.slot === slot)), [slot, owned, target])
+  const ownedHere = SHOP.filter(i => i.target === target && owned.has(i.id)).length
   if (!comp) return null
   const solde = balance(snap)
   return (
@@ -38,9 +57,10 @@ export function ShopPanel() {
       <section className="card prune" aria-label="Mes points">
         <div className="row between">
           <div><div className="kicker" style={{ color: '#cfe7e3' }}>Mes points</div><div className="kbd-num" style={{ color: '#fff' }} data-testid="solde-boutique">{fmtPts(solde)}</div></div>
-          <CompanionArt species={comp.species} expression="content" color={comp.color} accessories={comp.accessories} size={84} className="bob" />
+          {avatar ? (() => { const l = avatarLook(avatar); return <AvatarArt character={avatar.character} style={l.style} outfit={l.outfit} extras={l.extras} size={92} /> })()
+            : <CompanionArt species={comp.species} expression="content" color={comp.color} accessories={comp.accessories} size={84} className="bob" />}
         </div>
-        <p className="muted small">Gagnés en prenant soin de toi, jamais perdus. Dépense-les pour habiller {comp.name}.</p>
+        <p className="muted small">Gagnés en prenant soin de toi, jamais perdus. Dépense-les pour habiller ton avatar et {comp.name}.</p>
       </section>
 
       <TodayPoints />
@@ -53,20 +73,21 @@ export function ShopPanel() {
         </div>
       </section>
 
+      <Segmented label="Pour qui ?" value={target} onChange={t => { setTarget(t); setSlot('tenue') }} options={[{ id: 'avatar', label: 'Mon avatar' }, { id: 'compagnon', label: `Mon compagnon` }]} />
+      {target === 'avatar' && !avatar && <div className="warn">Crée d'abord ton personnage dans l'onglet Univers : tu pourras ensuite l'habiller ici. Les aperçus utilisent un personnage par défaut.</div>}
       <Segmented label="Rayons de la boutique" value={slot} onChange={setSlot} options={[
-        { id: 'tenue', label: SLOT_LABELS.tenue }, { id: 'coiffure', label: SLOT_LABELS.coiffure }, { id: 'accessoire', label: SLOT_LABELS.accessoire }, { id: 'garde-robe', label: `Ma garde-robe (${owned.size})` },
+        { id: 'tenue', label: SLOT_LABELS.tenue }, { id: 'coiffure', label: SLOT_LABELS.coiffure }, { id: 'accessoire', label: SLOT_LABELS.accessoire }, { id: 'garde-robe', label: `Ma garde-robe (${ownedHere})` },
       ]} />
       {slot === 'garde-robe' && !list.length && <p className="empty">Ta garde-robe est vide pour l'instant : ta première séance rapporte de quoi offrir un premier objet.</p>}
       <div className="item-grid shop-grid">
         {list.map(item => {
           const has = owned.has(item.id)
-          const on = comp.accessories.includes(item.id)
+          const on = isWorn(item, comp, avatar)
           const price = priceOf(item, today)
-          const preview = equipList(comp.accessories.filter(id => id !== item.id), item.id)
           return (
             <button key={item.id} className={`item-card shop-card ${on ? 'on' : ''}`} onClick={() => setPick(item)} aria-label={`${item.name}, ${TIER_LABELS[item.tier]}, ${has ? (on ? 'porté' : 'acheté') : fmtPts(price)}`}>
               <span className={`tier tier-${item.tier}`}>{TIER_LABELS[item.tier]}</span>
-              <CompanionArt species={comp.species} color={comp.color} accessories={preview} size={64} />
+              <ItemPreview item={item} size={item.target === 'avatar' ? 78 : 64} />
               <span className="name">{item.name}</span>
               {has ? <span className="price owned">{on ? <><IconCheck style={{ width: 14 }} /> Porté</> : 'Acheté'}</span>
                 : <span className={`price ${solde >= price ? '' : 'short'}`}>{solde < price && <IconLock style={{ width: 12 }} />}{fmtPts(price)}</span>}
@@ -113,20 +134,22 @@ function TodayPoints() {
 function ItemSheet({ item, onClose }: { item: ShopItem; onClose: () => void }) {
   const { snap, actions, toast, today } = useApp()
   const comp = snap.companion_profiles[0]
+  const avatar = snap.avatar_profiles[0]
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   if (!comp) return null
+  const forAvatar = item.target === 'avatar'
+  const who = forAvatar ? (avatar?.name ?? 'ton avatar') : comp.name
   const has = ownedItems(snap).has(item.id)
-  const on = comp.accessories.includes(item.id)
+  const on = isWorn(item, comp, avatar)
   const price = priceOf(item, today)
   const solde = balance(snap)
   const missing = price - solde
-  const preview = equipList(comp.accessories.filter(id => id !== item.id), item.id)
   const buy = async () => {
     setBusy(true); setError(null)
     try {
       await actions.buyItem(item.id)
-      toast('🛍️', `${item.name} : acheté et porté par ${comp.name} (−${price} pts)`)
+      toast('🛍️', `${item.name} : acheté${forAvatar && !avatar ? '' : ` et porté par ${who}`} (−${price} pts)`)
       onClose()
     } catch (e) {
       const code = (e as Error).message
@@ -136,7 +159,7 @@ function ItemSheet({ item, onClose }: { item: ShopItem; onClose: () => void }) {
   return (
     <Sheet title={item.name} onClose={onClose}>
       <div className="celebrate">
-        <CompanionArt species={comp.species} expression="fier" color={comp.color} accessories={has && !on ? comp.accessories : preview} size={150} />
+        <ItemPreview item={item} size={150} />
         <div className="chips" style={{ justifyContent: 'center' }}>
           <span className={`pill tier-${item.tier}`}>{TIER_LABELS[item.tier]}</span>
           <span className="pill">{SLOT_LABELS[item.slot].slice(0, -1)}</span>
@@ -144,7 +167,7 @@ function ItemSheet({ item, onClose }: { item: ShopItem; onClose: () => void }) {
         </div>
       </div>
       {has ? (
-        <button className={`btn ${on ? 'ghost' : 'primary'} block`} onClick={async () => { await actions.toggleCosmetic(item.id); toast(on ? '👕' : '✨', on ? 'Retiré' : `${comp.name} porte ${item.name.toLowerCase()}`); onClose() }}>
+        <button className={`btn ${on ? 'ghost' : 'primary'} block`} onClick={async () => { await actions.toggleCosmetic(item.id); toast(on ? '👕' : '✨', on ? 'Retiré' : `${who[0].toUpperCase() + who.slice(1)} porte : ${item.name.toLowerCase()}`); onClose() }}>
           {on ? 'Retirer' : 'Porter'}
         </button>
       ) : missing > 0 ? (

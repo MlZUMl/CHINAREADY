@@ -34,6 +34,8 @@ export async function createDb() {
   await db.exec(readFileSync(join(__dirname, '../../supabase/migrations/0006_points_boutique.sql'), 'utf8'))
   // Suivi du cycle
   await db.exec(readFileSync(join(__dirname, '../../supabase/migrations/0007_cycle.sql'), 'utf8'))
+  // v1.4 : repas favoris, rappels de repas, mensurations, sommeil
+  await db.exec(readFileSync(join(__dirname, '../../supabase/migrations/0008_v14.sql'), 'utf8'))
   // Droits par défaut de Supabase : les rôles API ont les droits de table, c'est la RLS qui filtre.
   await db.exec(`grant select, insert, update, delete on all tables in schema public to anon, authenticated, service_role;`)
   return db

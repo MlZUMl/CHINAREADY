@@ -13,6 +13,7 @@ import { missionDef } from '../domain/missions'
 import { IconLock, IconUser } from '../ui/icons'
 import type { Species } from '../data/types'
 import { PointsPill, ShopPanel } from './Shop'
+import { avatarLook } from '../domain/shop'
 
 export function Universe({ query }: { query: URLSearchParams }) {
   const { snap } = useApp()
@@ -103,7 +104,7 @@ function World() {
       {unlocked ? (
         <div className="scene">
           <SceneArt zone={zone.id} equipped={avatar.equipped} slots={zone.slots} editable={edit} onSlot={s => setSlot(s)}
-            avatar={<g><AvatarArt character={avatar.character} style={avatar.style} outfit={avatar.outfit} size={110} x={150} y={122} /></g>}
+            avatar={<g>{(() => { const l = avatarLook(avatar); return <AvatarArt character={avatar.character} style={l.style} outfit={l.outfit} extras={l.extras} size={110} x={150} y={122} /> })()}</g>}
             companion={comp ? <foreignObject x="210" y="178" width="70" height="70"><CompanionArt species={comp.species} expression="content" color={comp.color} accessories={comp.accessories} size={70} /></foreignObject> : null} />
           <div className="row between" style={{ padding: '10px 14px' }}>
             <span className="small muted">{edit ? 'Touche un emplacement pour y poser un objet.' : `${zone.name} — ${zone.description}`}</span>
@@ -180,12 +181,16 @@ function World() {
 function StyleSheet({ onClose }: { onClose: () => void }) {
   const { snap, actions } = useApp()
   const a = snap.avatar_profiles[0]
+  const look = avatarLook(a)
+  const without = (k: string) => { const e = { ...a.equipped }; delete e[k]; return e }
   return (
     <Sheet title="Mon personnage" onClose={onClose}>
-      <div style={{ display: 'grid', placeItems: 'center' }}><AvatarArt character={a.character} style={a.style} outfit={a.outfit} size={150} /></div>
+      <div style={{ display: 'grid', placeItems: 'center' }}><AvatarArt character={a.character} style={look.style} outfit={look.outfit} extras={look.extras} size={150} /></div>
       <Chips label="Personnage" value={a.character} onChange={v => v && actions.updateAvatar({ character: v })} options={CHARACTERS.map(c => ({ id: c.id, label: c.label }))} />
-      <Chips label="Style" value={a.style} onChange={v => v && actions.updateAvatar({ style: v })} options={STYLES.map(s => ({ id: s.id, label: s.label }))} />
-      <Chips label="Tenue" value={a.outfit} onChange={v => v && actions.updateAvatar({ outfit: v })} options={OUTFITS.map(o => ({ id: o.id, label: o.label }))} />
+      <Chips label="Style" value={a.equipped['perso:coiffure'] ? null : a.style} onChange={v => v && actions.updateAvatar({ style: v, equipped: without('perso:coiffure') })} options={STYLES.map(s => ({ id: s.id, label: s.label }))} />
+      <Chips label="Tenue" value={a.equipped['perso:tenue'] ? null : a.outfit} onChange={v => v && actions.updateAvatar({ outfit: v, equipped: without('perso:tenue') })} options={OUTFITS.map(o => ({ id: o.id, label: o.label }))} />
+      {(a.equipped['perso:coiffure'] || a.equipped['perso:tenue']) && <p className="muted small">Un objet de la boutique est porté : choisir un style ou une tenue de départ le retire (il reste dans ta garde-robe).</p>}
+      <button className="btn secondary" onClick={() => { onClose(); navigate('/univers?onglet=boutique', true) }}>👗 Plus de tenues et de coiffures : la boutique</button>
       <label className="field">Prénom<input className="input" defaultValue={a.name ?? ''} onBlur={e => actions.updateAvatar({ name: e.target.value.trim() || null })} /></label>
     </Sheet>
   )

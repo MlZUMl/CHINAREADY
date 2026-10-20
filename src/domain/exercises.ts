@@ -120,6 +120,8 @@ export interface SessionOptions {
   energy?: number | null
   equipment?: Equipment[]
   seed?: string
+  /** niveau imposé (programme) : 1 doux, 2 modéré, 3 tonique. Une énergie basse le ramène toujours à 1. */
+  level?: 1 | 2 | 3
 }
 
 function rotate<T>(list: T[], seed: string): T[] {
@@ -140,9 +142,10 @@ export function buildSession(opts: SessionOptions): Session {
   const low = energy <= 2
   const high = energy >= 4
   const focus: Focus = low && opts.focus === 'cardio' ? 'mobilite' : opts.focus
-  const maxIntensity = low ? 1 : high ? 3 : 2
-  const work = low ? 30 : high ? 45 : 40
-  const rest = low ? 30 : high ? 15 : 20
+  const level = low ? 1 : (opts.level ?? (high ? 3 : 2))
+  const maxIntensity = level
+  const work = [30, 40, 45][level - 1]
+  const rest = [30, 20, 15][level - 1]
 
   const usable = (e: Exercise) => (!e.equipment || equipment.has(e.equipment)) && e.intensity <= maxIntensity
   const byCat = (cats: Category[]) => EXERCISES.filter(e => cats.includes(e.category) && usable(e))
@@ -186,7 +189,7 @@ export function buildSession(opts: SessionOptions): Session {
   const sum = blocks.reduce((s, b) => s + b.seconds + b.rest, 0)
   if (sum !== total && blocks.length) blocks[blocks.length - 1].seconds += total - sum
 
-  const intensity = low ? 'douce' : high ? 'tonique' : 'moderee'
+  const intensity = level === 1 ? 'douce' : level === 3 ? 'tonique' : 'moderee'
   const title = `${FOCUS_LABELS[focus]} · ${minutes} min`
   return { title, focus, minutes, intensity, blocks, totalSeconds: blocks.reduce((s, b) => s + b.seconds + b.rest, 0) }
 }

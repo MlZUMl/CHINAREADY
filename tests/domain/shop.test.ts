@@ -127,3 +127,44 @@ describe('achats (stockage réel)', () => {
     store.close()
   })
 })
+
+describe('boutique de l\'avatar', () => {
+  it('tenues, coiffures et accessoires pour l\'avatar, mêmes raretés', async () => {
+    const { SHOP, avatarEquip, avatarLook, avatarKey } = await import('../../src/domain/shop')
+    const av = SHOP.filter(i => i.target === 'avatar')
+    expect(av.filter(i => i.slot === 'tenue').length).toBeGreaterThanOrEqual(10)
+    expect(av.filter(i => i.slot === 'coiffure').length).toBeGreaterThanOrEqual(10)
+    expect(av.filter(i => i.slot === 'accessoire').every(i => i.spot)).toBe(true)
+    for (const tier of ['commun', 'rare', 'premium']) expect(av.some(i => i.tier === tier)).toBe(true)
+    // un objet par emplacement ; lunettes et boucles d'oreilles se cumulent ; les choix de départ restent
+    let eq: Record<string, string> = { 'chambre:table': 'lampe-douce' }
+    eq = avatarEquip(eq, 'av-queue')
+    eq = avatarEquip(eq, 'av-tresse')
+    eq = avatarEquip(eq, 'av-lunettes')
+    eq = avatarEquip(eq, 'av-boucles')
+    expect(eq).toEqual({ 'chambre:table': 'lampe-douce', 'perso:coiffure': 'av-tresse', 'perso:yeux': 'av-lunettes', 'perso:oreilles': 'av-boucles' })
+    expect(avatarLook({ style: 'longs', outfit: 'jogging', equipped: eq })).toEqual({ style: 'av-tresse', outfit: 'jogging', extras: ['av-lunettes', 'av-boucles'] })
+    eq = avatarEquip(eq, 'av-tresse') // retirer
+    expect(avatarLook({ style: 'longs', outfit: 'jogging', equipped: eq }).style).toBe('longs')
+    expect(avatarKey(av.find(i => i.id === 'av-couronne')!)).toBe('perso:tete')
+  })
+  it('achat pour l\'avatar : débloqué, porté, compagnon inchangé', async () => {
+    const { DataStore } = await import('../../src/data/store')
+    const store = await DataStore.open('shop-av-' + Math.random())
+    store.setDeriver(snap => deriveOps(snap))
+    const actions = createActions(store)
+    await actions.completeOnboarding({ name: null, ritual: { days: [1, 2, 3, 4, 5, 6, 7], time: '17:15', usualMinutes: 20, minMinutes: 10, place: 'Salon' }, species: 'chat', companionName: 'Mochi', waterMl: 2000, equipment: [] })
+    await actions.createAvatar({ character: 'aube', style: 'longs', outfit: 'jogging', universe: 'cocon', name: 'Lina' })
+    const d = new Date()
+    const day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    await actions.saveWorkout({ day, started_at: d.toISOString(), ended_at: d.toISOString(), kind: 'guidee', activity: 'renfo', program: null, planned_minutes: 20, actual_minutes: 20, version: 'usual', completed: true, source: 'rituel', energy: 3, note: null })
+    const before = store.snapshot().companion_profiles[0].accessories
+    await actions.buyItem('av-queue')
+    const s = store.snapshot()
+    expect(s.avatar_profiles[0].equipped['perso:coiffure']).toBe('av-queue')
+    expect(s.companion_profiles[0].accessories).toEqual(before)
+    await actions.toggleCosmetic('av-queue')
+    expect(store.snapshot().avatar_profiles[0].equipped['perso:coiffure']).toBeUndefined()
+    store.close()
+  })
+})

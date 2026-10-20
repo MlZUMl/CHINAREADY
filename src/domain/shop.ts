@@ -16,7 +16,8 @@
 //   Commun   300 – 500   : 1 à 2 jours (la première séance suffit pour le premier objet)
 //   Rare     1 200 – 1 800 : environ 1 semaine régulière
 //   Premium  3 500 – 8 000 : 2 à 5 semaines — des objectifs à moyen terme
-//   Collection complète ≈ 45 000 points : 5 à 7 mois de régularité, ~4 mois au maximum.
+//   Compagnon (22 objets) ≈ 47 000 pts ; avatar (28 objets) ≈ 51 500 pts. Personne n'a besoin de tout :
+//   un objet commun par jour réussi, un rare par semaine, un premium par mois de régularité.
 // Chaque semaine, un objet rare ou premium est en « sélection » à −20 % pour varier la vitrine.
 import type { Snapshot } from '../data/types'
 import { addDays, weekStart, type Day } from '../lib/dates'
@@ -104,37 +105,71 @@ export function pointsToday(s: Snapshot, day: Day): number {
 // ------------------------------------------------------------------ catalogue
 export type Slot = 'tenue' | 'coiffure' | 'accessoire'
 export type Tier = 'commun' | 'rare' | 'premium'
-export interface ShopItem { id: string; name: string; slot: Slot; tier: Tier; price: number }
+export type Target = 'compagnon' | 'avatar'
+/** Emplacement d'un accessoire de l'avatar (un objet par emplacement : on peut porter lunettes ET boucles d'oreilles). */
+export type AvatarSpot = 'yeux' | 'oreilles' | 'tete' | 'cou' | 'main'
+export interface ShopItem { id: string; name: string; slot: Slot; tier: Tier; price: number; target: Target; spot?: AvatarSpot }
 
 export const SLOT_LABELS: Record<Slot, string> = { tenue: 'Tenues', coiffure: 'Coiffures', accessoire: 'Accessoires' }
 export const TIER_LABELS: Record<Tier, string> = { commun: 'Commun', rare: 'Rare', premium: 'Premium' }
 
 export const SHOP: ShopItem[] = [
   // Tenues
-  { id: 't-shirt-sport', name: 'T-shirt de sport', slot: 'tenue', tier: 'commun', price: 300 },
-  { id: 'debardeur', name: 'Débardeur rayé', slot: 'tenue', tier: 'commun', price: 400 },
-  { id: 'sweat', name: 'Sweat à capuche', slot: 'tenue', tier: 'commun', price: 500 },
-  { id: 'mariniere', name: 'Marinière', slot: 'tenue', tier: 'rare', price: 1200 },
-  { id: 'salopette', name: 'Salopette', slot: 'tenue', tier: 'rare', price: 1500 },
-  { id: 'kimono', name: 'Kimono fleuri', slot: 'tenue', tier: 'rare', price: 1800 },
-  { id: 'robe-soiree', name: 'Robe de soirée', slot: 'tenue', tier: 'premium', price: 3500 },
-  { id: 'tenue-etoilee', name: 'Tenue étoilée', slot: 'tenue', tier: 'premium', price: 6000 },
+  { id: 't-shirt-sport', name: 'T-shirt de sport', slot: 'tenue', tier: 'commun', price: 300, target: 'compagnon' },
+  { id: 'debardeur', name: 'Débardeur rayé', slot: 'tenue', tier: 'commun', price: 400, target: 'compagnon' },
+  { id: 'sweat', name: 'Sweat à capuche', slot: 'tenue', tier: 'commun', price: 500, target: 'compagnon' },
+  { id: 'mariniere', name: 'Marinière', slot: 'tenue', tier: 'rare', price: 1200, target: 'compagnon' },
+  { id: 'salopette', name: 'Salopette', slot: 'tenue', tier: 'rare', price: 1500, target: 'compagnon' },
+  { id: 'kimono', name: 'Kimono fleuri', slot: 'tenue', tier: 'rare', price: 1800, target: 'compagnon' },
+  { id: 'robe-soiree', name: 'Robe de soirée', slot: 'tenue', tier: 'premium', price: 3500, target: 'compagnon' },
+  { id: 'tenue-etoilee', name: 'Tenue étoilée', slot: 'tenue', tier: 'premium', price: 6000, target: 'compagnon' },
   // Coiffures
-  { id: 'frange', name: 'Petite frange', slot: 'coiffure', tier: 'commun', price: 300 },
-  { id: 'meche', name: 'Mèche rebelle', slot: 'coiffure', tier: 'commun', price: 400 },
-  { id: 'couettes', name: 'Couettes', slot: 'coiffure', tier: 'commun', price: 500 },
-  { id: 'chignon', name: 'Chignon', slot: 'coiffure', tier: 'rare', price: 1200 },
-  { id: 'boucles', name: 'Boucles', slot: 'coiffure', tier: 'rare', price: 1500 },
-  { id: 'tresse', name: 'Longue tresse', slot: 'coiffure', tier: 'rare', price: 1800 },
-  { id: 'carre', name: 'Carré lisse', slot: 'coiffure', tier: 'premium', price: 3500 },
-  { id: 'meches-arc-en-ciel', name: 'Mèches arc-en-ciel', slot: 'coiffure', tier: 'premium', price: 6000 },
+  { id: 'frange', name: 'Petite frange', slot: 'coiffure', tier: 'commun', price: 300, target: 'compagnon' },
+  { id: 'meche', name: 'Mèche rebelle', slot: 'coiffure', tier: 'commun', price: 400, target: 'compagnon' },
+  { id: 'couettes', name: 'Couettes', slot: 'coiffure', tier: 'commun', price: 500, target: 'compagnon' },
+  { id: 'chignon', name: 'Chignon', slot: 'coiffure', tier: 'rare', price: 1200, target: 'compagnon' },
+  { id: 'boucles', name: 'Boucles', slot: 'coiffure', tier: 'rare', price: 1500, target: 'compagnon' },
+  { id: 'tresse', name: 'Longue tresse', slot: 'coiffure', tier: 'rare', price: 1800, target: 'compagnon' },
+  { id: 'carre', name: 'Carré lisse', slot: 'coiffure', tier: 'premium', price: 3500, target: 'compagnon' },
+  { id: 'meches-arc-en-ciel', name: 'Mèches arc-en-ciel', slot: 'coiffure', tier: 'premium', price: 6000, target: 'compagnon' },
   // Accessoires
-  { id: 'bandeau', name: 'Bandeau de sport', slot: 'accessoire', tier: 'commun', price: 350 },
-  { id: 'noeud-papillon', name: 'Nœud papillon', slot: 'accessoire', tier: 'commun', price: 450 },
-  { id: 'casquette', name: 'Casquette', slot: 'accessoire', tier: 'rare', price: 1300 },
-  { id: 'casque-audio', name: 'Casque audio', slot: 'accessoire', tier: 'rare', price: 1600 },
-  { id: 'ailes', name: 'Petites ailes', slot: 'accessoire', tier: 'premium', price: 5000 },
-  { id: 'halo', name: 'Halo d\'étoiles', slot: 'accessoire', tier: 'premium', price: 8000 },
+  { id: 'bandeau', name: 'Bandeau de sport', slot: 'accessoire', tier: 'commun', price: 350, target: 'compagnon' },
+  { id: 'noeud-papillon', name: 'Nœud papillon', slot: 'accessoire', tier: 'commun', price: 450, target: 'compagnon' },
+  { id: 'casquette', name: 'Casquette', slot: 'accessoire', tier: 'rare', price: 1300, target: 'compagnon' },
+  { id: 'casque-audio', name: 'Casque audio', slot: 'accessoire', tier: 'rare', price: 1600, target: 'compagnon' },
+  { id: 'ailes', name: 'Petites ailes', slot: 'accessoire', tier: 'premium', price: 5000, target: 'compagnon' },
+  { id: 'halo', name: 'Halo d\'étoiles', slot: 'accessoire', tier: 'premium', price: 8000, target: 'compagnon' },
+  // ---------------- Avatar : tenues
+  { id: 'av-tshirt', name: 'T-shirt blanc', slot: 'tenue', tier: 'commun', price: 300, target: 'avatar' },
+  { id: 'av-sport', name: 'Tenue de sport', slot: 'tenue', tier: 'commun', price: 400, target: 'avatar' },
+  { id: 'av-pull-raye', name: 'Pull rayé', slot: 'tenue', tier: 'commun', price: 450, target: 'avatar' },
+  { id: 'av-chemise-jean', name: 'Chemise en jean', slot: 'tenue', tier: 'commun', price: 500, target: 'avatar' },
+  { id: 'av-yoga', name: 'Tenue de yoga', slot: 'tenue', tier: 'rare', price: 1200, target: 'avatar' },
+  { id: 'av-robe-ete', name: 'Robe d\'été fleurie', slot: 'tenue', tier: 'rare', price: 1400, target: 'avatar' },
+  { id: 'av-doudoune', name: 'Doudoune', slot: 'tenue', tier: 'rare', price: 1500, target: 'avatar' },
+  { id: 'av-kimono', name: 'Kimono', slot: 'tenue', tier: 'rare', price: 1600, target: 'avatar' },
+  { id: 'av-abaya', name: 'Abaya élégante', slot: 'tenue', tier: 'rare', price: 1800, target: 'avatar' },
+  { id: 'av-robe-doree', name: 'Robe de soirée dorée', slot: 'tenue', tier: 'premium', price: 3500, target: 'avatar' },
+  { id: 'av-sport-premium', name: 'Ensemble sport premium', slot: 'tenue', tier: 'premium', price: 4000, target: 'avatar' },
+  { id: 'av-manteau-etoile', name: 'Manteau étoilé', slot: 'tenue', tier: 'premium', price: 6000, target: 'avatar' },
+  // ---------------- Avatar : coiffures
+  { id: 'av-queue', name: 'Queue de cheval', slot: 'coiffure', tier: 'commun', price: 300, target: 'avatar' },
+  { id: 'av-tresse', name: 'Tresse', slot: 'coiffure', tier: 'commun', price: 400, target: 'avatar' },
+  { id: 'av-frange', name: 'Frange droite', slot: 'coiffure', tier: 'commun', price: 500, target: 'avatar' },
+  { id: 'av-afro', name: 'Afro', slot: 'coiffure', tier: 'rare', price: 1200, target: 'avatar' },
+  { id: 'av-carre-plongeant', name: 'Carré plongeant', slot: 'coiffure', tier: 'rare', price: 1400, target: 'avatar' },
+  { id: 'av-couettes', name: 'Couettes', slot: 'coiffure', tier: 'rare', price: 1500, target: 'avatar' },
+  { id: 'av-ondules', name: 'Longs ondulés', slot: 'coiffure', tier: 'rare', price: 1800, target: 'avatar' },
+  { id: 'av-chignon-fleuri', name: 'Chignon fleuri', slot: 'coiffure', tier: 'premium', price: 3500, target: 'avatar' },
+  { id: 'av-turban', name: 'Turban élégant', slot: 'coiffure', tier: 'premium', price: 4000, target: 'avatar' },
+  { id: 'av-meches-roses', name: 'Mèches roses', slot: 'coiffure', tier: 'premium', price: 5000, target: 'avatar' },
+  // ---------------- Avatar : accessoires
+  { id: 'av-lunettes', name: 'Lunettes rondes', slot: 'accessoire', tier: 'commun', price: 350, target: 'avatar', spot: 'yeux' },
+  { id: 'av-boucles', name: 'Boucles d\'oreilles', slot: 'accessoire', tier: 'commun', price: 400, target: 'avatar', spot: 'oreilles' },
+  { id: 'av-foulard', name: 'Foulard', slot: 'accessoire', tier: 'rare', price: 1200, target: 'avatar', spot: 'cou' },
+  { id: 'av-casque', name: 'Casque audio', slot: 'accessoire', tier: 'rare', price: 1300, target: 'avatar', spot: 'tete' },
+  { id: 'av-sac', name: 'Sac de sport', slot: 'accessoire', tier: 'rare', price: 1500, target: 'avatar', spot: 'main' },
+  { id: 'av-couronne', name: 'Couronne de fleurs', slot: 'accessoire', tier: 'premium', price: 4500, target: 'avatar', spot: 'tete' },
 ]
 
 export const shopItem = (id: string) => SHOP.find(i => i.id === id)
@@ -153,11 +188,37 @@ export function priceOf(item: ShopItem, today: Day): number {
 
 export const ownedItems = (s: Snapshot) => new Set(s.shop_purchases.map(p => p.item_id))
 
+// ------------------------------------------------------------------ avatar : objets portés
+/** Clé de l'objet porté dans avatar_profiles.equipped (espace « perso: », distinct des emplacements du décor). */
+export function avatarKey(item: ShopItem): string {
+  return item.slot === 'accessoire' ? `perso:${item.spot ?? 'tete'}` : `perso:${item.slot}`
+}
+
+/** Ce que porte l'avatar : objet de la boutique s'il y en a un, sinon les choix de départ (gratuits). */
+export function avatarLook(a: { style: string; outfit: string; equipped: Record<string, string> }) {
+  const extras = Object.entries(a.equipped).filter(([k]) => k.startsWith('perso:') && k !== 'perso:tenue' && k !== 'perso:coiffure').map(([, v]) => v)
+  return { style: a.equipped['perso:coiffure'] ?? a.style, outfit: a.equipped['perso:tenue'] ?? a.outfit, extras }
+}
+
+/** Met / retire un objet de la boutique sur l'avatar. */
+export function avatarEquip(equipped: Record<string, string>, itemId: string): Record<string, string> {
+  const it = shopItem(itemId)
+  if (!it || it.target !== 'avatar') return equipped
+  const key = avatarKey(it)
+  const next = { ...equipped }
+  if (next[key] === itemId) delete next[key]
+  else next[key] = itemId
+  return next
+}
+
+export const isWorn = (item: ShopItem, comp: { accessories: string[] } | undefined, avatar: { equipped: Record<string, string> } | undefined) =>
+  item.target === 'avatar' ? avatar?.equipped[avatarKey(item)] === item.id : Boolean(comp?.accessories.includes(item.id))
+
 /** Équipe un objet : un seul objet par emplacement ; les accessoires gagnés (nœud, chapeau…) restent. */
 export function equipList(current: string[], itemId: string): string[] {
   const it = shopItem(itemId)
   if (!it) return current
-  const kept = current.filter(id => shopItem(id)?.slot !== it.slot)
+  const kept = current.filter(id => { const o = shopItem(id); return !o || o.target !== 'compagnon' || o.slot !== it.slot })
   return current.includes(itemId) ? current.filter(id => id !== itemId) : [...kept, itemId]
 }
 

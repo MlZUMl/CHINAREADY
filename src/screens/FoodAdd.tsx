@@ -7,6 +7,7 @@ import { IconChevron, IconPlus, IconSearch } from '../ui/icons'
 import type { CustomFood, FoodEntry, MealSlot } from '../data/types'
 import { customToItem, loadCiqual, searchFoods, searchOff, type FoodItem } from '../domain/foods'
 import { allRecipes } from '../domain/recipes'
+import { favoriteKcal, favoritesFor } from '../domain/journal'
 import { defaultMealSlot, MEALS, mealLabel } from '../domain/nutrition'
 import { toDay, type Day } from '../lib/dates'
 import { BarcodeScanner, CustomFoodSheet, entryToItem, lookupBarcode, MealChips, QuantitySheet, QuickAddForm, RecipeLogSheet, Thumb, smallPhoto } from './food-parts'
@@ -28,7 +29,7 @@ export function FoodAdd({ query }: { query: URLSearchParams }) {
           { id: 'chercher', label: 'Rechercher' }, { id: 'scanner', label: 'Scanner' }, { id: 'mes', label: 'Mes aliments' },
           { id: 'recettes', label: 'Recettes' }, { id: 'rapide', label: 'Rapide' },
         ]} />
-        {tab === 'chercher' && <SearchTab onPick={item => setPick({ item })} />}
+        {tab === 'chercher' && <SearchTab day={day} meal={meal} onPick={item => setPick({ item })} />}
         {tab === 'scanner' && <ScanTab onPick={item => setPick({ item })} />}
         {tab === 'mes' && <MineTab onPick={item => setPick({ item })} />}
         {tab === 'recettes' && <RecipesTab day={day} meal={meal} />}
@@ -40,8 +41,9 @@ export function FoodAdd({ query }: { query: URLSearchParams }) {
 }
 
 // ------------------------------------------------------------------ recherche
-function SearchTab({ onPick }: { onPick: (item: FoodItem) => void }) {
-  const { snap } = useApp()
+function SearchTab({ day, meal, onPick }: { day: Day; meal: MealSlot; onPick: (item: FoodItem) => void }) {
+  const { snap, actions, toast } = useApp()
+  const favs = favoritesFor(snap, meal)
   const [q, setQ] = useState('')
   const [ciqual, setCiqual] = useState<FoodItem[] | null>(null)
   const [loadError, setLoadError] = useState(false)
@@ -100,6 +102,20 @@ function SearchTab({ onPick }: { onPick: (item: FoodItem) => void }) {
           onChange={e => { setQ(e.target.value); setOff(null); setOffState('idle') }} aria-label="Rechercher un aliment" enterKeyHint="search" />
       </div>
       {loadError && <div className="warn">La table des aliments n'a pas pu être chargée. Vérifie ta connexion puis réessaie.</div>}
+      {q.trim().length < 2 && favs.length > 0 && (
+        <section className="card" aria-label="Mes repas favoris">
+          <div className="kicker-nuit">Mes repas favoris · en un geste</div>
+          <div className="list">{favs.slice(0, 6).map(f => (
+            <button key={f.id} className="entry" onClick={async () => {
+              try { const n = await actions.logFavorite(f.id, day, meal); toast('⭐', n > 1 ? `${n} aliments ajoutés` : 'Ajouté'); history.back() }
+              catch { toast('⛔', 'Contient du porc : impossible de l\'ajouter.') }
+            }}>
+              <span className="grow"><span className="name">{f.name}</span><span className="muted small">{f.items.map(i => i.name.split(',')[0]).join(', ')}</span></span>
+              <span className="kcal">{Math.round(favoriteKcal(f))} kcal</span>
+            </button>
+          ))}</div>
+        </section>
+      )}
       {q.trim().length < 2 ? (
         recents.length === 0 ? <p className="muted small">Tape au moins deux lettres : les aliments courants (table Ciqual) s'affichent tout de suite, et tu peux aussi chercher parmi les marques ou scanner un code-barres.</p> : (
           <section className="card">

@@ -21,6 +21,7 @@ export function defaultNotificationPrefs(timezone: string): NotificationPreferen
   return {
     id: 'notif', enabled: false, ritual: true, hydration: true, hydration_times: [...HYDRATION_TIMES],
     capsules: true, monthly_capsule: false, weekly_review: true, tone: 'auto', timezone, created_at: T0, updated_at: T0,
+    cycle: true, meal_reminders: true, lunch_time: '13:30', dinner_time: '20:30',
   }
 }
 

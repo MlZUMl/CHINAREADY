@@ -6,6 +6,7 @@ import { FOCUS_LABELS, EXTERNAL_ACTIVITIES, type Focus } from '../domain/exercis
 import { sportCommitment, rendezvousStats } from '../domain/ritual'
 import { addDays, formatDayLong, WEEKDAYS } from '../lib/dates'
 import { ExternalActivitySheet } from './widgets'
+import { ProgramCard } from './Programs'
 import { IconPlay, IconTrash, IconUser } from '../ui/icons'
 import type { Workout } from '../data/types'
 
@@ -35,6 +36,8 @@ export function Activity() {
               <button className="btn ghost sm" onClick={() => navigate('/profil/engagements')}>Modifier</button></div>
           </section>
         )}
+
+        <ProgramCard />
 
         <section className="card">
           <h2>Lancer une séance guidée</h2>

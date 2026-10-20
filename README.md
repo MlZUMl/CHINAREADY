@@ -30,7 +30,7 @@ npm run ciqual       # régénère la table des aliments depuis scripts/data/ciq
 | `src/art` | Illustrations vectorielles (remplaçables, voir ci-dessous) |
 | `public/data` | `ciqual.json` (aliments) et `recettes.json` (catalogue) — lus à l'exécution |
 | `scripts` | Conversion Ciqual, source et construction du catalogue de recettes |
-| `supabase/migrations` | Schéma, RLS, stockage des photos, règles des rappels, tâche planifiée, journal alimentaire (0005) |
+| `supabase/migrations` | Schéma, RLS, stockage des photos, règles des rappels, tâche planifiée, journal alimentaire (0005), points (0006), cycle (0007), v1.4 : favoris, rappels de repas, mensurations, sommeil (0008) |
 | `supabase/functions/rappels` | Envoi des notifications push |
 | `tests` | Tests unitaires, base de données, navigateur |
 
@@ -43,6 +43,27 @@ npm run ciqual       # régénère la table des aliments depuis scripts/data/ciq
 - Sources : table **Ciqual 2020** (embarquée), **Open Food Facts** (recherche de marques sur demande,
   code-barres), aliments personnels, recettes, ajout rapide. Quantités en g, ml ou portions.
 - Les valeurs sont figées au moment de l'ajout : aucune double comptabilité, l'historique ne bouge pas.
+- Profil nutrition (année de naissance, taille, poids, activité, rythme) proposé dès l'accueil (étape facultative) :
+  l'objectif est prêt dans le journal et le poids saisi devient la première pesée.
+
+### Journal plus rapide (v1.4)
+
+- **Comme hier** : un repas vide propose en un geste le même repas du dernier jour noté (7 jours).
+  « Favori · reprendre » permet aussi de recopier ce repas depuis n'importe quel jour des deux dernières semaines.
+- **Repas favoris** (table `favorite_meals`) : enregistrer un repas noté, puis le rajouter en un geste depuis le
+  journal ou l'écran « Ajouter » (ligne « Mes repas favoris »). Le contrôle sans porc s'applique aussi.
+- Les lignes recopiées gardent leurs valeurs ; une recette garde son identifiant stable (pas de doublon).
+- **Rappels de repas** (Profil > Rappels, désactivables) : à l'heure choisie (13 h 30 et 20 h 30 par défaut),
+  seulement si le déjeuner ou le dîner n'est pas encore noté ce jour-là.
+
+### Menu de la semaine adapté à l'objectif (v1.4)
+
+`src/domain/menu.ts` : petit-déjeuner, déjeuner et dîner pour 7 jours, choisis parmi les recettes (sans porc)
+pour approcher l'objectif calorique en gardant ~10 % pour une collation libre. Le dîner compense ce qui est déjà
+prévu dans la journée ; variété (pas deux fois le même plat le même jour, peu de répétitions) ; allergènes à éviter ;
+recettes déjà choisies conservées ; bouton ↻ « autre idée » par créneau. Aucun hasard : même objectif, même menu.
+La liste de courses se remplit automatiquement (portions à cuisiner comprises). Limite connue : au-delà d'environ
+1 900 kcal, les plats du catalogue plafonnent ; le manque est alors affiché (« ajoute un féculent… »).
 
 ## Contrôle « sans porc » (permanent)
 
@@ -91,6 +112,10 @@ Règles dans `src/domain/shop.ts` (testées), attribuées par le moteur de réco
   3 500–8 000 pts (2 à 5 semaines). Collection complète ≈ 45 000 pts. Un objet rare ou premium
   est en sélection à −20 % chaque semaine.
 - Les objets sont des calques vectoriels posés sur le compagnon : sa forme et son visage ne changent pas.
+- **Avatar (v1.4)** : 28 objets pour son propre personnage (12 tenues, 10 coiffures, 6 accessoires : lunettes,
+  boucles d'oreilles, foulard, casque audio, sac, couronne), mêmes raretés et prix. Choix « Pour qui ? » dans la
+  boutique (Mon avatar / Mon compagnon) ; un objet acheté est porté tout de suite et peut être retiré ou remis
+  depuis Univers. Dessins vectoriels dans le style de l'avatar existant.
 - Achats : table `shop_purchases` (un objet = une ligne), solde = points gagnés − prix payés.
 
 ## Suivi du cycle
@@ -108,6 +133,27 @@ Règles dans `src/domain/cycle.ts` (testées), écran `src/screens/Cycle.tsx` (P
 - Rapports : facultatifs, table `intimate_logs` séparée, privée (RLS), visibles uniquement dans le calendrier du cycle.
 - Rappels (désactivables) : règles dans 2 jours, retard de 5 jours, fin des règles à noter — programmés par
   l'appli dans `scheduled_pushes` et recalés à chaque changement.
+
+## Programmes sportifs (v1.4)
+
+`src/domain/programs.ts` : 5 programmes de 4 à 8 semaines, 3 séances par semaine (Reprise en douceur, Tonifier tout
+le corps, Cardio doux et endurance, Renfo et souplesse, Objectif 30 minutes). La durée et le niveau (doux, modéré,
+tonique) augmentent semaine après semaine ; une énergie basse ramène toujours la séance au niveau doux.
+L'avancement se déduit des séances enregistrées (titre stable « Reprise · semaine 1 · séance 1 »), rien d'autre
+n'est stocké que le programme choisi et sa date de début (`profiles.settings.program`). Le rituel propose la séance
+du programme. Pendant la séance : illustration animée de chaque exercice (`src/art/ExerciseArt.tsx`, silhouettes
+vectorielles, sans animation si « réduire les animations » est activé), bip et vibration à chaque changement et
+3-2-1 avant la fin d'un exercice (son coupable dans la séance).
+
+## Progrès hors balance (v1.4)
+
+Progrès > Corps (`src/screens/Body.tsx`, règles dans `src/domain/wellbeing.ts`) :
+- **Mensurations** (table `body_measurements`) : taille, hanches, poitrine, cuisse, bras, chacune facultative ;
+  évolution depuis la première mesure et courbe du tour de taille.
+- **Sommeil** (colonnes `sleep_hours`, `sleep_quality` du check-in) et **énergie** sur 14 jours.
+- **Bilan du mois** : séances, jours de repas notés, eau, sommeil, énergie, mensurations, tendance du poids ; et
+  « ce que montrent tes données » : sommeil ↔ énergie, séance ↔ énergie du lendemain, séance ↔ sommeil, affichés
+  seulement avec au moins 3 jours de chaque côté et un écart net, formulés comme des observations.
 
 ## Remplacer les illustrations
 

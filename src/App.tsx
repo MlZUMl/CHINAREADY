@@ -6,6 +6,7 @@ import { Onboarding } from './screens/Onboarding'
 import { Home } from './screens/Home'
 import { Ritual } from './screens/Ritual'
 import { SessionPlayer, SessionDone } from './screens/SessionPlayer'
+import { Programs } from './screens/Programs'
 import { Activity } from './screens/Activity'
 import { Food } from './screens/Food'
 import { RecipeDetail } from './screens/RecipeDetail'
@@ -48,6 +49,7 @@ export function App() {
   else if (route === '/seance') { screen = <SessionPlayer query={query} />; tabs = false }
   else if (route === '/seance/termine') { screen = <SessionDone query={query} />; tabs = false }
   else if (route === '/reprise') { screen = <Resume />; tabs = false }
+  else if (route === '/activite/programmes') { screen = <Programs />; tabs = false }
   else if (route.startsWith('/activite')) screen = <Activity />
   else if ((p = match('/repas/recette/:id', route))) { screen = <RecipeDetail id={p.id} />; tabs = false }
   else if (route === '/repas/ajouter') { screen = <FoodAdd query={query} />; tabs = false }

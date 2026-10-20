@@ -3,7 +3,9 @@ import { useApp } from '../app/state'
 import { buildSession, type Focus } from '../domain/exercises'
 import { TopBar, Confirm, Progress } from '../ui/components'
 import { navigate } from '../lib/router'
-import { IconPause, IconPlay, IconSkip } from '../ui/icons'
+import { IconBell, IconPause, IconPlay, IconSkip } from '../ui/icons'
+import { ExerciseArt } from '../art/ExerciseArt'
+import { playCue, unlockAudio, VIBRATION, type Cue } from '../lib/beep'
 import { CompanionArt } from '../art/Companion'
 import { messageFor } from '../domain/companion'
 import type { RewardGrant, WorkoutSource } from '../data/types'
@@ -19,9 +21,17 @@ export function SessionPlayer({ query }: { query: URLSearchParams }) {
   const focus = (query.get('focus') as Focus) || 'mixte'
   const version = (query.get('version') as 'min' | 'usual' | 'plus') || 'usual'
   const source = (query.get('source') as WorkoutSource) || 'libre'
+  const lv = Number(query.get('niveau'))
+  const level = lv === 1 || lv === 2 || lv === 3 ? lv : undefined
+  const programTitle = query.get('programme')
   const energy = snap.daily_checkins.find(c => c.day === today)?.energy ?? null
   const equipment = snap.profiles[0]?.settings.equipment ?? ['tapis']
-  const session = useMemo(() => buildSession({ minutes, focus, energy, equipment, seed: today + minutes + focus }), [minutes, focus, energy, today]) // eslint-disable-line
+  const session = useMemo(() => buildSession({ minutes, focus, energy, equipment, level, seed: (programTitle ?? today) + minutes + focus }), [minutes, focus, energy, today, level, programTitle]) // eslint-disable-line
+  const title = programTitle ?? session.title
+  // « Reprise · semaine 1 · séance 1 » → titre court « Semaine 1 · séance 1 », programme en sur-titre
+  const progParts = programTitle && programTitle.split(' · ').length === 3 ? programTitle.split(' · ') : null
+  const sound = snap.profiles[0]?.settings.session_sound !== false
+  const cue = (c: Cue) => { navigator.vibrate?.(VIBRATION[c]); if (sound) playCue(c) }
 
   const steps: Step[] = useMemo(() => session.blocks.flatMap((b, i) => {
     const s: Step[] = [{ kind: 'work', block: i, seconds: b.seconds }]
@@ -40,6 +50,7 @@ export function SessionPlayer({ query }: { query: URLSearchParams }) {
   const last = useRef<number>(0)
   const wake = useRef<any>(null)
   const saving = useRef(false)
+  const lastTick = useRef(0)
 
   // Horloge basée sur l'heure réelle : reste juste même si l'écran se met en veille un instant.
   useEffect(() => {
@@ -59,14 +70,21 @@ export function SessionPlayer({ query }: { query: URLSearchParams }) {
     if (!started || result) return
     if (left <= 0) {
       if (idx + 1 >= steps.length) finish(true)
-      else { navigator.vibrate?.(steps[idx + 1].kind === 'work' ? [120, 60, 120] : 200); setIdx(i => i + 1); setLeft(l => steps[idx + 1].seconds + Math.min(0, l)) }
+      else { cue(steps[idx + 1].kind === 'work' ? 'work' : 'rest'); setIdx(i => i + 1); setLeft(l => steps[idx + 1].seconds + Math.min(0, l)) }
+      return
     }
+    // 3, 2, 1 : un petit signal avant chaque changement
+    const sec = Math.ceil(left)
+    if (sec <= 3 && sec !== lastTick.current && !paused) { lastTick.current = sec; cue('tick') }
+    if (sec > 3) lastTick.current = 0
   }, [left]) // eslint-disable-line
 
   useEffect(() => () => { wake.current?.release?.() }, [])
 
   const begin = async () => {
     startedAt.current = new Date().toISOString()
+    unlockAudio()
+    cue('work')
     setStarted(true)
     if (source === 'rituel') actions.ritualEvent('commence')
     try { wake.current = await (navigator as any).wakeLock?.request('screen') } catch { /* facultatif */ }
@@ -75,12 +93,13 @@ export function SessionPlayer({ query }: { query: URLSearchParams }) {
   async function finish(all: boolean) {
     const mins = all ? session.minutes : Math.max(1, Math.round(elapsed / 60))
     wake.current?.release?.()
+    if (all) cue('done')
     if (!all && elapsed < 60) { navigate('/', true); return }
     if (saving.current) return
     saving.current = true
     const { id } = await actions.saveWorkout({
       day: today, started_at: startedAt.current ?? new Date().toISOString(), ended_at: new Date().toISOString(),
-      kind: 'guidee', activity: session.focus, program: session.title, planned_minutes: session.minutes, actual_minutes: mins,
+      kind: 'guidee', activity: session.focus, program: title, planned_minutes: session.minutes, actual_minutes: mins,
       version: all ? version : mins >= session.minutes ? version : 'min', completed: true, source, energy, note: null,
     })
     setResult({ minutes: mins, grants: [] })
@@ -98,18 +117,24 @@ export function SessionPlayer({ query }: { query: URLSearchParams }) {
 
   return (
     <>
-      <TopBar onBack={() => (started ? setQuit(true) : history.back())} title={session.title} kicker={`Séance ${session.intensity}`} />
+      <TopBar onBack={() => (started ? setQuit(true) : history.back())} title={progParts ? `${progParts[1][0].toUpperCase()}${progParts[1].slice(1)} · ${progParts[2]}` : title}
+        kicker={progParts ? `${progParts[0]} · ${session.minutes} min · ${session.intensity}` : `Séance ${session.intensity}`}
+        right={<button className={`icon-btn ${sound ? '' : 'off'}`} aria-label={sound ? 'Couper le son' : 'Activer le son'} aria-pressed={sound}
+          onClick={() => { unlockAudio(); const p = snap.profiles[0]; if (p) actions.updateProfile({ settings: { ...p.settings, session_sound: !sound } }) }}><IconBell /></button>} />
       <main className="content no-tabs">
         <Progress value={elapsed / session.totalSeconds} label="Progression de la séance" />
         <div className="player">
           <span className="phase">{step.kind === 'rest' ? 'Repos' : PHASE[block.phase]} · {step.block + 1}/{session.blocks.length}</span>
           <h2>{step.kind === 'rest' ? 'Respire, bois une gorgée' : block.exercise.name}</h2>
+          <div className="player-visual">
+          <ExerciseArt exercise={step.kind === 'rest' && nextWork ? session.blocks[nextWork.block].exercise : block.exercise} size={150} still={!started || paused || step.kind === 'rest'} className={step.kind === 'rest' ? 'dim' : ''} />
           <div className="timer-ring" aria-live="off">
             <svg viewBox="0 0 120 120" aria-hidden="true">
               <circle cx="60" cy="60" r={r} stroke="var(--mousse-clair)" strokeWidth="8" fill="none" />
               <circle cx="60" cy="60" r={r} stroke={step.kind === 'rest' ? '#cfe3e8' : 'var(--vert)'} strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - frac)} />
             </svg>
             <div className="t"><div>{Math.ceil(Math.max(0, left))}<small>{started ? (paused ? 'en pause' : 'secondes') : 'prête ?'}</small></div></div>
+          </div>
           </div>
           <p className="muted" style={{ maxWidth: 420 }}>{step.kind === 'rest' ? (nextWork ? `Ensuite : ${session.blocks[nextWork.block].exercise.name}` : 'Dernière ligne droite') : block.exercise.instruction}</p>
           {block.exercise.sides && step.kind === 'work' && <span className="pill">Change de côté à mi-temps</span>}

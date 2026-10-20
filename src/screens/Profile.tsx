@@ -83,6 +83,13 @@ export function Profile() {
           <div className="divider" />
           <Toggle label="Rappel de mon rendez-vous sportif" hint={sport ? `${sport.days.map(d => WEEKDAYS[d - 1].slice(0, 3)).join(', ')} à ${sport.cue_time}` : undefined} checked={notif.ritual} onChange={v => actions.updateNotifPrefs({ ritual: v })} />
           <Toggle label="Rappels d'eau (5 par jour)" hint={notif.hydration_times.map(t => t.replace(':', ' h ')).join(' · ')} checked={notif.hydration} onChange={v => actions.updateNotifPrefs({ hydration: v, hydration_times: v && notif.hydration_times.length < 5 ? [...HYDRATION_TIMES] : notif.hydration_times })} />
+          <Toggle label="Rappels pour noter mes repas" hint={`Seulement si le repas n'est pas encore noté · déjeuner ${(notif.lunch_time ?? '13:30').replace(':', ' h ')}, dîner ${(notif.dinner_time ?? '20:30').replace(':', ' h ')}`} checked={notif.meal_reminders !== false} onChange={v => actions.updateNotifPrefs({ meal_reminders: v })} />
+          {notif.meal_reminders !== false && (
+            <div className="grid2">
+              <label className="field small">Déjeuner<input className="input" type="time" value={notif.lunch_time ?? '13:30'} onChange={e => /^\d\d:\d\d$/.test(e.target.value) && actions.updateNotifPrefs({ lunch_time: e.target.value })} /></label>
+              <label className="field small">Dîner<input className="input" type="time" value={notif.dinner_time ?? '20:30'} onChange={e => /^\d\d:\d\d$/.test(e.target.value) && actions.updateNotifPrefs({ dinner_time: e.target.value })} /></label>
+            </div>
+          )}
           <Toggle label="Rappels du cycle" hint="Règles dans 2 jours, retard, penser à noter la fin" checked={notif.cycle !== false} onChange={v => actions.updateNotifPrefs({ cycle: v })} />
           <Toggle label="Ouverture de mes capsules" checked={notif.capsules} onChange={v => actions.updateNotifPrefs({ capsules: v })} />
           <Toggle label="Rappel mensuel de capsule" hint="Le 1er de chaque mois" checked={notif.monthly_capsule} onChange={v => actions.updateNotifPrefs({ monthly_capsule: v })} />
@@ -127,7 +134,7 @@ export function Profile() {
           <button className="btn secondary" onClick={exportData}>Télécharger mes données</button>
           <button className="btn danger" onClick={() => setWipe(true)}>Effacer les données de ce téléphone</button>
         </section>
-        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.3</p>
+        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.4</p>
       </main>
       {goal && <GoalSheet onClose={() => setGoal(false)} />}
       {wipe && <Confirm danger title="Effacer ce téléphone ?" confirmLabel="Tout effacer ici"

@@ -408,3 +408,38 @@ ol.steps li::before { content: counter(s); flex: none; width: 28px; height: 28px
 .cycle-bar { height: 10px; background: var(--surface); border-radius: 999px; overflow: hidden; }
 .cycle-bar > span { display: block; height: 100%; background: var(--mousse-clair); border-radius: 999px; overflow: hidden; }
 .cycle-bar i { display: block; height: 100%; background: var(--rose); }
+
+/* journal plus rapide */
+.meal-tools { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid var(--ligne); margin-top: 4px; }
+.meal-tools .chip { min-width: 0; max-width: 100%; }
+.meal-tools .link-btn { display: inline-flex; align-items: center; gap: 4px; }
+.meal-card .meal-head + .meal-tools { border-top: 0; }
+.card.prune .btn.ghost { color: #fff; border: 1.5px solid rgba(255,255,255,.55); background: transparent; }
+.menu-row { display: flex; flex-direction: column; gap: 4px; padding-top: 6px; }
+.menu-row .menu-recipe { flex: 1; min-width: 0; justify-content: flex-start; white-space: normal; text-align: left; line-height: 1.25; padding-top: 8px; padding-bottom: 8px; height: auto; }
+
+/* séance guidée : illustration + minuteur */
+.player-visual { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; flex-wrap: wrap; }
+.player-visual .timer-ring { width: min(170px, 44vw); }
+.player-visual .timer-ring .t { font-size: 2.6rem; }
+.exercise-art { display: block; flex-shrink: 0; max-width: 100%; height: auto; }
+.exercise-art.dim { opacity: .55; }
+.icon-btn.off { opacity: .45; }
+.exercise-strip { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x mandatory; }
+.exercise-strip figure { margin: 0; width: 104px; flex-shrink: 0; scroll-snap-align: start; }
+.exercise-strip figcaption { margin-top: 4px; line-height: 1.2; }
+.week-sessions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.week-sessions .chip { justify-content: center; min-width: 0; }
+
+/* corps : mensurations, sommeil, bilan du mois */
+.measure-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.measure { background: var(--mousse-clair); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.measure strong { font-size: 1.1rem; }
+.measure .down { color: var(--vert); font-weight: 700; }
+.sleep-bars { display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); gap: 3px; align-items: end; }
+.sleep-bars .sb { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
+.sleep-bars .col { position: relative; width: 100%; height: 72px; background: var(--mousse-clair); border-radius: 6px; overflow: hidden; }
+.sleep-bars .col i { position: absolute; left: 0; right: 0; bottom: 0; background: var(--nuit); opacity: .35; border-radius: 6px 6px 0 0; }
+.sleep-bars .col b { position: absolute; left: 50%; width: 8px; height: 8px; margin: 0 0 -4px -4px; border-radius: 50%; background: var(--vert); }
+.sleep-bars span { font-size: .62rem; color: var(--texte-doux); }
+.crossings { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }

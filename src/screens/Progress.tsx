@@ -11,6 +11,7 @@ import { BADGES } from '../domain/catalog'
 import { SYMPTOMS, trendSummary, weightTrend } from '../domain/body'
 import { forecast } from '../domain/cycle'
 import { CyclePanel } from './Cycle'
+import { BodyPanel } from './Body'
 import { capsuleAccess } from '../domain/capsules'
 import { ENERGY_LABELS } from '../domain/recommend'
 import { EXTERNAL_ACTIVITIES, FOCUS_LABELS, type Focus } from '../domain/exercises'
@@ -18,7 +19,7 @@ import { IconBack, IconChevron, IconLock, IconPlus, IconUser } from '../ui/icons
 import type { Obstacle } from '../data/types'
 import { Stepper } from '../ui/components'
 
-type Tab = 'calendrier' | 'cycle' | 'regularite' | 'badges' | 'capsules'
+type Tab = 'calendrier' | 'corps' | 'cycle' | 'regularite' | 'badges' | 'capsules'
 
 export function Progress({ query }: { query: URLSearchParams }) {
   const tab = (query.get('onglet') as Tab) || 'calendrier'
@@ -28,9 +29,10 @@ export function Progress({ query }: { query: URLSearchParams }) {
       <TopBar title="Progrès" right={<button className="icon-btn" aria-label="Profil et réglages" onClick={() => navigate('/profil')}><IconUser /></button>} />
       <main className="content">
         <Segmented label="Sections progrès" value={tab} onChange={t => navigate('/progres?onglet=' + t, true)} options={[
-          { id: 'calendrier', label: 'Calendrier' }, { id: 'cycle', label: 'Cycle' }, { id: 'regularite', label: 'Régularité' }, { id: 'badges', label: 'Badges' }, { id: 'capsules', label: 'Capsules' },
+          { id: 'calendrier', label: 'Calendrier' }, { id: 'corps', label: 'Corps' }, { id: 'cycle', label: 'Cycle' }, { id: 'regularite', label: 'Régularité' }, { id: 'badges', label: 'Badges' }, { id: 'capsules', label: 'Capsules' },
         ]} />
         {tab === 'calendrier' && <Calendar initialDay={day} />}
+        {tab === 'corps' && <BodyPanel />}
         {tab === 'cycle' && <CyclePanel />}
         {tab === 'regularite' && <Regularity />}
         {tab === 'badges' && <Badges />}
@@ -79,63 +81,22 @@ function Calendar({ initialDay }: { initialDay: string | null }) {
           <span className="row" style={{ gap: 6 }}><span className="mini-dots"><i className="repas" /></span> Repas</span>
         </div>
       </section>
-      <BodyCard />
+      <CycleLink />
       {open && <DaySheet day={open} onClose={() => setOpen(null)} />}
     </>
   )
 }
 
-function BodyCard() {
-  const { snap, today, actions, toast } = useApp()
-  const trend = weightTrend(snap.weights)
-  const summary = trendSummary(trend)
+function CycleLink() {
+  const { snap, today } = useApp()
   const fc = forecast(snap.cycle_days, today)
-  const lastWeight = trend[trend.length - 1]
-  const weighDay = snap.profiles[0]?.weigh_day ?? 1
-  const thisWeek = snap.weights.find(w => w.day >= weekStart(today) && w.day <= today)
-  const [kg, setKg] = useState(lastWeight?.kg ?? 60)
-  const [editing, setEditing] = useState(false)
   return (
-    <>
-      <section className="card">
-        <div className="card-head"><div><div className="kicker">Pesée hebdomadaire · le {['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'][weighDay - 1]}</div>
-          <h2>{lastWeight ? `Tendance : ${lastWeight.trend} kg` : 'Pas encore de pesée'}</h2></div></div>
-        <p className="muted small">{summary ?? 'Une pesée par semaine suffit. La courbe lisse les variations d\'eau, normales d\'un jour à l\'autre.'}</p>
-        {trend.length >= 2 && <TrendChart points={trend} />}
-        {thisWeek && !editing ? (
-          <div className="row between"><span className="small">Cette semaine : <strong>{thisWeek.kg} kg</strong></span><button className="link-btn" onClick={() => { setKg(Number(thisWeek.kg)); setEditing(true) }}>Modifier</button></div>
-        ) : (
-          <div className="row between wrap">
-            <Stepper label="Poids" value={kg} min={30} max={250} step={0.1} onChange={setKg} format={v => v.toFixed(1).replace('.', ',') + ' kg'} />
-            <button className="btn primary sm" onClick={async () => { await actions.saveWeight(thisWeek?.day ?? today, Math.round(kg * 10) / 10); setEditing(false); toast('⚖️', 'Pesée notée') }}>Enregistrer</button>
-          </div>
-        )}
-        <p className="muted small">Le poids n'est qu'un indicateur parmi d'autres : aucune récompense n'en dépend.</p>
-      </section>
-      <button className="card" style={{ textAlign: 'left', cursor: 'pointer' }} onClick={() => navigate('/progres?onglet=cycle', true)}>
-        <div className="card-head"><div><div className="kicker">Cycle</div>
-          <h2>{fc.nextStart && !fc.ongoing ? `Prochaines règles estimées vers le ${parseDay(fc.nextStart).getDate()} ${MONTHS[parseDay(fc.nextStart).getMonth()]}` : fc.ongoing ? 'Règles en cours' : 'Commencer le suivi du cycle'}</h2></div>
-          <IconChevron style={{ width: 20 }} /></div>
-        <p className="muted small">Calendrier, statistiques, prévisions et historique dans l'onglet Cycle.</p>
-      </button>
-    </>
-  )
-}
-
-function TrendChart({ points }: { points: { day: string; kg: number; trend: number }[] }) {
-  const pts = points.slice(-12)
-  const vals = pts.flatMap(p => [p.kg, p.trend])
-  const lo = Math.min(...vals) - 0.5, hi = Math.max(...vals) + 0.5
-  const W = 320, H = 110
-  const x = (i: number) => 10 + (i * (W - 20)) / Math.max(1, pts.length - 1)
-  const y = (v: number) => H - 10 - ((v - lo) / (hi - lo)) * (H - 20)
-  return (
-    <div className="chart" aria-label="Courbe de poids">
-      <svg viewBox={`0 0 ${W} ${H}`}>
-        <polyline points={pts.map((p, i) => `${x(i)},${y(p.trend)}`).join(' ')} fill="none" stroke="var(--prune)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        {pts.map((p, i) => <circle key={p.day} cx={x(i)} cy={y(p.kg)} r="3.5" fill="var(--vieux-rose)" opacity=".6" />)}
-      </svg>
-    </div>
+    <button className="card" style={{ textAlign: 'left', cursor: 'pointer' }} onClick={() => navigate('/progres?onglet=cycle', true)}>
+      <div className="card-head"><div><div className="kicker">Cycle</div>
+        <h2>{fc.nextStart && !fc.ongoing ? `Prochaines règles estimées vers le ${parseDay(fc.nextStart).getDate()} ${MONTHS[parseDay(fc.nextStart).getMonth()]}` : fc.ongoing ? 'Règles en cours' : 'Commencer le suivi du cycle'}</h2></div>
+        <IconChevron style={{ width: 20 }} /></div>
+      <p className="muted small">Calendrier, statistiques, prévisions et historique dans l'onglet Cycle.</p>
+    </button>
   )
 }
 

@@ -78,6 +78,9 @@ export function CheckinCard({ compact = false }: { compact?: boolean }) {
           <strong className="small">Combien de temps as-tu aujourd'hui ?</strong>
           <Chips label="Temps disponible" soft value={checkin?.minutes ?? null} onChange={v => actions.saveCheckin(today, { minutes: v })}
             options={[5, 10, 15, 20, 30, 45].map(m => ({ id: m, label: m + ' min' }))} />
+          <strong className="small">Combien d'heures as-tu dormi ? <span className="muted">(facultatif)</span></strong>
+          <Chips label="Heures de sommeil" soft value={checkin?.sleep_hours != null ? Math.min(9, Math.round(Number(checkin.sleep_hours))) : null} onChange={(v: number | null) => actions.saveCheckin(today, { sleep_hours: v })}
+            options={[5, 6, 7, 8, 9].map(h => ({ id: h, label: h === 5 ? '5 h ou moins' : h === 9 ? '9 h ou plus' : `${h} h` }))} />
           <strong className="small">De quoi as-tu le plus besoin ?</strong>
           <Chips label="Besoin du jour" soft value={checkin?.need ?? null} onChange={(v: Need | null) => actions.saveCheckin(today, { need: v })}
             options={Object.entries(NEED_LABELS).map(([id, label]) => ({ id: id as Need, label }))} />

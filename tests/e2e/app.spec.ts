@@ -13,7 +13,7 @@ async function noHorizontalScroll(page: Page) {
   expect(overflow, 'aucun défilement horizontal').toBeLessThanOrEqual(0)
 }
 
-async function onboard(page: Page, name = 'Lina') {
+async function onboard(page: Page, name = 'Lina', nutrition = false) {
   await page.goto('./')
   await expect(page.getByRole('heading', { name: 'Bienvenue dans Élan' })).toBeVisible()
   await noHorizontalScroll(page)
@@ -32,6 +32,17 @@ async function onboard(page: Page, name = 'Lina') {
   await expect(page.getByTestId('recap-materiel')).toContainText('Tapis, Corde à sauter')
   await expect(page.getByTestId('recap-materiel')).toContainText('cardio à la corde')
   await page.getByRole('button', { name: 'Valider ce matériel et continuer' }).click()
+  // Profil nutrition (facultatif)
+  await expect(page.getByRole('heading', { name: 'Ton objectif calorique' })).toBeVisible()
+  if (nutrition) {
+    await page.getByLabel('Année de naissance').fill('1996')
+    await page.getByLabel('Taille en centimètres').fill('165')
+    await page.getByLabel('Poids en kilos').fill('70')
+    await expect(page.getByTestId('objectif-accueil')).toContainText(/1\s450 kcal par jour/)
+    await page.getByRole('button', { name: 'Continuer' }).click()
+  } else {
+    await page.getByRole('button', { name: 'Plus tard' }).click()
+  }
   await expect(page.getByRole('heading', { name: 'Sauvegarde et rappels' })).toBeVisible()
   await page.getByRole('button', { name: 'Plus tard' }).click()
   await page.getByRole('button', { name: 'Entrer dans mon univers' }).click()
@@ -225,9 +236,9 @@ test('journal alimentaire : objectif, recherche Ciqual, marques sans porc, code-
   await expect(page.getByTestId('kcal-mangees')).toHaveText(/^1\s007 kcal$/)
 })
 
-test('recettes sans porc, menu et liste de courses pour Claude', async ({ page, context }) => {
+test('recettes sans porc, menu adapté à l\'objectif et liste de courses pour Claude', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-  await onboard(page)
+  await onboard(page, 'Lina', true)
   await page.goto('./#/repas?onglet=recettes')
   await expect(page.getByText('Toutes les recettes sont sans porc.', { exact: false })).toBeVisible()
   expect(await page.locator('.recipe-card').count()).toBeGreaterThanOrEqual(40)
@@ -247,8 +258,26 @@ test('recettes sans porc, menu et liste de courses pour Claude', async ({ page, 
   await page.goBack()
 
   await page.getByRole('tab', { name: 'Menu' }).click()
-  await page.getByRole('button', { name: 'Compléter les dîners' }).click()
-  await expect(page.getByRole('button', { name: 'Retirer du menu' }).first()).toBeVisible()
+  await expect(page.getByText(/approcher 1\s450 kcal par jour/)).toBeVisible()
+  await page.getByRole('button', { name: 'Créer mon menu' }).click()
+  await expect(page.getByRole('dialog')).toContainText(/petit-déjeuner 365 kcal, déjeuner 505 kcal/)
+  await page.getByRole('group', { name: 'Allergènes à éviter' }).getByRole('button', { name: 'Crustacés' }).click()
+  await page.getByRole('button', { name: 'Composer le menu' }).click()
+  await expect(page.getByRole('status').filter({ hasText: 'Menu de la semaine prêt' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Retirer du menu' })).toHaveCount(21)
+  // chaque jour : total prévu proche de l'objectif moins la collation (1 305 kcal)
+  for (const d of ['2026-10-19', '2026-10-22', '2026-10-25']) {
+    const t = await page.getByTestId(`menu-kcal-${d}`).innerText()
+    const kcal = Number(t.match(/≈\s*([\d\s ]+)\s*kcal/)![1].replace(/\s/g, ''))
+    expect(Math.abs(kcal - 1305)).toBeLessThan(160)
+  }
+  // « Autre idée » remplace la recette d'un créneau
+  const mardi = page.getByRole('region', { name: 'mardi 20' })
+  const before = await mardi.locator('.menu-row').nth(2).innerText()
+  await page.getByRole('button', { name: 'Autre idée · Soir 20' }).click()
+  await expect(mardi.locator('.menu-row').nth(2)).not.toHaveText(before)
+  await shot(page, '08b-menu')
+  await noHorizontalScroll(page)
   await page.getByRole('tab', { name: 'Courses' }).click()
   await expect(page.getByRole('heading', { name: 'Faire remplir le panier par Claude' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Boucherie' }).or(page.getByRole('heading', { name: 'Poissonnerie' })).first()).toBeVisible()
@@ -350,6 +379,7 @@ test('points et boutique : 300 points pour la séance, achat, objet porté, sold
   // Pas assez de points : l'achat est impossible et l'écart est expliqué
   await page.getByRole('button', { name: /Mes points : 0/ }).click()
   await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+  await page.getByRole('tab', { name: 'Mon compagnon' }).click()
   await page.getByRole('tab', { name: 'Coiffures' }).click()
   await page.getByRole('button', { name: /^Petite frange/ }).click()
   await expect(page.getByText('Il te manque')).toBeVisible()
@@ -370,6 +400,7 @@ test('points et boutique : 300 points pour la séance, achat, objet porté, sold
   await noHorizontalScroll(page)
 
   // Achat d'un objet commun : le prix est déduit et l'objet est porté
+  await page.getByRole('tab', { name: 'Mon compagnon' }).click()
   await page.getByRole('tab', { name: 'Coiffures' }).click()
   await page.getByRole('button', { name: /^Petite frange/ }).click()
   await expect(page.getByText('Solde après achat : 0 pts')).toBeVisible()
@@ -380,11 +411,38 @@ test('points et boutique : 300 points pour la séance, achat, objet porté, sold
   // Persistance : rechargement
   await page.reload()
   await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+  await page.getByRole('tab', { name: 'Mon compagnon' }).click()
   await page.getByRole('tab', { name: /Ma garde-robe \(1\)/ }).click()
   await page.getByRole('button', { name: /Petite frange/ }).click()
   await page.getByRole('button', { name: 'Retirer' }).click()
   await expect(page.getByRole('button', { name: /Petite frange, Commun, acheté/ })).toBeVisible()
   await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+
+  // Lendemain : nouvelle séance => +300, achat d'une coiffure pour l'avatar, visible dans l'univers
+  await page.goto('./#/univers')
+  await page.getByRole('button', { name: 'Entrer dans mon univers' }).click()
+  await expect(page.getByRole('button', { name: 'Entrer dans mon univers' })).toHaveCount(0) // personnage enregistré
+  await page.clock.setSystemTime(new Date('2026-10-21T17:20:00+02:00'))
+  await page.goto('./#/seance?min=10&focus=mobilite&version=min&source=rituel')
+  await page.reload()
+  await page.getByRole('button', { name: 'Démarrer' }).click()
+  await page.clock.fastForward(10 * 60_000 + 2_000)
+  await expect(page.getByText('+300 points pour la boutique')).toBeVisible()
+  await page.goto('./#/univers?onglet=boutique')
+  await page.reload()
+  await expect(page.getByRole('tab', { name: 'Mon avatar' })).toHaveAttribute('aria-selected', 'true')
+  await page.getByRole('tab', { name: 'Coiffures' }).click()
+  await page.getByRole('button', { name: /^Queue de cheval/ }).click()
+  await page.getByRole('button', { name: 'Acheter · 300 pts' }).click()
+  await expect(page.getByRole('button', { name: /Queue de cheval, Commun, porté/ })).toBeVisible()
+  await expect(page.getByTestId('solde-boutique')).toHaveText('0 pts')
+  await page.getByRole('tab', { name: 'Tenues' }).click()
+  await expect(page.getByRole('button', { name: /T-shirt blanc, Commun, 300 pts/ })).toBeVisible()
+  await shot(page, '13b-boutique-avatar')
+  await noHorizontalScroll(page)
+  await page.reload()
+  await page.getByRole('tab', { name: 'Coiffures' }).click()
+  await expect(page.getByRole('button', { name: /Queue de cheval, Commun, porté/ })).toBeVisible()
 })
 
 test('cycle : règles réelles vs prévues, statistiques, fertilité estimée, rapport privé, retard nuancé', async ({ page }) => {
@@ -448,14 +506,123 @@ test('cycle : règles réelles vs prévues, statistiques, fertilité estimée, r
   await expect(page.getByRole('button', { name: 'Fin des règles' })).toBeVisible()
 })
 
+test('profil nutrition dès l\'accueil : objectif prêt dans le journal, première pesée enregistrée', async ({ page }) => {
+  await onboard(page, 'Lina', true)
+  await page.getByRole('link', { name: 'Repas' }).click()
+  await expect(page.getByRole('button', { name: 'Définir mon objectif' })).toHaveCount(0)
+  await expect(page.getByTestId('kcal-restantes')).toContainText(/1\s450/)
+  await page.getByRole('link', { name: 'Progrès' }).click()
+  await page.getByRole('tab', { name: 'Corps' }).click()
+  await expect(page.getByText(/Tendance : 70 kg/)).toBeVisible()
+})
+
 test('chaque écran principal tient sur un petit écran', async ({ page }) => {
   await onboard(page)
   for (const [path, name] of [['#/', 'accueil'], ['#/activite', 'activite'], ['#/repas', 'journal'], ['#/repas/ajouter?repas=dejeuner', 'ajouter'], ['#/repas?onglet=recettes', 'recettes'], ['#/repas/recette/tajine-poulet', 'recette'],
-    ['#/progres', 'calendrier'], ['#/progres?onglet=regularite', 'regularite'], ['#/progres?onglet=badges', 'badges'], ['#/progres/bilan', 'bilan'],
+    ['#/progres', 'calendrier'], ['#/progres?onglet=corps', 'corps'], ['#/progres?onglet=regularite', 'regularite'], ['#/repas?onglet=menu', 'menu'], ['#/activite/programmes', 'programmes'], ['#/progres?onglet=badges', 'badges'], ['#/progres/bilan', 'bilan'],
     ['#/univers?onglet=compagnon', 'compagnon'], ['#/univers?onglet=boutique', 'boutique'], ['#/progres?onglet=cycle', 'cycle'], ['#/profil', 'profil'], ['#/profil/compte', 'compte'], ['#/profil/engagements', 'engagements'], ['#/reprise', 'reprise']] as const) {
     await page.goto('./' + path)
     await expect(page.locator('main').first()).toBeVisible()
     await noHorizontalScroll(page)
     await shot(page, 'ecran-' + name)
   }
+})
+
+test('journal plus rapide : « comme hier », repas favori enregistré puis rajouté en un geste', async ({ page }) => {
+  await onboard(page, 'Lina', true)
+  // Lundi : un petit-déjeuner noté (ajout rapide)
+  await page.clock.setFixedTime(new Date('2026-10-19T08:00:00+02:00'))
+  await page.goto('./#/repas/ajouter?repas=petit-dejeuner&jour=2026-10-19&onglet=rapide')
+  await page.getByLabel('Nom').fill('Bol avoine et fruits')
+  await page.getByLabel('Calories').fill('380')
+  await page.getByRole('button', { name: 'Ajouter', exact: true }).click()
+  await expect(page).not.toHaveURL(/ajouter/) // enregistré, retour à l'écran précédent
+  // Mardi : le petit-déjeuner vide propose « comme hier »
+  await page.clock.setFixedTime(TUESDAY_1720)
+  await page.goto('./#/repas?onglet=journal')
+  await page.reload()
+  await page.getByRole('button', { name: 'Comme hier · Petit-déjeuner' }).click()
+  await expect(page.getByTestId('total-petit-dejeuner')).toHaveText(/^380 kcal/)
+  await expect(page.getByLabel('Petit-déjeuner', { exact: true }).getByText('Bol avoine et fruits')).toBeVisible()
+  // Enregistrer en favori
+  await page.getByRole('button', { name: 'Favoris et reprise · Petit-déjeuner' }).click()
+  await expect(page.getByLabel('Nom du favori')).toHaveValue('Bol avoine et fruits')
+  await page.getByLabel('Nom du favori').fill('Mon petit-déj habituel')
+  await page.getByRole('button', { name: 'Enregistrer en favori' }).click()
+  await expect(page.getByRole('status').filter({ hasText: 'favoris' })).toBeVisible()
+  // Le favori se rajoute en un geste depuis l'écran d'ajout (ici en collation)
+  await page.getByRole('button', { name: 'Ajouter à la collation' }).click()
+  await page.getByRole('region', { name: 'Mes repas favoris' }).getByRole('button', { name: /Mon petit-déj habituel/ }).click()
+  await expect(page.getByTestId('total-collation')).toHaveText(/^380 kcal/)
+  await expect(page.getByTestId('kcal-mangees')).toHaveText('760 kcal')
+  await shot(page, '15-journal-rapide')
+  await noHorizontalScroll(page)
+})
+
+test('programme sportif : choix, séance illustrée avec signaux, avancement enregistré', async ({ page }) => {
+  await onboard(page)
+  await page.getByRole('link', { name: 'Activité' }).click()
+  await page.getByRole('button', { name: 'Choisir un programme' }).click()
+  await page.getByRole('button', { name: 'Reprise en douceur' }).click()
+  await expect(page.getByRole('region', { name: 'Aperçu des exercices' }).getByRole('img').first()).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Semaine 4' })).toContainText('15 min · modéré')
+  await page.getByRole('button', { name: 'Commencer ce programme' }).click()
+  await expect(page.getByRole('status').filter({ hasText: 'Reprise en douceur' })).toBeVisible()
+  await shot(page, '16-programme')
+  await noHorizontalScroll(page)
+  await page.getByRole('button', { name: /Séance 1 · semaine 1/ }).click()
+  await expect(page.getByText('Semaine 1 · séance 1', { exact: true })).toBeVisible()
+  await expect(page.getByText(/^Reprise · 10 min/)).toBeVisible()
+  await expect(page.getByRole('img', { name: /^Illustration :/ })).toBeVisible()
+  // le son se coupe et se rallume (réglage conservé)
+  await page.getByRole('button', { name: 'Couper le son' }).click()
+  await expect(page.getByRole('button', { name: 'Activer le son' })).toBeVisible()
+  await page.getByRole('button', { name: 'Activer le son' }).click()
+  await page.getByRole('button', { name: 'Démarrer' }).click()
+  await shot(page, '17-seance-illustree')
+  await noHorizontalScroll(page)
+  await page.clock.fastForward(10 * 60_000 + 2_000)
+  await expect(page.getByRole('heading', { name: '10 min pour toi' })).toBeVisible()
+  await expect(page.locator('main').getByText('Reprise · semaine 1 · séance 1')).toBeVisible()
+  await page.getByRole('button', { name: "Retour à l'accueil" }).click()
+  await page.getByRole('link', { name: 'Activité' }).click()
+  await expect(page.getByRole('region', { name: 'Mon programme' })).toContainText('1 séance sur 12')
+  await expect(page.getByRole('button', { name: /Séance 2 de la semaine 1/ })).toBeVisible()
+  // le rituel propose aussi la séance du programme
+  await page.goto('./#/rituel')
+  await expect(page.getByRole('button', { name: /Mon programme · 10 min/ })).toBeVisible()
+})
+
+test('progrès hors balance : mensurations, sommeil, bilan du mois croisé', async ({ page }) => {
+  await onboard(page)
+  await page.clock.setFixedTime(new Date('2026-10-01T08:00:00+02:00'))
+  await page.goto('./#/progres?onglet=corps')
+  await page.reload()
+  await page.getByRole('button', { name: 'Noter mes mesures' }).click()
+  await page.getByRole('button', { name: 'Ajouter Tour de taille' }).click()
+  await page.getByRole('group', { name: 'Tour de taille' }).getByRole('button', { name: 'Moins' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByTestId('mesure-waist_cm')).toContainText('79,5 cm')
+  await page.clock.setFixedTime(TUESDAY_1720)
+  await page.reload()
+  await page.getByRole('button', { name: 'Noter mes mesures' }).click()
+  await page.getByRole('button', { name: 'Ajouter Tour de taille' }).click()
+  for (let i = 0; i < 3; i++) await page.getByRole('group', { name: 'Tour de taille' }).getByRole('button', { name: 'Moins' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByTestId('mesure-waist_cm')).toContainText('78 cm')
+  await expect(page.getByTestId('mesure-waist_cm')).toContainText('−1,5 cm depuis le 1 octobre')
+  // Sommeil
+  await page.getByRole('button', { name: 'Noter ma nuit dernière' }).click()
+  await page.getByRole('group', { name: 'Heures de sommeil' }).getByRole('button', { name: 'Plus' }).click()
+  await page.getByRole('group', { name: 'Qualité du sommeil' }).getByRole('button', { name: 'Bonne' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByRole('region', { name: 'Sommeil et énergie' })).toContainText('7 h 30 de sommeil en moyenne')
+  // Bilan du mois
+  const bilan = page.getByRole('region', { name: 'Bilan du mois' })
+  await expect(bilan).toContainText('Octobre 2026')
+  await expect(bilan).toContainText('Tour de taille : −1,5 cm')
+  await expect(bilan).toContainText('1 nuit notée')
+  await expect(bilan).toContainText('Pas encore assez de jours notés')
+  await shot(page, '18-corps')
+  await noHorizontalScroll(page)
 })

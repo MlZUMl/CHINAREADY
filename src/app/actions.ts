@@ -4,7 +4,7 @@ import type { DataStore, Op } from '../data/store'
 import type {
   AvatarProfile, Commitment, CompanionProfile, DailyCheckin, Meal, MealPlan, PlanSlot, ProgressCapsule, Profile,
   EnergyPreferences, NotificationPreferences, Workout, RitualAction, RestReason, Obstacle, HabitInsight, Snapshot, UserRecipe, CycleDay,
-  FoodEntry, CustomFood, MealSlot, Equipment, NutritionSettings,
+  FoodEntry, CustomFood, MealSlot, Equipment, NutritionSettings, BodyMeasurement,
 } from '../data/types'
 import { toDay, nowIso, weekStart, addDays, daysBetween, type Day } from '../lib/dates'
 import { desiredCyclePushes, forecast, periodRuns } from '../domain/cycle'
@@ -17,8 +17,9 @@ import { RECIPES, recipeById } from '../domain/recipes'
 import { multiply } from '../domain/nutrition'
 import { HYDRATION_TIMES } from '../domain/defaults'
 import { porkInText, recipeHasPork } from '../domain/pork'
-import { balance, equipList, ownedItems, priceOf, shopItem } from '../domain/shop'
+import { balance, equipList, ownedItems, priceOf, shopItem, avatarEquip, avatarKey } from '../domain/shop'
 import { hash } from '../lib/ids'
+import { draftsFrom, toItem, type FavoriteItem } from '../domain/journal'
 
 const put = (table: Op['table'], row: any): Op => ({ type: 'put', table, row })
 
@@ -40,17 +41,19 @@ export function createActions(store: DataStore) {
 
   const api = {
     // ---------------------------------------------------------------- accueil
-    async completeOnboarding(o: { name: string | null; ritual: RitualSetup; species: CompanionProfile['species']; companionName: string; waterMl: number; equipment: Equipment[] }) {
+    async completeOnboarding(o: { name: string | null; ritual: RitualSetup; species: CompanionProfile['species']; companionName: string; waterMl: number; equipment: Equipment[]; nutrition?: NutritionSettings }) {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Paris'
       const p = defaultProfile(o.name, tz)
       p.water_goal_ml = o.waterMl
       p.water_goal_glasses = Math.max(1, Math.min(20, Math.round(o.waterMl / 250)))
-      p.settings = { ...p.settings, equipment: o.equipment, upgrades: [...UPGRADES] }
+      p.settings = { ...p.settings, equipment: o.equipment, upgrades: [...UPGRADES], ...(o.nutrition ? { nutrition: o.nutrition } : {}) }
       const ops: Op[] = [
         put('profiles', p),
         put('energy_preferences', defaultEnergyPrefs()),
         put('notification_preferences', defaultNotificationPrefs(tz)),
         ...defaultCommitments(o.ritual).map(c => put('commitments', c)),
+        // Le poids indiqué à l'accueil devient la première pesée (courbe de tendance, objectif calorique)
+        ...(o.nutrition?.weightKg ? [put('weights', { id: toDay(), day: toDay(), kg: o.nutrition.weightKg, note: 'Pesée de départ' })] : []),
         put('companion_profiles', { id: 'companion', species: o.species, name: o.companionName, color: 'rose', accessories: ['noeud'], frequency: 'normal' } satisfies Partial<CompanionProfile>),
       ]
       await store.commit(ops)
@@ -62,7 +65,7 @@ export function createActions(store: DataStore) {
     },
 
     // ---------------------------------------------------------------- énergie
-    async saveCheckin(day: Day, patch: Partial<Pick<DailyCheckin, 'energy' | 'minutes' | 'need'>>) {
+    async saveCheckin(day: Day, patch: Partial<Pick<DailyCheckin, 'energy' | 'minutes' | 'need' | 'sleep_hours' | 'sleep_quality'>>) {
       const prev = s().daily_checkins.find(c => c.day === day)
       const row = { id: day, day, energy: null, minutes: null, need: null, ...prev, ...patch }
       return store.commit([put('daily_checkins', row)])
@@ -200,6 +203,42 @@ export function createActions(store: DataStore) {
       return { id, existed }
     },
 
+    /** Recopie des éléments (repas d'un autre jour ou favori) en une seule écriture. */
+    async addItems(items: FavoriteItem[], day: Day, meal: MealSlot, seed: string) {
+      const drafts = draftsFrom(items, day, meal, seed)
+      if (drafts.some(d => porkInText(d.name) || porkInText(d.brand))) throw new Error('PORC')
+      const at = day === toDay() ? nowIso() : `${day}T12:00:00.000Z`
+      const known = new Map(s().food_entries.map(f => [f.id, f]))
+      await store.commit(drafts.map(d => put('food_entries', { ...d, at: known.get(d.id)?.at ?? at })))
+      return drafts.length
+    },
+
+    /** Reprendre un repas d'un autre jour. */
+    async copyMeal(fromDay: Day, fromMeal: MealSlot, day: Day, meal: MealSlot) {
+      const src = s().food_entries.filter(f => f.day === fromDay && f.meal === fromMeal).sort((a, b) => a.at.localeCompare(b.at))
+      return api.addItems(src.map(toItem), day, meal, `${fromDay}-${fromMeal}`)
+    },
+
+    async saveFavorite(name: string, meal: MealSlot, entries: FoodEntry[], id?: string) {
+      const n = name.trim().slice(0, 60)
+      if (!n || !entries.length) throw new Error('VIDE')
+      if (entries.some(e => porkInText(e.name) || porkInText(e.brand))) throw new Error('PORC')
+      const fid = id ?? uid()
+      await store.commit([put('favorite_meals', { id: fid, name: n, meal, items: entries.map(toItem) })], { derive: false })
+      return fid
+    },
+    async renameFavorite(id: string, name: string) {
+      const f = s().favorite_meals.find(x => x.id === id)
+      if (!f || !name.trim()) return
+      return store.commit([put('favorite_meals', { ...f, name: name.trim().slice(0, 60) })], { derive: false })
+    },
+    async deleteFavorite(id: string) { return store.remove('favorite_meals', id) },
+    async logFavorite(id: string, day: Day, meal: MealSlot) {
+      const f = s().favorite_meals.find(x => x.id === id)
+      if (!f) return 0
+      return api.addItems(f.items, day, meal, `fav-${id}`)
+    },
+
     async saveCustomFood(c: Omit<CustomFood, 'created_at' | 'updated_at'>) {
       if (porkInText(c.name) || porkInText(c.brand)) throw new Error('PORC')
       return store.commit([put('custom_foods', c)])
@@ -236,9 +275,19 @@ export function createActions(store: DataStore) {
       return store.commit([put('meal_plans', { ...plan, slots })])
     },
 
-    async removeSlot(day: Day, moment: 'midi' | 'soir') {
+    async removeSlot(day: Day, moment: PlanSlot['moment']) {
       const plan = api.planFor(weekStart(day))
       return store.commit([put('meal_plans', { ...plan, slots: plan.slots.filter(x => !(x.day === day && x.moment === moment)) })])
+    },
+
+    /** Remplace le menu de la semaine (recettes conservées comprises) par `slots`. */
+    async applyMenu(week: Day, slots: PlanSlot[]) {
+      const plan = api.planFor(week)
+      return store.commit([put('meal_plans', { ...plan, slots })])
+    },
+    async clearWeek(week: Day) {
+      const plan = api.planFor(week)
+      return store.commit([put('meal_plans', { ...plan, slots: [], checked: [] })])
     },
 
     /** Complète les dîners vides de la semaine avec des recettes variées (sans hasard). */
@@ -262,11 +311,31 @@ export function createActions(store: DataStore) {
       return store.commit([put('meal_plans', { ...plan, checked })], { derive: false })
     },
 
+    // ---------------------------------------------------------------- programmes sportifs
+    async startProgram(id: string, start: Day = toDay()) {
+      const p = profile()
+      return store.commit([put('profiles', { ...p, settings: { ...p.settings, program: { id, start } } })], { derive: false })
+    },
+    async stopProgram() {
+      const p = profile()
+      return store.commit([put('profiles', { ...p, settings: { ...p.settings, program: null } })], { derive: false })
+    },
+
     // ---------------------------------------------------------------- corps & calendrier
     async saveWeight(day: Day, kg: number, note: string | null = null) {
       return store.commit([put('weights', { id: day, day, kg, note })])
     },
     async deleteWeight(day: Day) { return store.remove('weights', day) },
+
+    /** Mensurations du jour : chaque mesure est facultative ; une ligne vide est supprimée. */
+    async saveMeasurements(day: Day, m: Partial<Pick<BodyMeasurement, 'waist_cm' | 'hips_cm' | 'chest_cm' | 'thigh_cm' | 'arm_cm' | 'note'>>) {
+      const prev = s().body_measurements.find(x => x.day === day)
+      const row = { id: day, day, waist_cm: null, hips_cm: null, chest_cm: null, thigh_cm: null, arm_cm: null, note: null, ...prev, ...m }
+      const empty = [row.waist_cm, row.hips_cm, row.chest_cm, row.thigh_cm, row.arm_cm].every(v => v == null) && !row.note
+      if (empty) return prev ? store.remove('body_measurements', day) : undefined
+      return store.commit([put('body_measurements', row)], { derive: false })
+    },
+    async deleteMeasurements(day: Day) { return store.remove('body_measurements', day) },
 
     async saveCycleDay(day: Day, patch: Partial<Pick<CycleDay, 'period' | 'flow' | 'symptoms' | 'note' | 'period_end' | 'ovulation_confirmed'>>) {
       const op = cycleOp(day, patch)
@@ -376,7 +445,9 @@ export function createActions(store: DataStore) {
       if (balance(snap) < price) throw new Error('SOLDE')
       const ops: Op[] = [put('shop_purchases', { id: itemId, item_id: itemId, price, purchased_at: nowIso() })]
       const comp = snap.companion_profiles[0]
-      if (equip && comp) ops.push(put('companion_profiles', { ...comp, accessories: equipList(comp.accessories.filter(id => id !== itemId), itemId) }))
+      const avatar = snap.avatar_profiles[0]
+      if (equip && item.target === 'compagnon' && comp) ops.push(put('companion_profiles', { ...comp, accessories: equipList(comp.accessories.filter(id => id !== itemId), itemId) }))
+      if (equip && item.target === 'avatar' && avatar && avatar.equipped[avatarKey(item)] !== itemId) ops.push(put('avatar_profiles', { ...avatar, equipped: avatarEquip(avatar.equipped, itemId) }))
       await store.commit(ops, { derive: false })
       return price
     },
@@ -384,7 +455,12 @@ export function createActions(store: DataStore) {
     /** Met ou retire un objet de la boutique (un seul par emplacement). */
     async toggleCosmetic(itemId: string) {
       const comp = s().companion_profiles[0]
-      if (!comp || !ownedItems(s()).has(itemId)) return []
+      if (!ownedItems(s()).has(itemId)) return []
+      if (shopItem(itemId)?.target === 'avatar') {
+        const avatar = s().avatar_profiles[0]
+        return avatar ? store.commit([put('avatar_profiles', { ...avatar, equipped: avatarEquip(avatar.equipped, itemId) })], { derive: false }) : []
+      }
+      if (!comp) return []
       return store.commit([put('companion_profiles', { ...comp, accessories: equipList(comp.accessories, itemId) })], { derive: false })
     },
 

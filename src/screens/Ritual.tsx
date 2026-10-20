@@ -6,6 +6,7 @@ import { isoWeekday, hhmm } from '../lib/dates'
 import { isRendezvousDay, sportCommitment, dayRitual } from '../domain/ritual'
 import { recommend, ENERGY_LABELS, type SessionOption } from '../domain/recommend'
 import { FOCUS_LABELS } from '../domain/exercises'
+import { programProgress, sessionUrl } from '../domain/programs'
 import { ExternalActivitySheet } from './widgets'
 import { localNotification, currentSubscription } from '../lib/push'
 import type { RestReason } from '../data/types'
@@ -35,6 +36,7 @@ export function Ritual({ query }: { query: URLSearchParams }) {
   const primary = rec.options[rec.primary]
   const short = rec.options.find(o => o.version === 'min') ?? rec.options[rec.options.length - 1]
   const done = dayRitual(snap, today, today).status === 'honore'
+  const prog = programProgress(snap, today)
 
   // Bouton « Reporter de 15 min » de la notification : on reporte une fois, puis on nettoie l'adresse
   // (sinon un rechargement de la page reporterait à nouveau).
@@ -79,6 +81,16 @@ export function Ritual({ query }: { query: URLSearchParams }) {
           <h2>{rec.headline}</h2>
           <p className="muted">{rec.message}</p>
           <div className="list">
+            {prog?.next && (
+              <button className="list-item" style={{ border: 0, background: 'none', textAlign: 'left', cursor: 'pointer', width: '100%' }} onClick={() => navigate(sessionUrl(prog.next!, 'rituel'))}>
+                <span className="emoji-bubble" aria-hidden="true">{prog.program.emoji}</span>
+                <span className="grow">
+                  <span className="title" style={{ display: 'block' }}>Mon programme · {prog.next.minutes} min</span>
+                  <span className="muted small">{prog.program.short} · semaine {prog.next.week}, séance {prog.next.n}{(checkin?.energy ?? 3) <= 2 ? ' · adaptée à ton énergie' : ''}</span>
+                </span>
+                <IconPlay style={{ width: 22, color: 'var(--prune)' }} />
+              </button>
+            )}
             {rec.options.map((o, i) => (
               <button key={o.id + o.minutes} className="list-item" style={{ border: 0, background: 'none', textAlign: 'left', cursor: 'pointer', width: '100%' }} onClick={() => start(o)}>
                 <span className="emoji-bubble" aria-hidden="true" style={i === rec.primary ? { background: 'var(--prune)', color: '#fff' } : undefined}>{o.minutes}′</span>
