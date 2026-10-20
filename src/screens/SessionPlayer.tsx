@@ -106,8 +106,8 @@ export function SessionPlayer({ query }: { query: URLSearchParams }) {
           <h2>{step.kind === 'rest' ? 'Respire, bois une gorgée' : block.exercise.name}</h2>
           <div className="timer-ring" aria-live="off">
             <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r={r} stroke="var(--poudre)" strokeWidth="8" fill="none" />
-              <circle cx="60" cy="60" r={r} stroke={step.kind === 'rest' ? '#9cc3e0' : 'var(--prune)'} strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - frac)} />
+              <circle cx="60" cy="60" r={r} stroke="var(--mousse-clair)" strokeWidth="8" fill="none" />
+              <circle cx="60" cy="60" r={r} stroke={step.kind === 'rest' ? '#cfe3e8' : 'var(--vert)'} strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - frac)} />
             </svg>
             <div className="t"><div>{Math.ceil(Math.max(0, left))}<small>{started ? (paused ? 'en pause' : 'secondes') : 'prête ?'}</small></div></div>
           </div>

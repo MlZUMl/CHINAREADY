@@ -33,7 +33,7 @@ export function AuthForm({ compact = false }: { compact?: boolean }) {
       <label className="field">E-mail<input className="input" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} /></label>
       {mode !== 'oubli' && <label className="field">Mot de passe <span className="hint">6 caractères minimum</span>
         <input className="input" type="password" autoComplete={mode === 'creer' ? 'new-password' : 'current-password'} minLength={6} required value={password} onChange={e => setPassword(e.target.value)} /></label>}
-      {msg && <div className="banner" style={msg.ok ? { background: '#e6efe3', color: '#4f6b4c' } : undefined}>{msg.text}</div>}
+      {msg && <div className="banner" style={msg.ok ? { background: 'var(--mousse-clair)', color: 'var(--vert)' } : undefined}>{msg.text}</div>}
       <button className="btn primary block" disabled={busy}>{mode === 'creer' ? 'Créer mon compte' : mode === 'connexion' ? 'Me connecter' : 'Envoyer le lien'}</button>
       {mode === 'connexion' && <button type="button" className="link-btn" onClick={() => setMode('oubli')}>Mot de passe oublié ?</button>}
       {mode === 'oubli' && <button type="button" className="link-btn" onClick={() => setMode('connexion')}>Retour à la connexion</button>}

@@ -7,7 +7,7 @@ import { navigate } from '../lib/router'
 import { resumeState } from '../domain/discipline'
 import { levelFor, totalXp } from '../domain/rewards'
 import { sportCommitment } from '../domain/ritual'
-import { MealSheet } from './widgets'
+import { defaultMealSlot } from '../domain/nutrition'
 import type { Obstacle } from '../data/types'
 
 const OBSTACLES: { id: Obstacle; label: string }[] = [
@@ -24,7 +24,6 @@ export function Resume() {
   const sessions = snap.workouts.filter(w => w.completed).length
   const tenue = snap.commitments.find(c => c.kind === 'preparation' && c.active)
   const [obstacle, setObstacle] = useState<Obstacle | null>(null)
-  const [meal, setMeal] = useState(false)
 
   const markResume = () => actions.saveCheckin(today, { need: 'reprendre' })
 
@@ -54,10 +53,10 @@ export function Resume() {
                 Ma version minimale ({sport.min_minutes} min)
               </button>
             )}
-            <button className="btn secondary block" onClick={async () => { await markResume(); await reportIfAny(); await actions.addWater(today); toast('💧', 'Un verre de plus. Le fil est renoué.'); navigate('/', true) }}>
+            <button className="btn secondary block" onClick={async () => { await markResume(); await reportIfAny(); await actions.addWater(today, 250); toast('💧', '25 cl de plus. Le fil est renoué.'); navigate('/', true) }}>
               Boire un verre d'eau
             </button>
-            <button className="btn secondary block" onClick={async () => { await markResume(); await reportIfAny(); setMeal(true) }}>
+            <button className="btn secondary block" onClick={async () => { await markResume(); await reportIfAny(); navigate(`/repas/ajouter?repas=${defaultMealSlot()}`, true) }}>
               Noter mon prochain repas
             </button>
             {tenue && (
@@ -78,7 +77,6 @@ export function Resume() {
           {obstacle === 'motivation' && <p className="muted small">Pas besoin d'envie : cinq minutes, puis tu décides si tu continues.</p>}
         </section>
       </main>
-      {meal && <MealSheet day={today} onClose={() => { setMeal(false); navigate('/', true) }} />}
     </>
   )
 }

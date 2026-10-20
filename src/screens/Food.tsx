@@ -3,12 +3,15 @@ import { useApp } from '../app/state'
 import { Chips, Segmented, Sheet, Stepper, TopBar } from '../ui/components'
 import { navigate } from '../lib/router'
 import { addDays, formatDayLong, toDay, weekStart, WEEKDAYS, parseDay, type Day } from '../lib/dates'
-import { MealSheet, MOMENTS, MARKERS, WaterWidget } from './widgets'
-import { RECIPES, recipeById, shoppingList, formatQty, claudeCartPrompt } from '../domain/recipes'
+import { WaterWidget } from './widgets'
+import { allRecipes, recipeById, shoppingList, formatQty, claudeCartPrompt, formatEuros, type Recipe } from '../domain/recipes'
 import { IconBack, IconChevron, IconCopy, IconPlus, IconTrash, IconUser } from '../ui/icons'
-import type { Meal } from '../data/types'
+import type { FoodEntry } from '../data/types'
+import { MEALS, entriesOn, mealTarget, calorieGoal, sumEntries, fmtKcal, toMeal } from '../domain/nutrition'
+import { CalorieSummary, GoalSheet, QuantitySheet, QuickAddSheet, RecipeLogSheet, Thumb, entryToItem, smallPhoto } from './food-parts'
+import { recipeHasPork } from '../domain/pork'
 
-type Tab = 'journal' | 'menu' | 'recettes' | 'courses'
+type Tab = 'journal' | 'recettes' | 'menu' | 'courses'
 
 export function Food({ query }: { query: URLSearchParams }) {
   const tab = (query.get('onglet') as Tab) || 'journal'
@@ -18,9 +21,9 @@ export function Food({ query }: { query: URLSearchParams }) {
       <TopBar title="Repas" right={<button className="icon-btn" aria-label="Profil et réglages" onClick={() => navigate('/profil')}><IconUser /></button>} />
       <main className="content">
         <Segmented label="Sections repas" value={tab} onChange={set} options={[
-          { id: 'journal', label: 'Journal' }, { id: 'menu', label: 'Menu' }, { id: 'recettes', label: 'Recettes' }, { id: 'courses', label: 'Courses' },
+          { id: 'journal', label: 'Journal' }, { id: 'recettes', label: 'Recettes' }, { id: 'menu', label: 'Menu' }, { id: 'courses', label: 'Courses' },
         ]} />
-        {tab === 'journal' && <Journal />}
+        {tab === 'journal' && <Journal query={query} />}
         {tab === 'menu' && <Menu />}
         {tab === 'recettes' && <Recipes />}
         {tab === 'courses' && <Shopping />}
@@ -29,40 +32,69 @@ export function Food({ query }: { query: URLSearchParams }) {
   )
 }
 
-function Journal() {
-  const { snap, today } = useApp()
-  const [day, setDay] = useState<Day>(today)
-  const [edit, setEdit] = useState<Meal | 'new' | null>(null)
-  const meals = snap.meals.filter(m => m.day === day).sort((a, b) => MOMENTS.findIndex(x => x.id === a.moment) - MOMENTS.findIndex(x => x.id === b.moment))
+// ------------------------------------------------------------------ journal (façon Foodvisor)
+function Journal({ query }: { query: URLSearchParams }) {
+  const { snap, today, actions } = useApp()
+  const [day, setDayState] = useState<Day>((query.get('jour') as Day) || today)
+  const setDay = (d: Day) => { setDayState(d); history.replaceState(null, '', `#/repas?onglet=journal&jour=${d}`) }
+  const [goalOpen, setGoalOpen] = useState(false)
+  const [edit, setEdit] = useState<FoodEntry | null>(null)
+  const goal = calorieGoal(snap, today).goal
+  const entries = entriesOn(snap, day)
+  const legacy = snap.meals.filter(m => m.day === day)
+  const item = edit ? entryToItem(edit) : null
   return (
     <>
       <div className="row between">
         <button className="icon-btn" aria-label="Jour précédent" onClick={() => setDay(addDays(day, -1))}><IconBack /></button>
-        <strong>{day === today ? 'Aujourd\'hui' : formatDayLong(day)}</strong>
+        <strong>{day === today ? 'Aujourd\'hui' : day === addDays(today, -1) ? 'Hier' : formatDayLong(day)}</strong>
         <button className="icon-btn" aria-label="Jour suivant" disabled={day >= today} onClick={() => setDay(addDays(day, 1))}><IconChevron /></button>
       </div>
-      <section className="card">
-        <div className="card-head"><div><h2>Mes repas</h2><p className="muted small">Sans chiffres : juste garder le fil. La version minimale, c'est le nom du plat.</p></div></div>
-        {!meals.length && <p className="empty">Rien de noté pour ce jour.</p>}
-        <div className="list">
-          {meals.map(m => (
-            <button key={m.id} className="list-item" style={{ border: 0, borderBottom: '1px solid var(--ligne)', background: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }} onClick={() => setEdit(m)}>
-              <span className="emoji-bubble" aria-hidden="true">{m.recipe_id ? recipeById(m.recipe_id, snap.user_recipes)?.emoji ?? '🍽️' : '🍽️'}</span>
-              <span className="grow">
-                <span className="title" style={{ display: 'block' }}>{m.title}</span>
-                <span className="muted small">{MOMENTS.find(x => x.id === m.moment)?.label}{m.markers.length ? ' · ' + m.markers.map(k => MARKERS.find(x => x.id === k)?.label).join(', ') : ''}</span>
-              </span>
-            </button>
+      <CalorieSummary day={day} onGoal={() => setGoalOpen(true)} />
+      {MEALS.map(m => {
+        const list = entries.filter(e => e.meal === m.id)
+        const tot = sumEntries(list)
+        return (
+          <section className="card meal-card" key={m.id} aria-label={m.label}>
+            <div className="meal-head">
+              <span className="emoji-bubble" aria-hidden="true">{m.emoji}</span>
+              <div><h3>{m.label}</h3><span className="muted small" data-testid={`total-${m.id}`}>{fmtKcal(tot.kcal)}{goal ? ` / ${fmtKcal(mealTarget(goal, m.id))}` : ''}</span></div>
+              <button className="icon-btn" aria-label={`Ajouter ${toMeal(m.id)}`} style={{ background: 'var(--vert)', color: '#fff' }}
+                onClick={() => navigate(`/repas/ajouter?repas=${m.id}&jour=${day}`)}><IconPlus /></button>
+            </div>
+            {list.map(e => (
+              <button key={e.id} className="entry" onClick={() => setEdit(e)}>
+                <span className="grow">
+                  <span className="name">{e.name}</span>
+                  <span className="muted small">{e.source === 'rapide' ? 'ajout rapide' : e.unit === 'portion' ? (e.portion_label ?? `${e.quantity} portion`) : `${String(e.quantity).replace('.', ',')} ${e.unit}`}{e.brand ? ' · ' + e.brand : ''}</span>
+                </span>
+                <span className="kcal">{Math.round(e.kcal)} kcal</span>
+              </button>
+            ))}
+          </section>
+        )
+      })}
+      {legacy.length > 0 && (
+        <section className="card flat">
+          <div className="kicker-nuit">Notés avant le journal des calories</div>
+          {legacy.map(m => (
+            <div key={m.id} className="entry" style={{ cursor: 'default' }}>
+              <span className="grow"><span className="name">{m.title}</span><span className="muted small">sans calories</span></span>
+              <button className="icon-btn" style={{ width: 36, height: 36 }} aria-label={`Supprimer ${m.title}`} onClick={() => actions.deleteMeal(m.id)}><IconTrash style={{ width: 18 }} /></button>
+            </div>
           ))}
-        </div>
-        <button className="btn primary" onClick={() => setEdit('new')}><IconPlus /> Noter un repas</button>
-      </section>
+        </section>
+      )}
       <WaterWidget day={day} />
-      {edit && <MealSheet day={day} meal={edit === 'new' ? undefined : edit} onClose={() => setEdit(null)} />}
+      {goalOpen && <GoalSheet onClose={() => setGoalOpen(false)} />}
+      {edit && edit.source === 'rapide' && <QuickAddSheet day={day} meal={edit.meal} entry={edit} onClose={() => setEdit(null)} />}
+      {edit && edit.source === 'recette' && edit.ref && <RecipeLogSheet recipeId={edit.ref} day={edit.day} meal={edit.meal} portions={edit.quantity} onClose={() => setEdit(null)} />}
+      {edit && edit.source !== 'rapide' && edit.source !== 'recette' && item && <QuantitySheet item={item} entry={edit} day={edit.day} meal={edit.meal} onClose={() => setEdit(null)} />}
     </>
   )
 }
 
+// ------------------------------------------------------------------ menu de la semaine
 function Menu() {
   const { snap, today, actions } = useApp()
   const [week, setWeek] = useState(weekStart(today))
@@ -81,7 +113,7 @@ function Menu() {
         <button className="btn ghost sm" onClick={() => navigate('/repas?onglet=courses')}>Liste de courses</button>
       </div>
       {Array.from({ length: 7 }, (_, i) => addDays(week, i)).map((d, i) => (
-        <section className="card flat" key={d} style={d === today ? { borderColor: 'var(--vieux-rose)' } : undefined}>
+        <section className="card flat" key={d} style={d === today ? { borderColor: 'var(--vert)' } : undefined}>
           <strong>{WEEKDAYS[i][0].toUpperCase() + WEEKDAYS[i].slice(1)} {parseDay(d).getDate()}</strong>
           {(['midi', 'soir'] as const).map(moment => {
             const slot = plan.slots.find(s => s.day === d && s.moment === moment)
@@ -111,17 +143,29 @@ function Menu() {
 }
 
 const FILTERS = [
-  { id: 'rapide', label: 'Rapide' }, { id: 'vegetarien', label: 'Végétarien' }, { id: 'poulet', label: 'Poulet' }, { id: 'poisson', label: 'Poisson' },
-  { id: 'boeuf', label: 'Bœuf' }, { id: 'batch', label: 'À préparer d\'avance' }, { id: 'reconfort', label: 'Réconfort' }, { id: 'plaisir', label: 'Plaisir' },
+  { id: 'rapide', label: 'Rapide' }, { id: 'leger', label: 'Moins de 450 kcal' }, { id: 'vegetarien', label: 'Végétarien' }, { id: 'poulet', label: 'Poulet' },
+  { id: 'poisson', label: 'Poisson' }, { id: 'boeuf', label: 'Bœuf' }, { id: 'batch', label: 'À préparer d\'avance' }, { id: 'matin', label: 'Petit-déjeuner' },
+  { id: 'dessert', label: 'Douceurs' }, { id: 'perso', label: 'Mes recettes' },
 ]
+
+function matchesFilter(r: Recipe, f: string) {
+  if (f === 'leger') return Boolean(r.nutrition && r.nutrition.kcal < 450 && r.moment === 'midi-soir')
+  if (f === 'matin') return r.moment === 'matin'
+  if (f === 'dessert') return r.moment === 'gouter'
+  if (f === 'perso') return !r.catalog
+  return r.tags.includes(f)
+}
 
 function useRecipeSearch() {
   const { snap } = useApp()
   const [q, setQ] = useState('')
   const [filters, setFilters] = useState<string[]>([])
   const list = useMemo(() => {
-    const all = [...RECIPES, ...snap.user_recipes.map(u => ({ ...u, emoji: '📝', moment: 'midi-soir' as const, minutes: u.minutes ?? 0, markers: [] }))]
-    return all.filter(r => (!q || r.title.toLowerCase().includes(q.toLowerCase())) && filters.every(f => r.tags.includes(f)))
+    const words = q.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').split(/\s+/).filter(Boolean)
+    return allRecipes(snap.user_recipes).filter(r => {
+      const hay = (r.title + ' ' + r.ingredients.map(i => i.name).join(' ')).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      return words.every(w => hay.includes(w)) && filters.every(f => matchesFilter(r, f))
+    })
   }, [q, filters, snap.user_recipes])
   return { q, setQ, filters, setFilters, list }
 }
@@ -132,14 +176,14 @@ function RecipePicker({ onClose, onPick }: { onClose: () => void; onPick: (id: s
   const [n, setN] = useState(snap.profiles[0]?.portions ?? 1)
   return (
     <Sheet title="Choisir une recette" onClose={onClose}>
-      <input className="input" placeholder="Rechercher" value={q} onChange={e => setQ(e.target.value)} />
+      <input className="input" placeholder="Rechercher" value={q} onChange={e => setQ(e.target.value)} aria-label="Rechercher" />
       <Chips label="Filtres" multi soft value={filters} onChange={setFilters} options={FILTERS} />
       <div className="row between"><strong>Portions</strong><Stepper label="Portions" value={n} min={1} max={8} onChange={setN} /></div>
       <div className="list">
         {list.map(r => (
-          <button key={r.id} className="list-item" style={{ border: 0, borderBottom: '1px solid var(--ligne)', background: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }} onClick={() => onPick(r.id, n)}>
-            <span className="emoji-bubble" aria-hidden="true">{r.emoji}</span>
-            <span className="grow"><span className="title" style={{ display: 'block' }}>{r.title}</span><span className="muted small">{r.minutes ? r.minutes + ' min' : ''}</span></span>
+          <button key={r.id} className="entry" onClick={() => onPick(r.id, n)}>
+            <Thumb src={r.photo ? smallPhoto(r.photo.url, 200) : null} emoji={r.emoji} />
+            <span className="grow"><span className="name">{r.title}</span><span className="muted small">{r.nutrition ? `${r.nutrition.kcal} kcal` : ''}{r.minutes ? ` · ${r.minutes} min` : ''}</span></span>
           </button>
         ))}
       </div>
@@ -150,58 +194,90 @@ function RecipePicker({ onClose, onPick }: { onClose: () => void; onPick: (id: s
 function Recipes() {
   const { q, setQ, filters, setFilters, list } = useRecipeSearch()
   const [create, setCreate] = useState(false)
+  const [log, setLog] = useState<string | null>(null)
   return (
     <>
-      <input className="input" placeholder="Rechercher une recette" value={q} onChange={e => setQ(e.target.value)} aria-label="Rechercher une recette" />
+      <input className="input" placeholder="Rechercher une recette ou un ingrédient" value={q} onChange={e => setQ(e.target.value)} aria-label="Rechercher une recette" />
       <Chips label="Filtres" multi soft value={filters} onChange={setFilters} options={FILTERS} />
-      <p className="muted small">Toutes les recettes sont halal. Quantités pour une portion, ajustables.</p>
-      <section className="card">
-        <div className="list">
-          {list.map(r => (
-            <button key={r.id} className="list-item" style={{ border: 0, borderBottom: '1px solid var(--ligne)', background: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }} onClick={() => navigate('/repas/recette/' + r.id)}>
-              <span className="emoji-bubble" aria-hidden="true">{r.emoji}</span>
-              <span className="grow"><span className="title" style={{ display: 'block' }}>{r.title}</span>
-                <span className="muted small">{r.minutes ? r.minutes + ' min · ' : ''}{r.tags.slice(0, 3).join(' · ')}</span></span>
-              <IconChevron style={{ width: 18, color: 'var(--texte-doux)' }} />
+      <p className="muted small">Toutes les recettes sont sans porc. Valeurs pour une portion (table Ciqual), coût estimé.</p>
+      {!list.length && <p className="empty">Aucune recette avec ces filtres.</p>}
+      <div className="recipe-grid">
+        {list.map(r => (
+          <div key={r.id} className="recipe-card" role="group" aria-label={r.title}>
+            <button style={{ all: 'unset', cursor: 'pointer', display: 'flex', flexDirection: 'column' }} onClick={() => navigate('/repas/recette/' + r.id)}>
+              <span className="ph"><Thumb className="" src={r.photo ? smallPhoto(r.photo.url, 420) : null} emoji={r.emoji} /></span>
+              <span className="body">
+                <span className="t">{r.title}</span>
+                <span className="m">{r.nutrition ? `${r.nutrition.kcal} kcal` : 'perso'}{r.minutes ? ` · ${r.minutes} min` : ''}{r.cost ? ` · ${formatEuros(r.cost)}` : ''}</span>
+              </span>
             </button>
-          ))}
-          {!list.length && <p className="empty">Aucune recette avec ces filtres.</p>}
-        </div>
-      </section>
+            <button className="link-btn small" style={{ margin: '0 10px 8px', alignSelf: 'flex-start' }} onClick={() => setLog(r.id)} aria-label={`Ajouter ${r.title} au journal`}>+ Journal</button>
+          </div>
+        ))}
+      </div>
       <button className="btn secondary" onClick={() => setCreate(true)}><IconPlus /> Ajouter ma propre recette</button>
       {create && <UserRecipeSheet onClose={() => setCreate(false)} />}
+      {log && <RecipeLogSheet recipeId={log} onClose={() => setLog(null)} />}
     </>
   )
 }
 
-function UserRecipeSheet({ onClose }: { onClose: () => void }) {
-  const { actions } = useApp()
-  const [title, setTitle] = useState('')
-  const [minutes, setMinutes] = useState(30)
-  const [servings, setServings] = useState(2)
-  const [ingredients, setIngredients] = useState('')
-  const [steps, setSteps] = useState('')
+export function UserRecipeSheet({ onClose, initial }: { onClose: () => void; initial?: import('../data/types').UserRecipe }) {
+  const { actions, toast } = useApp()
+  const [title, setTitle] = useState(initial?.title ?? '')
+  const [minutes, setMinutes] = useState(initial?.minutes ?? 30)
+  const [servings, setServings] = useState(initial?.servings ?? 2)
+  const [ingredients, setIngredients] = useState(initial?.ingredients.map(i => i.name).join('\n') ?? '')
+  const [steps, setSteps] = useState(initial?.steps.join('\n') ?? '')
+  const [source, setSource] = useState(initial?.source_url ?? '')
+  const [photo, setPhoto] = useState(initial?.photo_url ?? '')
+  const [kcal, setKcal] = useState(initial?.nutrition ? String(initial.nutrition.kcal) : '')
+  const [p, setP] = useState(initial?.nutrition ? String(initial.nutrition.protein) : '')
+  const [c, setC] = useState(initial?.nutrition ? String(initial.nutrition.carbs) : '')
+  const [f, setF] = useState(initial?.nutrition ? String(initial.nutrition.fat) : '')
+  const draft = {
+    title: title.trim(), ingredients: ingredients.split('\n').map(l => l.trim()).filter(Boolean).map(name => ({ name, qty: null, unit: '', aisle: 'Mes ingrédients' })),
+    steps: steps.split('\n').map(l => l.trim()).filter(Boolean),
+  }
+  const pork = recipeHasPork(draft)
+  const url = (u: string) => !u.trim() || /^https:\/\/\S+$/.test(u.trim())
+  const num = (x: string) => { const n = Number(x.replace(',', '.')); return x.trim() && Number.isFinite(n) && n >= 0 ? n : null }
   const save = async () => {
-    if (!title.trim()) return
-    await actions.saveUserRecipe({
-      id: 'perso-' + Date.now().toString(36), title: title.trim(), minutes, servings,
-      ingredients: ingredients.split('\n').map(l => l.trim()).filter(Boolean).map(name => ({ name, qty: null, unit: '', aisle: 'Mes ingrédients' })),
-      steps: steps.split('\n').map(l => l.trim()).filter(Boolean), tags: ['perso'],
-    })
-    onClose()
+    if (!draft.title || pork || !url(source) || !url(photo)) return
+    try {
+      await actions.saveUserRecipe({
+        id: initial?.id ?? 'perso-' + Date.now().toString(36), ...draft, minutes, servings, tags: ['perso'],
+        source_url: source.trim() || null, photo_url: photo.trim() || null,
+        nutrition: num(kcal) !== null ? { kcal: num(kcal)!, protein: num(p) ?? 0, carbs: num(c) ?? 0, fat: num(f) ?? 0, fiber: 0 } : null,
+      })
+      toast('📝', 'Recette enregistrée')
+      onClose()
+    } catch { toast('⛔', 'Cette recette contient du porc : elle ne peut pas être enregistrée.') }
   }
   return (
-    <Sheet title="Ma recette" onClose={onClose}>
+    <Sheet title={initial ? 'Modifier ma recette' : 'Ma recette'} onClose={onClose}>
       <label className="field">Nom<input className="input" value={title} onChange={e => setTitle(e.target.value)} /></label>
       <div className="row between"><strong>Temps</strong><Stepper label="Temps" value={minutes} min={5} max={240} step={5} onChange={setMinutes} format={v => v + ' min'} /></div>
       <div className="row between"><strong>Pour</strong><Stepper label="Portions" value={servings} min={1} max={12} onChange={setServings} format={v => v + ' pers.'} /></div>
-      <label className="field">Ingrédients <span className="hint">Un par ligne, ex. « 200 g de poulet halal »</span><textarea className="input" value={ingredients} onChange={e => setIngredients(e.target.value)} /></label>
+      <label className="field">Ingrédients <span className="hint">Un par ligne, ex. « 200 g de blanc de poulet »</span><textarea className="input" value={ingredients} onChange={e => setIngredients(e.target.value)} /></label>
       <label className="field">Étapes <span className="hint">Une par ligne</span><textarea className="input" value={steps} onChange={e => setSteps(e.target.value)} /></label>
-      <button className="btn primary block" onClick={save} disabled={!title.trim()}>Enregistrer</button>
+      {pork && <div className="warn" role="alert">⛔ Cette recette mentionne du porc (ou un dérivé) : elle ne peut pas être enregistrée.</div>}
+      <label className="field">Lien de la recette <span className="hint">Facultatif — site, vidéo…</span><input className="input" inputMode="url" value={source} onChange={e => setSource(e.target.value)} placeholder="https://…" /></label>
+      <label className="field">Lien d'une photo <span className="hint">Facultatif</span><input className="input" inputMode="url" value={photo} onChange={e => setPhoto(e.target.value)} placeholder="https://…" /></label>
+      {(!url(source) || !url(photo)) && <p className="muted small">Les liens doivent commencer par https://</p>}
+      <strong className="small">Valeurs pour une portion <span className="muted">(facultatif, pour compter les calories)</span></strong>
+      <div className="grid2">
+        <label className="field small">Calories (kcal)<input className="input" inputMode="numeric" value={kcal} onChange={e => setKcal(e.target.value)} /></label>
+        <label className="field small">Protéines (g)<input className="input" inputMode="decimal" value={p} onChange={e => setP(e.target.value)} /></label>
+        <label className="field small">Glucides (g)<input className="input" inputMode="decimal" value={c} onChange={e => setC(e.target.value)} /></label>
+        <label className="field small">Lipides (g)<input className="input" inputMode="decimal" value={f} onChange={e => setF(e.target.value)} /></label>
+      </div>
+      <button className="btn primary block" onClick={save} disabled={!draft.title || pork || !url(source) || !url(photo)}>Enregistrer</button>
     </Sheet>
   )
 }
 
+// ------------------------------------------------------------------ courses
 function Shopping() {
   const { snap, today, actions, toast } = useApp()
   const [week, setWeek] = useState(weekStart(today))
@@ -227,7 +303,7 @@ function Shopping() {
         <>
           <section className="card prune">
             <h3>Faire remplir le panier par Claude</h3>
-            <p className="muted">Copie la liste, puis colle-la à Claude dans Chrome, sur le site de ton drive. Il ajoute les produits (halal pour la viande) et te laisse valider toi-même la commande.</p>
+            <p className="muted">Copie la liste, puis colle-la à Claude dans Chrome, sur le site de ton drive. Il ajoute les produits (sans porc) et te laisse valider toi-même la commande.</p>
             <button className="btn white" onClick={copy}><IconCopy /> Copier la liste pour Claude</button>
           </section>
           {Object.entries(byAisle).map(([aisle, list]) => (

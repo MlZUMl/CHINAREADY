@@ -40,3 +40,7 @@ export const IconCamera = base(<><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.5-2.5h6
 export const IconRefresh = base(<><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8" /><path d="M4 3.5V8h4.5" /><path d="M4 13a8 8 0 0 0 14.5 4.5L20 16" /><path d="M20 20.5V16h-4.5" /></>)
 export const IconInfo = base(<><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5" /><path d="M12 8h.01" /></>)
 export const IconHeart = base(<path d="M12 20s-7.5-4.5-7.5-10A4.3 4.3 0 0 1 12 7.5 4.3 4.3 0 0 1 19.5 10C19.5 15.5 12 20 12 20Z" />)
+export const IconSearch = base(<><circle cx="11" cy="11" r="6.5" /><path d="m20 20-4.2-4.2" /></>)
+export const IconScan = base(<><path d="M4 8V5a1 1 0 0 1 1-1h3" /><path d="M16 4h3a1 1 0 0 1 1 1v3" /><path d="M20 16v3a1 1 0 0 1-1 1h-3" /><path d="M8 20H5a1 1 0 0 1-1-1v-3" /><path d="M8 8v8M11 8v8M14 8v8M17 8v8" /></>)
+export const IconExternal = base(<><path d="M14 4h6v6" /><path d="M20 4 11 13" /><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></>)
+export const IconBolt = base(<path d="M13 3 5 14h6l-1 7 8-11h-6Z" />)

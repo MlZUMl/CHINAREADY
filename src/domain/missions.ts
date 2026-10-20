@@ -4,7 +4,7 @@ import type { Snapshot, UserMission } from '../data/types'
 import { addDays, weekStart, type Day } from '../lib/dates'
 import { hash } from '../lib/ids'
 import { dayRitual, isRendezvousDay, sportCommitment, restEvent } from './ritual'
-import { resumeState, waterGoal, waterGlasses } from './discipline'
+import { resumeState, waterReached, waterMl, hasFoodOn, recipeLogs, fruitOrVegOn } from './discipline'
 
 export type MissionCategory = 'sport' | 'eau' | 'alimentation' | 'organisation' | 'bien-etre' | 'reprise'
 
@@ -29,7 +29,7 @@ const workoutsToday = (s: Snapshot, day: Day) => s.workouts.filter(w => w.day ==
 
 export const MISSIONS: MissionDef[] = [
   { key: 'nouvelle-recette', name: 'Découverte en cuisine', goal: 'Cuisiner et noter une recette que tu n\'as encore jamais faite.', category: 'alimentation', difficulty: 2, xp: 25,
-    success: (s, d) => s.meals.some(m => m.day === d && m.recipe_id && !s.meals.some(o => o.recipe_id === m.recipe_id && o.day < d)) },
+    success: (s, d) => { const logs = recipeLogs(s); return logs.some(m => m.day === d && !logs.some(o => o.recipe_id === m.recipe_id && o.day < d)) } },
   { key: 'eau-reveil', name: 'Le verre du réveil', goal: 'Boire un verre d\'eau avant 10 h et le noter.', category: 'eau', difficulty: 1, xp: 10,
     eligible: ({ hour }) => hour < 10,
     success: (s, d) => s.water_logs.some(w => w.day === d && hourOf(w.at) < 10) },
@@ -38,7 +38,7 @@ export const MISSIONS: MissionDef[] = [
   { key: 'mobilite-courte', name: 'Corps délié', goal: 'Faire une séance guidée de mobilité, même courte.', category: 'sport', difficulty: 1, xp: 15, movement: true,
     success: (s, d) => workoutsToday(s, d).some(w => w.kind === 'guidee' && w.activity === 'mobilite') },
   { key: 'fruit-legume', name: 'Une touche de couleur', goal: 'Noter un repas qui contient un fruit ou des légumes.', category: 'alimentation', difficulty: 1, xp: 10,
-    success: (s, d) => s.meals.some(m => m.day === d && (m.markers.includes('fruit') || m.markers.includes('legumes'))) },
+    success: (s, d) => fruitOrVegOn(s, d) },
   { key: 'tenue-demain', name: 'Prête pour demain', goal: 'Préparer ta tenue de sport pour demain et cocher l\'habitude.', category: 'organisation', difficulty: 1, xp: 10,
     eligible: ({ s }) => s.commitments.some(c => c.kind === 'preparation' && c.active),
     success: (s, d) => s.habit_checks.some(h => h.day === d && s.commitments.find(c => c.id === h.commitment_id)?.kind === 'preparation') },
@@ -46,8 +46,8 @@ export const MISSIONS: MissionDef[] = [
     success: (s, d) => workoutsToday(s, d).some(w => ['ring_fit', 'danse', 'velo'].includes(w.activity)) },
   { key: 'journal-ressenti', name: 'Deux lignes pour toi', goal: 'Écrire ton ressenti du jour dans ton journal.', category: 'bien-etre', difficulty: 1, xp: 10,
     success: (s, d) => s.journal_entries.some(j => j.day === d && j.text.trim().length >= 3) },
-  { key: 'objectif-eau', name: 'Gourde vide', goal: 'Atteindre ton objectif de verres d\'eau aujourd\'hui.', category: 'eau', difficulty: 2, xp: 15,
-    success: (s, d) => waterGlasses(s, d) >= waterGoal(s) },
+  { key: 'objectif-eau', name: 'Gourde vide', goal: 'Atteindre ton objectif d\'eau aujourd\'hui.', category: 'eau', difficulty: 2, xp: 15,
+    success: (s, d) => waterReached(s, d) },
   { key: 'rdv-honore', name: 'Parole tenue', goal: 'Honorer ton rendez-vous sportif du jour (version minimale comprise).', category: 'sport', difficulty: 2, xp: 20, movement: true,
     eligible: ({ s, day }) => isRendezvousDay(sportCommitment(s), day),
     success: (s, d) => dayRitual(s, d, d).status === 'honore' },
@@ -55,7 +55,7 @@ export const MISSIONS: MissionDef[] = [
     eligible: ({ s, day }) => s.meal_plans.some(p => p.week_start === weekStart(day) && p.slots.length > 0),
     success: (s, d) => {
       const plan = s.meal_plans.find(p => p.week_start === weekStart(d))
-      return Boolean(plan && s.meals.some(m => m.day === d && m.recipe_id && plan.slots.some(sl => sl.recipe_id === m.recipe_id)))
+      return Boolean(plan && recipeLogs(s).some(m => m.day === d && plan.slots.some(sl => sl.recipe_id === m.recipe_id)))
     } },
   { key: 'planifier-menu', name: 'Semaine sereine', goal: 'Planifier au moins 3 repas dans ton menu de la semaine.', category: 'organisation', difficulty: 2, xp: 20,
     success: (s, d) => (s.meal_plans.find(p => p.week_start === weekStart(d))?.slots.length ?? 0) >= 3 },
@@ -65,7 +65,7 @@ export const MISSIONS: MissionDef[] = [
     success: (s, d) => s.daily_checkins.some(c => c.day === d && c.energy) },
   { key: 'reprise', name: 'Le fil retrouvé', goal: 'Reprendre une habitude aujourd\'hui : la version minimale suffit.', category: 'reprise', difficulty: 1, xp: 25,
     eligible: ({ resume }) => resume,
-    success: (s, d) => dayRitual(s, d, d).status === 'honore' || waterGlasses(s, d) >= 1 || s.meals.some(m => m.day === d) },
+    success: (s, d) => dayRitual(s, d, d).status === 'honore' || waterMl(s, d) > 0 || hasFoodOn(s, d) },
 ]
 
 export function missionDef(key: string) { return MISSIONS.find(m => m.key === key) }

@@ -2,7 +2,7 @@
 import type { CapsuleSnapshot, ProgressCapsule, Snapshot } from '../data/types'
 import { addDays, type Day } from '../lib/dates'
 import { rendezvousStats } from './ritual'
-import { reprises, waterGlasses, waterGoal } from './discipline'
+import { reprises, waterReached, hasFoodOn } from './discipline'
 import { levelFor, totalXp } from './rewards'
 import { weightTrend } from './body'
 
@@ -40,8 +40,8 @@ export function buildCapsuleSnapshot(s: Snapshot, today: Day): CapsuleSnapshot {
   return {
     workouts_last_30: s.workouts.filter(w => w.completed && w.day >= from && w.day <= today).length,
     rendezvous_rate_30: rdv.rate,
-    water_goal_days_30: days.filter(d => waterGlasses(s, d) >= waterGoal(s)).length,
-    meals_logged_days_30: days.filter(d => s.meals.some(m => m.day === d)).length,
+    water_goal_days_30: days.filter(d => waterReached(s, d)).length,
+    meals_logged_days_30: days.filter(d => hasFoodOn(s, d)).length,
     avg_energy_30: energies.length ? Math.round((energies.reduce((a, b) => a + b, 0) / energies.length) * 10) / 10 : null,
     weight_trend: trend.length ? trend[trend.length - 1].trend : null,
     level: levelFor(totalXp(s)).level,

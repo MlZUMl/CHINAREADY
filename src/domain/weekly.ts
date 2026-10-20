@@ -2,7 +2,7 @@
 import type { Snapshot } from '../data/types'
 import { addDays, type Day } from '../lib/dates'
 import { rendezvousStats } from './ritual'
-import { reprises, waterGlasses, waterGoal } from './discipline'
+import { reprises, waterReached, hasFoodOn } from './discipline'
 
 export interface WeekSummary {
   weekStart: Day
@@ -31,8 +31,8 @@ export function summarizeWeek(s: Snapshot, ws: Day, today: Day): WeekSummary {
     rdv,
     sessions: sessions.length,
     minutes: sessions.reduce((n, w) => n + w.actual_minutes, 0),
-    waterGoalDays: days.filter(d => waterGlasses(s, d) >= waterGoal(s)).length,
-    mealDays: days.filter(d => s.meals.some(m => m.day === d)).length,
+    waterGoalDays: days.filter(d => waterReached(s, d)).length,
+    mealDays: days.filter(d => hasFoodOn(s, d)).length,
     avgEnergy: energies.length ? Math.round((energies.reduce((a, b) => a + b, 0) / energies.length) * 10) / 10 : null,
     reprises: reprises(s, today).filter(d => d >= ws && d <= end).length,
     newRewards: {

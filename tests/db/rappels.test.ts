@@ -81,11 +81,18 @@ describe('rappel du rendez-vous sportif', () => {
 describe('autres rappels', () => {
   it("eau aux heures choisies tant que l'objectif n'est pas atteint, sauf jour d'épuisement", async () => {
     await setup(USER_A)
-    expect((await due('2026-10-20T08:31:00Z')).map(x => x.key)).toContain('eau:2026-10-20:10:30')
-    await db.exec(`insert into water_logs (user_id, id, day, glasses) select '${USER_A}', 'e' || g, '2026-10-20', 1 from generate_series(1, 8) g`)
-    expect((await due('2026-10-20T08:31:00Z')).filter(x => x.key.startsWith('eau'))).toHaveLength(0)
+    // 5 rappels par défaut : 9 h 30, 11 h 30, 13 h 30, 15 h 30, 18 h 30 (heure de Paris = UTC+2 ce jour-là)
+    const at1131 = '2026-10-20T09:31:00Z'
+    expect((await due(at1131)).map(x => x.key)).toContain('eau:2026-10-20:11:30')
+    expect((await due('2026-10-20T16:31:00Z')).map(x => x.key)).toContain('eau:2026-10-20:18:30')
+    // Message en litres : 0,75 L bus sur 2,0 L
+    await db.exec(`insert into water_logs (user_id, id, day, glasses, ml) values ('${USER_A}', 'a', '2026-10-20', 1, 500), ('${USER_A}', 'b', '2026-10-20', 1, 250)`)
+    expect((await due(at1131)).find(x => x.key.startsWith('eau'))!.body).toMatch(/^Tu en es à 0,75 L sur 2,0 L\./)
+    // Objectif atteint (anciennes entrées en verres comprises : 1 verre = 25 cl) : plus de rappel
+    await db.exec(`insert into water_logs (user_id, id, day, glasses) select '${USER_A}', 'e' || g, '2026-10-20', 1 from generate_series(1, 5) g`)
+    expect((await due(at1131)).filter(x => x.key.startsWith('eau'))).toHaveLength(0)
     await db.exec(`delete from water_logs; insert into daily_checkins (user_id, id, day, energy) values ('${USER_A}', '2026-10-20', '2026-10-20', 1)`)
-    expect((await due('2026-10-20T08:31:00Z')).filter(x => x.key.startsWith('eau'))).toHaveLength(0)
+    expect((await due(at1131)).filter(x => x.key.startsWith('eau'))).toHaveLength(0)
   })
   it("capsule : à sa date d'ouverture, une seule fois tant qu'elle n'est pas ouverte", async () => {
     await setup(USER_A)

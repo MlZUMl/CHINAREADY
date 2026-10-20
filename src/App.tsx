@@ -9,6 +9,7 @@ import { SessionPlayer, SessionDone } from './screens/SessionPlayer'
 import { Activity } from './screens/Activity'
 import { Food } from './screens/Food'
 import { RecipeDetail } from './screens/RecipeDetail'
+import { FoodAdd } from './screens/FoodAdd'
 import { Progress } from './screens/Progress'
 import { CapsuleScreen, CapsuleCreate } from './screens/Capsules'
 import { WeeklyReviewScreen } from './screens/WeeklyReview'
@@ -49,6 +50,7 @@ export function App() {
   else if (route === '/reprise') { screen = <Resume />; tabs = false }
   else if (route.startsWith('/activite')) screen = <Activity />
   else if ((p = match('/repas/recette/:id', route))) { screen = <RecipeDetail id={p.id} />; tabs = false }
+  else if (route === '/repas/ajouter') { screen = <FoodAdd query={query} />; tabs = false }
   else if (route.startsWith('/repas')) screen = <Food query={query} />
   else if (route === '/progres/capsule/nouvelle') { screen = <CapsuleCreate />; tabs = false }
   else if ((p = match('/progres/capsule/:id', route))) { screen = <CapsuleScreen id={p.id} />; tabs = false }

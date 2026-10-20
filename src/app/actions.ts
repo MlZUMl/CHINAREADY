@@ -4,6 +4,7 @@ import type { DataStore, Op } from '../data/store'
 import type {
   AvatarProfile, Commitment, CompanionProfile, DailyCheckin, Meal, MealPlan, PlanSlot, ProgressCapsule, Profile,
   EnergyPreferences, NotificationPreferences, Workout, RitualAction, RestReason, Obstacle, HabitInsight, Snapshot, UserRecipe, CycleDay,
+  FoodEntry, CustomFood, MealSlot, Equipment, NutritionSettings,
 } from '../data/types'
 import { toDay, nowIso, weekStart, addDays, type Day } from '../lib/dates'
 import { uid } from '../lib/ids'
@@ -11,10 +12,15 @@ import { defaultCommitments, defaultEnergyPrefs, defaultNotificationPrefs, defau
 import { chooseMission, missionId, isMysteryDay } from '../domain/missions'
 import { buildCapsuleSnapshot } from '../domain/capsules'
 import type { Insight } from '../domain/analysis'
-import { RECIPES } from '../domain/recipes'
+import { RECIPES, recipeById } from '../domain/recipes'
+import { multiply } from '../domain/nutrition'
+import { HYDRATION_TIMES } from '../domain/defaults'
+import { porkInText, recipeHasPork } from '../domain/pork'
 import { hash } from '../lib/ids'
 
 const put = (table: Op['table'], row: any): Op => ({ type: 'put', table, row })
+
+export const UPGRADES = ['lot1']
 
 export function createActions(store: DataStore) {
   const s = () => store.snapshot()
@@ -22,11 +28,12 @@ export function createActions(store: DataStore) {
 
   const api = {
     // ---------------------------------------------------------------- accueil
-    async completeOnboarding(o: { name: string | null; ritual: RitualSetup; species: CompanionProfile['species']; companionName: string; water: number; equipment: ('elastique' | 'halteres' | 'tapis')[] }) {
+    async completeOnboarding(o: { name: string | null; ritual: RitualSetup; species: CompanionProfile['species']; companionName: string; waterMl: number; equipment: Equipment[] }) {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Paris'
       const p = defaultProfile(o.name, tz)
-      p.water_goal_glasses = o.water
-      p.settings = { ...p.settings, equipment: o.equipment }
+      p.water_goal_ml = o.waterMl
+      p.water_goal_glasses = Math.max(1, Math.min(20, Math.round(o.waterMl / 250)))
+      p.settings = { ...p.settings, equipment: o.equipment, upgrades: [...UPGRADES] }
       const ops: Op[] = [
         put('profiles', p),
         put('energy_preferences', defaultEnergyPrefs()),
@@ -114,14 +121,82 @@ export function createActions(store: DataStore) {
       return store.commit(ops)
     },
 
-    // ---------------------------------------------------------------- eau & repas
-    async addWater(day: Day = toDay(), glasses = 1) {
-      return store.commit([put('water_logs', { id: uid(), day, at: day === toDay() ? nowIso() : `${day}T12:00:00.000Z`, glasses })])
+    /**
+     * Mises à niveau locales, appliquées une seule fois (et synchronisées) :
+     * lot1 — objectif d'eau en litres (2 L) et 5 rappels d'eau par jour.
+     */
+    async ensureUpgrades() {
+      const p = profile()
+      if (!p) return
+      const done = new Set(p.settings.upgrades ?? [])
+      if (done.has('lot1')) return
+      const ops: Op[] = [put('profiles', { ...p, water_goal_ml: p.water_goal_ml ?? 2000, settings: { ...p.settings, upgrades: [...done, 'lot1'] } })]
+      const np = s().notification_preferences[0]
+      if (np) ops.push(put('notification_preferences', { ...np, hydration: true, hydration_times: [...HYDRATION_TIMES] }))
+      await store.commit(ops, { derive: false })
     },
+
+    // ---------------------------------------------------------------- eau (millilitres)
+    async addWater(day: Day = toDay(), ml = 250) {
+      const amount = Math.round(Math.max(10, Math.min(3000, ml)))
+      return store.commit([put('water_logs', { id: uid(), day, at: day === toDay() ? nowIso() : `${day}T12:00:00.000Z`, glasses: 1, ml: amount })])
+    },
+
+    async updateWater(id: string, ml: number) {
+      const w = s().water_logs.find(x => x.id === id)
+      if (!w) return []
+      return store.commit([put('water_logs', { ...w, glasses: 1, ml: Math.round(Math.max(10, Math.min(3000, ml))) })])
+    },
+
+    async deleteWater(id: string) { return store.remove('water_logs', id) },
 
     async removeWater(day: Day = toDay()) {
       const last = s().water_logs.filter(w => w.day === day).sort((a, b) => b.at.localeCompare(a.at))[0]
       if (last) await store.remove('water_logs', last.id)
+    },
+
+    // ---------------------------------------------------------------- journal alimentaire
+    /** Ajoute ou modifie une ligne du journal. Refusée si le nom contient du porc. */
+    async saveFoodEntry(e: Omit<FoodEntry, 'id' | 'created_at' | 'updated_at' | 'at'> & { id?: string; at?: string }) {
+      if (porkInText(e.name) || porkInText(e.brand)) throw new Error('PORC')
+      const prev = e.id ? s().food_entries.find(f => f.id === e.id) : undefined
+      const row = { ...e, id: e.id ?? uid(), at: e.at ?? prev?.at ?? (e.day === toDay() ? nowIso() : `${e.day}T12:00:00.000Z`) }
+      await store.commit([put('food_entries', row)])
+      return row.id
+    },
+
+    async deleteFoodEntry(id: string) { return store.remove('food_entries', id) },
+
+    /**
+     * Ajoute une recette au journal. Idempotent : une même recette, le même jour, dans le même repas,
+     * ne crée qu'une seule ligne (un second appui met à jour le nombre de portions).
+     */
+    async logRecipe(recipeId: string, day: Day, meal: MealSlot, portions: number) {
+      const r = recipeById(recipeId, s().user_recipes)
+      if (!r) return null
+      const id = `recette:${day}:${meal}:${recipeId}`
+      const per = r.nutrition
+      const n = per ? multiply(per, portions) : { kcal: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }
+      const grams = r.catalog ? Math.round(r.ingredients.reduce((g, i) => g + (i.grams ?? 0), 0) * portions) : 0
+      const existed = s().food_entries.some(f => f.id === id)
+      await api.saveFoodEntry({
+        id, day, meal, source: 'recette', ref: r.id, name: r.title, brand: null, quantity: portions, unit: 'portion', grams,
+        portion_label: portions > 1 ? `${portions} portions` : '1 portion', per100: null,
+        kcal: n.kcal, protein: n.protein, carbs: n.carbs, fat: n.fat, fiber: n.fiber,
+        details: { portions, recipe_title: r.title, markers: r.markers }, category: 'recette',
+      })
+      return { id, existed }
+    },
+
+    async saveCustomFood(c: Omit<CustomFood, 'created_at' | 'updated_at'>) {
+      if (porkInText(c.name) || porkInText(c.brand)) throw new Error('PORC')
+      return store.commit([put('custom_foods', c)])
+    },
+    async deleteCustomFood(id: string) { return store.remove('custom_foods', id) },
+
+    async saveNutritionSettings(patch: Partial<NutritionSettings>) {
+      const p = profile()
+      return store.commit([put('profiles', { ...p, settings: { ...p.settings, nutrition: { ...(p.settings.nutrition ?? {}), ...patch } } })], { derive: false })
     },
 
     async saveMeal(m: Omit<Meal, 'id' | 'created_at' | 'updated_at' | 'at'> & { id?: string; at?: string }) {
@@ -131,7 +206,11 @@ export function createActions(store: DataStore) {
 
     async deleteMeal(id: string) { return store.remove('meals', id) },
 
-    async saveUserRecipe(r: Omit<UserRecipe, 'created_at' | 'updated_at'>) { return store.commit([put('user_recipes', r)]) },
+    /** Recette personnelle : le contrôle « sans porc » bloque l'enregistrement. */
+    async saveUserRecipe(r: Omit<UserRecipe, 'created_at' | 'updated_at'>) {
+      if (recipeHasPork({ title: r.title, ingredients: r.ingredients, steps: r.steps })) throw new Error('PORC')
+      return store.commit([put('user_recipes', r)])
+    },
     async deleteUserRecipe(id: string) { return store.remove('user_recipes', id) },
 
     planFor(week: Day): MealPlan {

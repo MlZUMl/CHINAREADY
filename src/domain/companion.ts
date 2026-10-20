@@ -4,7 +4,7 @@ import type { CompanionInteraction, Snapshot, Species } from '../data/types'
 import { toDay, minutesOfDay, type Day } from '../lib/dates'
 import { hash } from '../lib/ids'
 import { dayRitual, isRendezvousDay, restEvent, sportCommitment } from './ritual'
-import { resumeState, waterGlasses, waterGoal } from './discipline'
+import { resumeState, waterMl, waterGoalMl, entryMl, hasFoodOn, recipeLogs, formatLitres } from './discipline'
 import { badgeDef, itemDef } from './catalog'
 
 export type Expression = 'content' | 'curieux' | 'endormi' | 'pensif' | 'fier' | 'enthousiaste' | 'detendu' | 'surpris'
@@ -106,18 +106,19 @@ export function moodFor(s: Snapshot, now: Date = new Date()): CompanionMood {
   const today = toDay(now)
   const recent = (iso: string) => now.getTime() - Date.parse(iso) < 3 * 3600_000
   const resume = resumeState(s, today)
-  const anyActionToday = s.workouts.some(w => w.day === today) || s.water_logs.some(w => w.day === today) || s.meals.some(m => m.day === today)
+  const anyActionToday = s.workouts.some(w => w.day === today) || s.water_logs.some(w => w.day === today) || hasFoodOn(s, today)
 
   if (resume.daysAway >= 3 && !anyActionToday) return { context: 'retour', expression: 'content', reason: `Retour après ${resume.daysAway} jours` }
 
   const events: { at: string; ctx: Context; reason: string }[] = []
   for (const w of s.workouts) if (w.day === today && w.completed && w.ended_at && recent(w.ended_at)) events.push({ at: w.ended_at, ctx: 'seance-faite', reason: 'Séance terminée' })
   for (const m of s.user_missions) if (m.status === 'terminee' && m.completed_at && recent(m.completed_at)) events.push({ at: m.completed_at, ctx: 'mission-reussie', reason: 'Mission réussie' })
-  const goal = waterGoal(s)
+  const goal = waterGoalMl(s)
   const todayWater = s.water_logs.filter(w => w.day === today).sort((a, b) => a.at.localeCompare(b.at))
   let acc = 0
-  for (const w of todayWater) { const before = acc; acc += w.glasses; if (before < goal && acc >= goal && recent(w.at)) events.push({ at: w.at, ctx: 'eau-objectif', reason: 'Objectif d\'eau atteint' }) }
-  for (const m of s.meals) if (m.day === today && m.recipe_id && recent(m.at) && !s.meals.some(o => o.recipe_id === m.recipe_id && o.day < today)) events.push({ at: m.at, ctx: 'nouvelle-recette', reason: 'Nouvelle recette' })
+  for (const w of todayWater) { const before = acc; acc += entryMl(w); if (before < goal && acc >= goal && recent(w.at)) events.push({ at: w.at, ctx: 'eau-objectif', reason: 'Objectif d\'eau atteint' }) }
+  const logs = recipeLogs(s)
+  for (const m of logs) if (m.day === today && recent(m.at) && !logs.some(o => o.recipe_id === m.recipe_id && o.day < today)) events.push({ at: m.at, ctx: 'nouvelle-recette', reason: 'Nouvelle recette' })
   for (const c of s.progress_capsules) if (c.opened_at && recent(c.opened_at)) events.push({ at: c.opened_at, ctx: 'capsule', reason: 'Capsule ouverte' })
   events.sort((a, b) => b.at.localeCompare(a.at))
   if (events[0]) return { context: events[0].ctx, expression: POOLS[events[0].ctx].expression, reason: events[0].reason }
@@ -169,9 +170,9 @@ export function nextActionHint(s: Snapshot, now: Date = new Date()): string {
   if (sport && isRendezvousDay(sport, today) && ritual.status === 'a-venir') {
     return `Ton rendez-vous de ${sport.cue_time?.replace(':', ' h ')} : ${sport.min_label.toLowerCase()} suffit pour l'honorer.`
   }
-  const glasses = waterGlasses(s, today)
-  if (glasses < waterGoal(s)) return `Un verre d'eau ? Tu en es à ${glasses} sur ${waterGoal(s)}.`
-  if (!s.meals.some(m => m.day === today)) return 'Noter ton prochain repas, même juste son nom.'
+  const ml = waterMl(s, today)
+  if (ml < waterGoalMl(s)) return `Un verre d'eau ? Tu en es à ${formatLitres(ml)} sur ${formatLitres(waterGoalMl(s), 1)}.`
+  if (!hasFoodOn(s, today)) return 'Noter ton prochain repas : un aliment suffit pour commencer.'
   if (!s.daily_checkins.some(c => c.day === today)) return 'Me dire comment tu te sens aujourd\'hui ?'
   return 'L\'essentiel est fait aujourd\'hui. Le reste est en bonus.'
 }

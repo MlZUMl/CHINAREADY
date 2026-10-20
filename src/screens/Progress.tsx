@@ -4,7 +4,8 @@ import { Chips, Segmented, Sheet, Toggle, TopBar } from '../ui/components'
 import { navigate } from '../lib/router'
 import { addDays, formatDayLong, monthGrid, MONTHS, parseDay, weekStart, WEEKDAYS_SHORT, type Day, toDay } from '../lib/dates'
 import { dayRitual, rendezvousStats, sportCommitment } from '../domain/ritual'
-import { automaticity, BUCKET_LABELS, commitmentRate, completionByDuration, bestSlots, reprises, SLOT_LABELS, waterGlasses, waterGoal } from '../domain/discipline'
+import { automaticity, BUCKET_LABELS, commitmentRate, completionByDuration, bestSlots, reprises, SLOT_LABELS, waterMl, waterGoalMl, waterReached, hasFoodOn, formatLitres } from '../domain/discipline'
+import { dayTotals, fmtKcal } from '../domain/nutrition'
 import { analyze, type Insight } from '../domain/analysis'
 import { BADGES } from '../domain/catalog'
 import { cycleInfo, predictedPeriod, SYMPTOMS, trendSummary, weightTrend } from '../domain/body'
@@ -63,7 +64,7 @@ function Calendar({ initialDay }: { initialDay: string | null }) {
             return (
               <button key={d} className={out ? 'out' : ''} onClick={() => setOpen(d)} aria-label={formatDayLong(d)}>
                 <span className={cls}>{parseDay(d).getDate()}</span>
-                <span className="mini-dots">{waterGlasses(snap, d) >= waterGoal(snap) && <i className="eau" />}{snap.meals.some(m => m.day === d) && <i className="repas" />}</span>
+                <span className="mini-dots">{waterReached(snap, d) && <i className="eau" />}{hasFoodOn(snap, d) && <i className="repas" />}</span>
               </button>
             )
           })}
@@ -71,7 +72,7 @@ function Calendar({ initialDay }: { initialDay: string | null }) {
         <div className="chips small muted" style={{ gap: 12 }}>
           <span className="row" style={{ gap: 6 }}><span className="day-dot honore" style={{ width: 16, height: 16 }} /> Rendez-vous</span>
           <span className="row" style={{ gap: 6 }}><span className="day-dot repos" style={{ width: 16, height: 16 }} /> Repos</span>
-          <span className="row" style={{ gap: 6 }}><span style={{ width: 14, height: 14, borderRadius: 7, border: '2px solid #e58fa0' }} /> Règles</span>
+          <span className="row" style={{ gap: 6 }}><span style={{ width: 14, height: 14, borderRadius: 7, border: '2px solid var(--rose)' }} /> Règles</span>
           <span className="row" style={{ gap: 6 }}><span className="mini-dots"><i className="eau" /></span> Eau</span>
           <span className="row" style={{ gap: 6 }}><span className="mini-dots"><i className="repas" /></span> Repas</span>
         </div>
@@ -144,14 +145,16 @@ function DaySheet({ day, onClose }: { day: Day; onClose: () => void }) {
   const [text, setText] = useState(journal?.text ?? '')
   const workouts = snap.workouts.filter(w => w.day === day)
   const meals = snap.meals.filter(m => m.day === day)
+  const foods = snap.food_entries.filter(f => f.day === day)
   const statusText = { honore: `Rendez-vous honoré (${r.minutes} min)`, 'petit-pas': `Petit pas (${r.minutes} min)`, repos: 'Repos choisi', manque: 'Rendez-vous non fait', 'a-venir': 'Rendez-vous prévu', libre: 'Pas de rendez-vous prévu' }[r.status]
   return (
     <Sheet title={formatDayLong(day)} onClose={onClose}>
       <div className="card flat">
         <div className="row between"><strong>Sport</strong><span className={`pill ${r.status === 'honore' ? 'ok' : r.status === 'repos' ? 'rest' : ''}`}>{statusText}</span></div>
         {workouts.map(w => <div key={w.id} className="small muted">• {w.kind === 'externe' ? EXTERNAL_ACTIVITIES.find(a => a.id === w.activity)?.label : (w.program ?? FOCUS_LABELS[w.activity as Focus])} — {w.actual_minutes} min</div>)}
-        <div className="row between"><strong>Eau</strong><span className="small">{waterGlasses(snap, day)} / {waterGoal(snap)} verres</span></div>
-        <div className="row between"><strong>Repas notés</strong><span className="small">{meals.length ? meals.map(m => m.title).join(', ') : '—'}</span></div>
+        <div className="row between"><strong>Eau</strong><span className="small">{formatLitres(waterMl(snap, day))} / {formatLitres(waterGoalMl(snap), 1)}</span></div>
+        <div className="row between"><strong>Repas</strong><span className="small">{foods.length ? `${fmtKcal(dayTotals(snap, day).kcal)} · ${foods.length} aliment${foods.length > 1 ? 's' : ''}` : meals.length ? meals.map(m => m.title).join(', ') : '—'}</span></div>
+        {(foods.length > 0 || day <= today) && <button className="link-btn small" style={{ alignSelf: 'flex-start' }} onClick={() => navigate(`/repas?onglet=journal&jour=${day}`)}>Voir le journal de ce jour</button>}
         <div className="row between"><strong>Énergie</strong><span className="small">{checkin?.energy ? ENERGY_LABELS[checkin.energy] : '—'}</span></div>
       </div>
       <div className="card flat">

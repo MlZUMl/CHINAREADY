@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useApp } from '../app/state'
 import { TopBar } from '../ui/components'
 import { IconCheck, IconChevron, IconCloud, IconUser } from '../ui/icons'
@@ -7,12 +7,13 @@ import { formatDayLong, minutesOfDay } from '../lib/dates'
 import { dayRitual, isRendezvousDay, sportCommitment } from '../domain/ritual'
 import { habitState, isHabitDay, resumeState } from '../domain/discipline'
 import { quoteOfDay } from '../domain/quotes'
-import { CheckinCard, CompanionCard, MealSheet, MissionCard, WaterWidget, WeekStrip } from './widgets'
+import { CheckinCard, CompanionCard, MissionCard, WaterWidget, WeekStrip } from './widgets'
+import { CalorieSummary } from './food-parts'
+import { defaultMealSlot } from '../domain/nutrition'
 
 export function Home({ query }: { query?: URLSearchParams }) {
   const { snap, today, actions, cloud, toast } = useApp()
   const profile = snap.profiles[0]
-  const [mealOpen, setMealOpen] = useState(false)
   useEffect(() => { actions.ensureMission(today) }, [today, actions])
   // Raccourci de l'icône (appui long) : « Boire un verre »
   const quickWater = query?.get('eau') === '1'
@@ -21,7 +22,7 @@ export function Home({ query }: { query?: URLSearchParams }) {
     if (!quickWater || waterDone.current) return
     waterDone.current = true
     navigate('/', true)
-    actions.addWater(today).then(() => toast('💧', 'Un verre d\'eau de plus'))
+    actions.addWater(today, 250).then(() => toast('💧', '25 cl d\'eau de plus'))
   }, [quickWater]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const sport = sportCommitment(snap)
@@ -68,9 +69,9 @@ export function Home({ query }: { query?: URLSearchParams }) {
                       {st === 'none' ? 'Fait' : st === 'min' ? 'Minimum ✓' : 'Complet ✓'}
                     </button>
                   ) : c.kind === 'eau' ? (
-                    <button className="chip" onClick={() => actions.addWater(today)}>+ 1 verre</button>
+                    <button className="chip" onClick={() => actions.addWater(today, 250)}>+ 25 cl</button>
                   ) : c.kind === 'repas' ? (
-                    <button className="chip" onClick={() => setMealOpen(true)}>Noter</button>
+                    <button className="chip" onClick={() => navigate(`/repas/ajouter?repas=${defaultMealSlot()}`)}>Noter</button>
                   ) : st !== 'none' ? <span className="pill ok"><IconCheck style={{ width: 16 }} /> Tenu</span> : null}
                 </div>
               )
@@ -78,7 +79,10 @@ export function Home({ query }: { query?: URLSearchParams }) {
           </div>
         </section>
 
-        <WaterWidget day={today} />
+        <button style={{ all: 'unset', cursor: 'pointer', display: 'block' }} onClick={() => navigate('/repas')} aria-label="Ouvrir mon journal alimentaire"><CalorieSummary day={today} compact /></button>
+        <button className="btn secondary" onClick={() => navigate(`/repas/ajouter?repas=${defaultMealSlot()}`)}>Ajouter un aliment</button>
+
+        <WaterWidget day={today} compact />
 
         <section className="card" aria-label="Ma semaine">
           <div className="card-head"><div><div className="kicker">Ma semaine</div></div>
@@ -96,7 +100,6 @@ export function Home({ query }: { query?: URLSearchParams }) {
           </button>
         )}
       </main>
-      {mealOpen && <MealSheet day={today} onClose={() => setMealOpen(false)} />}
     </>
   )
 
@@ -116,7 +119,7 @@ export function Home({ query }: { query?: URLSearchParams }) {
     )
     if (ritual.status === 'repos') return (
       <section className="card flat" aria-label="Rendez-vous sportif">
-        <div className="card-head"><span className="emoji-bubble" style={{ background: '#e8eef5' }} aria-hidden="true">🌙</span>
+        <div className="card-head"><span className="emoji-bubble" style={{ background: '#e3eff1' }} aria-hidden="true">🌙</span>
           <div><div className="kicker">Repos noté</div><h3>Le repos fait partie du plan.</h3></div></div>
         <p className="muted small">Demain, ton rendez-vous sera là, comme d'habitude.</p>
         <button className="link-btn" onClick={() => actions.cancelRest(today)}>Finalement, je bouge un peu</button>

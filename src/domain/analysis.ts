@@ -5,7 +5,7 @@
 import type { Snapshot } from '../data/types'
 import { addDays, isoWeekday, weekStart, WEEKDAYS, type Day } from '../lib/dates'
 import { dayRitual, isRendezvousDay, postponements, sportCommitment } from './ritual'
-import { BUCKET_LABELS, completionByDuration, SLOT_LABELS, bestSlots, waterGlasses, waterGoal } from './discipline'
+import { BUCKET_LABELS, completionByDuration, SLOT_LABELS, bestSlots, waterReached, foodDays } from './discipline'
 import { cycleInfo, periodDays } from './body'
 
 export type InsightAction =
@@ -131,14 +131,14 @@ export function analyze(s: Snapshot, today: Day): AnalysisResult {
   const days14 = Array.from({ length: 14 }, (_, i) => addDays(from14, i))
   const waterDays = days14.filter(d => s.water_logs.some(w => w.day === d))
   if (waterDays.length >= 10) {
-    const reached = days14.filter(d => waterGlasses(s, d) >= waterGoal(s)).length
+    const reached = days14.filter(d => waterReached(s, d)).length
     const remindersOn = s.notification_preferences[0]?.hydration
     if (reached / 14 < 0.4 && !remindersOn) {
       insights.push({
         key: 'eau-rappels', period, title: 'L\'objectif d\'eau est rarement atteint',
         observation: `Ton objectif d'eau a été atteint ${reached} jours sur les 14 derniers.`,
         explanation: 'Boire en une fois est difficile ; répartir sur la journée aide souvent, mais à toi de voir si ça te correspond.',
-        suggestion: 'Activer trois petits rappels d\'eau répartis dans la journée ?',
+        suggestion: 'Activer cinq petits rappels d\'eau répartis dans la journée ?',
         action: { type: 'enable-hydration-reminders' }, editable: true,
       })
     }
@@ -148,7 +148,8 @@ export function analyze(s: Snapshot, today: Day): AnalysisResult {
 
   // 6. Repas notés : semaine vs week-end
   const days28 = Array.from({ length: 28 }, (_, i) => addDays(from28, i))
-  const mealDays = days28.filter(d => s.meals.some(m => m.day === d))
+  const logged = foodDays(s)
+  const mealDays = days28.filter(d => logged.has(d))
   if (mealDays.length >= 10) {
     const wk = days28.filter(d => isoWeekday(d) <= 5)
     const we = days28.filter(d => isoWeekday(d) > 5)

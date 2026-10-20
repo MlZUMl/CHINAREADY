@@ -64,7 +64,7 @@ export function Ritual({ query }: { query: URLSearchParams }) {
     <>
       <TopBar onBack title="Ma séance du jour" kicker={sport ? `Rendez-vous de ${sport.cue_time?.replace(':', ' h ')}` : undefined} />
       <main className="content no-tabs">
-        {done && <div className="banner" style={{ background: '#e6efe3', color: '#4f6b4c' }}>Rendez-vous déjà honoré aujourd'hui. Une séance de plus compte en bonus.</div>}
+        {done && <div className="banner" style={{ background: 'var(--mousse-clair)', color: 'var(--vert)' }}>Rendez-vous déjà honoré aujourd'hui. Une séance de plus compte en bonus.</div>}
 
         <section className="card">
           <div className="card-head"><div><div className="kicker">Ton énergie</div>

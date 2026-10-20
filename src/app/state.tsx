@@ -10,6 +10,7 @@ import { createActions, type Actions } from './actions'
 import { navigate } from '../lib/router'
 import { deriveOps } from '../domain/rewards'
 import { badgeDef, itemDef, ZONES, ACCESSORIES } from '../domain/catalog'
+import { loadRemoteCatalog } from '../domain/recipes'
 
 export interface Toast { id: number; emoji: string; text: string }
 
@@ -85,6 +86,14 @@ export function AppProvider({ store, children }: { store: DataStore; children: R
     })
     return () => { off(); store.setDeriver(null) }
   }, [store, toast])
+
+  // Catalogue de recettes : la version en ligne (modifiable sans reconstruire) remplace la copie embarquée.
+  useEffect(() => { loadRemoteCatalog().then(changed => { if (changed) force(x => x + 1) }) }, [])
+
+  // Mises à niveau locales (eau en litres, 5 rappels d'eau) — une seule fois par profil.
+  const upgraded = snap.profiles[0]?.settings.upgrades?.includes('lot1')
+  const hasProfile = Boolean(snap.profiles[0])
+  useEffect(() => { if (hasProfile && !upgraded) actions.ensureUpgrades() }, [hasProfile, upgraded, actions])
 
   // Changement de jour (minuit) et retour sur l'appli
   useEffect(() => {

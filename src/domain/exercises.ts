@@ -1,9 +1,22 @@
 // Bibliothèque d'exercices et génération de séances guidées.
 // Consignes volontairement simples et prudentes ; aucune promesse de résultat.
 import { hash } from '../lib/ids'
+import type { Equipment } from '../data/types'
 
+export type { Equipment }
 export type Category = 'echauffement' | 'renfo' | 'elastique' | 'halteres' | 'cardio' | 'mobilite' | 'calme'
-export type Equipment = 'elastique' | 'halteres' | 'tapis'
+
+/** Matériel proposé : les trois derniers servent aux activités libres (Ring Fit, vélo). */
+export const EQUIPMENT: { id: Equipment; label: string; emoji: string; hint: string }[] = [
+  { id: 'tapis', label: 'Tapis', emoji: '🧘‍♀️', hint: 'exercices au sol' },
+  { id: 'elastique', label: 'Élastiques', emoji: '🪢', hint: 'renforcement' },
+  { id: 'halteres', label: 'Haltères', emoji: '🏋️‍♀️', hint: 'renforcement' },
+  { id: 'corde', label: 'Corde à sauter', emoji: '➰', hint: 'cardio' },
+  { id: 'velo_appart', label: 'Vélo d\'appartement', emoji: '🚴‍♀️', hint: 'cardio doux' },
+  { id: 'ring_fit', label: 'Ring Fit', emoji: '🎮', hint: 'activité libre' },
+  { id: 'velo', label: 'Vélo', emoji: '🚲', hint: 'sortie dehors' },
+]
+export const equipmentLabel = (id: Equipment) => EQUIPMENT.find(e => e.id === id)?.label ?? id
 
 export interface Exercise {
   id: string
@@ -59,6 +72,13 @@ export const EXERCISES: Exercise[] = [
   { id: 'chien-tete-bas', name: 'Chien tête en bas', category: 'mobilite', intensity: 2, equipment: 'tapis', instruction: 'Mains et pieds au sol, pousse les fesses vers le haut, genoux fléchis si besoin.' },
   { id: 'etirement-ischios', name: 'Étirement arrière des cuisses', category: 'mobilite', intensity: 1, sides: true, instruction: 'Talon posé devant toi, jambe tendue, penche-toi légèrement dos droit.' },
   { id: 'ouverture-epaules', name: 'Ouverture des épaules', category: 'mobilite', intensity: 1, instruction: 'Mains jointes dans le dos, ouvre la poitrine et éloigne doucement les mains.' },
+  // Corde à sauter et vélo d'appartement (proposés seulement si ce matériel est coché)
+  { id: 'corde-douce', name: 'Corde à sauter, pas alternés', category: 'cardio', intensity: 2, equipment: 'corde', instruction: 'Petits sauts d\'un pied sur l\'autre, comme un trottinement. Fais tourner la corde avec les poignets, coudes près du corps.' },
+  { id: 'corde-sauts', name: 'Corde à sauter', category: 'cardio', intensity: 3, equipment: 'corde', instruction: 'Petits sauts pieds joints, réception sur l\'avant du pied. Fais une pause dès que tu t\'emmêles : c\'est normal.' },
+  { id: 'corde-sans', name: 'Corde imaginaire', category: 'cardio', intensity: 1, equipment: 'corde', instruction: 'Tiens les poignées sans la corde et fais le geste en marchant sur place : idéal pour s\'échauffer.' },
+  { id: 'velo-tranquille', name: 'Vélo d\'appartement tranquille', category: 'cardio', intensity: 1, equipment: 'velo_appart', instruction: 'Pédale à un rythme où tu peux parler facilement. Dos droit, épaules relâchées.' },
+  { id: 'velo-rythme', name: 'Vélo d\'appartement, rythme soutenu', category: 'cardio', intensity: 2, equipment: 'velo_appart', instruction: 'Accélère un peu : tu peux encore parler, mais par phrases courtes.' },
+  { id: 'velo-sprint', name: 'Vélo d\'appartement, accélération', category: 'cardio', intensity: 3, equipment: 'velo_appart', instruction: 'Pédale vite en augmentant un peu la résistance, puis relâche pendant la pause.' },
   // Retour au calme
   { id: 'respiration', name: 'Respiration lente', category: 'calme', intensity: 1, instruction: 'Inspire 4 secondes par le nez, expire 6 secondes. Relâche les épaules.' },
   { id: 'etirement-cote', name: 'Étirement latéral', category: 'calme', intensity: 1, sides: true, instruction: 'Un bras au-dessus de la tête, penche-toi doucement sur le côté.' },
@@ -69,6 +89,8 @@ export const EXTERNAL_ACTIVITIES = [
   { id: 'ring_fit', label: 'Ring Fit', emoji: '🎮' },
   { id: 'danse', label: 'Danse', emoji: '💃' },
   { id: 'velo', label: 'Vélo', emoji: '🚲' },
+  { id: 'velo_appart', label: 'Vélo d\'appartement', emoji: '🚴‍♀️' },
+  { id: 'corde', label: 'Corde à sauter', emoji: '➰' },
   { id: 'marche', label: 'Marche', emoji: '🚶‍♀️' },
   { id: 'autre', label: 'Autre activité', emoji: '✨' },
 ] as const
@@ -142,7 +164,11 @@ export function buildSession(opts: SessionOptions): Session {
 
   let mainBudget = total - warmupSec - cooldownSec
   let pool = rotate(byCat(mainCats[focus]), seed + 'm')
-  if (!pool.length) pool = rotate(byCat(['renfo', 'mobilite']), seed + 'm')
+  // Vélo d'appartement : en séance cardio, on reste en selle (pas d'aller-retour vélo / sol toutes les 40 s).
+  const bike = pool.filter(e => e.equipment === 'velo_appart')
+  if (focus === 'cardio' && bike.length) pool = bike
+  else pool = pool.filter(e => e.equipment !== 'velo_appart')
+  if (!pool.length) pool = rotate(byCat(['renfo', 'mobilite']), seed + 'm').filter(e => e.equipment !== 'velo_appart')
   let i = 0
   while (mainBudget >= work) {
     const ex = pool[i % pool.length]

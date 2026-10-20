@@ -24,7 +24,13 @@ async function onboard(page: Page, name = 'Lina') {
   await page.getByRole('button', { name: /Lapin/ }).click()
   await page.getByRole('button', { name: 'Continuer' }).click()
   await expect(page.getByRole('heading', { name: 'Eau et matériel' })).toBeVisible()
-  await page.getByRole('button', { name: 'Continuer' }).click()
+  await expect(page.getByText('2,0 L', { exact: true })).toBeVisible()
+  // Matériel : coche visible, récapitulatif avant validation
+  await page.getByRole('button', { name: /Corde à sauter/ }).click()
+  await expect(page.getByRole('button', { name: /Corde à sauter/ })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByTestId('recap-materiel')).toContainText('Tapis, Corde à sauter')
+  await expect(page.getByTestId('recap-materiel')).toContainText('cardio à la corde')
+  await page.getByRole('button', { name: 'Valider ce matériel et continuer' }).click()
   await expect(page.getByRole('heading', { name: 'Sauvegarde et rappels' })).toBeVisible()
   await page.getByRole('button', { name: 'Plus tard' }).click()
   await page.getByRole('button', { name: 'Entrer dans mon univers' }).click()
@@ -33,9 +39,25 @@ async function onboard(page: Page, name = 'Lina') {
   await expect(page.getByText("Une seule petite action aujourd'hui")).toHaveCount(0)
 }
 
+// Image PNG 1 × 1 servie à la place des photos Pexels (aucun appel réseau réel pendant les tests).
+const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64')
+
 test.beforeEach(async ({ page }) => {
   await page.clock.install({ time: TUESDAY_1720 })
+  await page.route('https://images.pexels.com/**', r => r.fulfill({ contentType: 'image/png', body: PNG }))
+  // Open Food Facts : jamais appelé pour de vrai pendant les tests
+  await page.route('https://world.openfoodfacts.org/**', r => r.fulfill({ status: 503, body: '' }))
 })
+
+// Réponses Open Food Facts simulées
+const OFF_SEARCH = { products: [
+  { code: '3250390000001', product_name_fr: 'Galettes de riz chocolat noir', brands: 'Marque A', quantity: '100 g', serving_quantity: 12, serving_size: '1 galette (12 g)',
+    nutriments: { 'energy-kcal_100g': 470, proteins_100g: 7, carbohydrates_100g: 63, fat_100g: 20, fiber_100g: 6 }, ingredients_text_fr: 'riz, chocolat noir 50 %' },
+  { code: '3250390000002', product_name_fr: 'Galettes saveur lardons', brands: 'Marque B', nutriments: { 'energy-kcal_100g': 480 }, ingredients_text_fr: 'maïs, arôme, poudre de porc' },
+] }
+const OFF_PORK = { status: 1, product: { product_name_fr: 'Saucisses de Strasbourg', brands: 'Marque C', nutriments: { 'energy-kcal_100g': 280, proteins_100g: 12, carbohydrates_100g: 2, fat_100g: 25 }, ingredients_text_fr: 'viande de porc, eau, sel' } }
+const OFF_YAOURT = { status: 1, product: { product_name_fr: 'Skyr nature', brands: 'Marque D', quantity: '450 g', serving_quantity: 150, serving_size: '150 g',
+  nutriments: { 'energy-kcal_100g': 60, proteins_100g: 10, carbohydrates_100g: 4, fat_100g: 0.2 }, ingredients_text_fr: 'lait écrémé, ferments' } }
 
 test('accueil, rituel de 17 h 15 en mode épuisée, séance réelle, récompense unique et persistance', async ({ page }) => {
   await onboard(page)
@@ -87,40 +109,154 @@ test('accueil, rituel de 17 h 15 en mode épuisée, séance réelle, récompense
   await expect(page.getByRole('status')).toHaveCount(0)
 })
 
-test('eau, mission, repas sans chiffres, menu halal et liste de courses pour Claude', async ({ page, context }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+test('eau en litres : boutons rapides, objectif, modification et suppression d\'une entrée', async ({ page }) => {
   await onboard(page)
-  // 8 verres => objectif atteint, une plante apparaît dans l'univers
-  for (let i = 0; i < 8; i++) await page.getByRole('button', { name: 'Ajouter un verre' }).click()
-  await expect(page.getByText('8 verres sur 8')).toBeVisible()
-  await expect(page.getByRole('status').filter({ hasText: /Pothos|Objectif|Nouvel objet/ }).first()).toBeVisible()
-
+  const water = page.getByLabel('Hydratation')
+  for (let i = 0; i < 4; i++) await water.getByRole('button', { name: 'Ajouter 0,5 L' }).click()
+  await expect(page.getByTestId('eau-total')).toHaveText('2,0 L sur 2,0 L')
+  await expect(page.getByRole('status').filter({ hasText: /Objectif d'eau atteint|Pothos|Nouvel objet/ }).first()).toBeVisible()
   // Mission du jour : facultative, objectif affiché
   await expect(page.getByLabel('Mission du jour')).toBeVisible()
-
-  // Repas : noté sans aucun chiffre
+  // Le journal détaillé : modifier une entrée, en supprimer une, quantité personnalisée
   await page.getByRole('link', { name: 'Repas' }).click()
-  await page.getByRole('button', { name: 'Noter un repas' }).click()
-  await page.getByLabel("Qu'as-tu mangé ?").fill('Poulet, riz et haricots verts')
-  await page.getByRole('group', { name: 'Repères' }).getByRole('button', { name: 'Légumes' }).click()
+  const w2 = page.getByLabel('Hydratation')
+  await w2.getByRole('button', { name: /Modifier 50 cl/ }).first().click()
+  await page.getByLabel('Quantité en centilitres').fill('33')
   await page.getByRole('button', { name: 'Enregistrer' }).click()
-  await expect(page.getByText('Poulet, riz et haricots verts')).toBeVisible()
-  expect(await page.locator('main').innerText()).not.toMatch(/kcal|calorie/i)
-  await shot(page, '05-repas')
+  await expect(page.getByTestId('eau-total')).toHaveText('1,83 L sur 2,0 L')
+  await w2.getByRole('button', { name: /Modifier 33 cl/ }).click()
+  await page.getByRole('button', { name: 'Supprimer' }).click()
+  await expect(page.getByTestId('eau-total')).toHaveText('1,5 L sur 2,0 L')
+  await w2.getByRole('button', { name: 'Autre quantité' }).click()
+  await page.getByLabel('Quantité en centilitres').fill('15')
+  await page.getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByTestId('eau-total')).toHaveText('1,65 L sur 2,0 L')
+  await shot(page, '05-eau')
+  await noHorizontalScroll(page)
+})
+
+test('journal alimentaire : objectif, recherche Ciqual, marques sans porc, code-barres, ajout rapide, recette idempotente', async ({ page }) => {
+  await onboard(page)
+  await page.getByRole('link', { name: 'Repas' }).click()
+  // Objectif calorique calculé (Mifflin-St Jeor), modifiable
+  await page.getByRole('button', { name: 'Définir mon objectif' }).click()
+  await page.getByLabel('Année de naissance').fill('1996')
+  await page.getByLabel('Taille en centimètres').fill('165')
+  await page.getByLabel('Poids en kilos').fill('70')
+  await page.getByRole('button', { name: /Légèrement active/ }).click()
+  await expect(page.getByText(/1\s450 kcal par jour/)).toBeVisible()
+  await page.getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByTestId('kcal-restantes')).toContainText('1')
+  await expect(page.getByTestId('total-dejeuner')).toHaveText('0 kcal / 505 kcal')
+
+  // Recherche Ciqual : pomme, 150 g, recalcul en direct
+  await page.getByRole('button', { name: 'Ajouter au déjeuner' }).click()
+  await page.getByLabel('Rechercher un aliment').fill('pomme pulpe peau crue')
+  await page.getByRole('button', { name: /^Pomme, pulpe et peau, crue/ }).first().click()
+  await page.getByRole('group', { name: 'Unité' }).getByRole('button', { name: 'grammes' }).click()
+  await page.getByRole('textbox', { name: 'Quantité', exact: true }).fill('150')
+  await expect(page.getByTestId('kcal-quantite')).toHaveText('150 g · 78 kcal')
+  await page.getByRole('button', { name: 'Ajouter', exact: true }).click()
+  await expect(page.getByRole('status').filter({ hasText: 'Ajouté au déjeuner' })).toBeVisible()
+
+  // Marques (Open Food Facts simulé) : le produit au porc est retiré
+  await page.unroute('https://world.openfoodfacts.org/**')
+  await page.route('https://world.openfoodfacts.org/cgi/search.pl**', r => r.fulfill({ json: OFF_SEARCH }))
+  await page.route('https://world.openfoodfacts.org/api/v2/product/3250390000009.json**', r => r.fulfill({ json: OFF_PORK }))
+  await page.route('https://world.openfoodfacts.org/api/v2/product/3250390000010.json**', r => r.fulfill({ json: OFF_YAOURT }))
+  await page.getByLabel('Rechercher un aliment').fill('galettes')
+  await page.getByRole('button', { name: /Chercher « galettes » parmi les marques/ }).click()
+  await expect(page.getByRole('button', { name: /Galettes de riz chocolat noir/ })).toBeVisible()
+  await expect(page.getByText('Galettes saveur lardons')).toHaveCount(0)
+  await page.getByRole('button', { name: /Galettes de riz chocolat noir/ }).click()
+  await page.getByRole('textbox', { name: 'Quantité', exact: true }).fill('2')
+  await expect(page.getByTestId('kcal-quantite')).toHaveText('24 g · 113 kcal')
+  await page.getByRole('dialog').getByRole('group', { name: 'Repas' }).getByRole('button', { name: 'Collation' }).click()
+  await page.getByRole('button', { name: 'Ajouter', exact: true }).click()
+
+  // Code-barres : produit au porc refusé, produit connu ajouté
+  await page.getByRole('tab', { name: 'Scanner' }).click()
+  await page.getByLabel('Code-barres').fill('3250390000009')
+  await page.getByRole('button', { name: 'OK' }).click()
+  await expect(page.getByRole('alert')).toContainText('contient du porc')
+  await page.getByLabel('Code-barres').fill('3250390000010')
+  await page.getByRole('button', { name: 'OK' }).click()
+  await expect(page.getByText('Skyr nature')).toBeVisible()
+  await page.getByRole('button', { name: 'Ajouter', exact: true }).click()
+
+  // Ajout rapide
+  await page.getByRole('tab', { name: 'Rapide' }).click()
+  await page.getByLabel('Calories').fill('250')
+  await page.getByRole('group', { name: 'Repas' }).last().getByRole('button', { name: 'Dîner' }).click()
+  await page.getByRole('button', { name: 'Ajouter', exact: true }).click()
+  await expect(page.getByLabel('Dîner').getByText('250 kcal').first()).toBeVisible()
+
+  // Journal : totaux par repas et pour la journée (78 + 90 + 113 + 250)
+  await expect(page.getByTestId('kcal-mangees')).toHaveText('531 kcal')
+  await expect(page.getByTestId('total-dejeuner')).toContainText('168 kcal')
+  await shot(page, '06-journal')
   await noHorizontalScroll(page)
 
-  // Menu de la semaine : compléter les dîners, puis la liste de courses
+  // Modifier une quantité depuis le journal
+  await page.getByLabel('Déjeuner').getByRole('button', { name: /Pomme, pulpe et peau/ }).click()
+  await page.getByRole('textbox', { name: 'Quantité', exact: true }).fill('300')
+  await page.getByRole('button', { name: 'Enregistrer' }).click()
+  await expect(page.getByTestId('kcal-mangees')).toHaveText('609 kcal')
+
+  // Recette : ajoutée deux fois au même repas = une seule ligne
+  await page.getByRole('tab', { name: 'Recettes' }).click()
+  await page.getByLabel('Rechercher une recette').fill('shakshuka')
+  await page.getByRole('button', { name: /Shakshuka aux œufs et poivrons/ }).first().click()
+  await expect(page.getByText('✓ Sans porc')).toBeVisible()
+  await expect(page.getByRole('link', { name: /Voir sur HelloFresh/ })).toHaveAttribute('href', /hellofresh\.fr\/recipes\/search\?q=Shakshuka/)
+  await expect(page.getByRole('link', { name: /Photo : Pexels/ })).toBeVisible()
+  await shot(page, '07-recette')
+  for (let i = 0; i < 2; i++) {
+    await page.getByRole('button', { name: 'Ajouter à mon journal' }).click()
+    await page.getByRole('dialog').getByRole('group', { name: 'Repas' }).getByRole('button', { name: 'Dîner' }).click()
+    await page.getByRole('dialog').getByRole('button', { name: /^(Ajouter|Mettre à jour)/ }).click()
+  }
+  await page.goto('./#/repas?onglet=journal')
+  await expect(page.getByLabel('Dîner').getByRole('button', { name: /Shakshuka/ })).toHaveCount(1)
+  await expect(page.getByTestId('kcal-mangees')).toHaveText(/^1\s007 kcal$/)
+  // Calories visibles sur l'accueil aussi
+  await page.getByRole('link', { name: 'Accueil' }).click()
+  await expect(page.getByTestId('kcal-mangees')).toHaveText(/^1\s007 kcal$/)
+})
+
+test('recettes sans porc, menu et liste de courses pour Claude', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await onboard(page)
+  await page.goto('./#/repas?onglet=recettes')
+  await expect(page.getByText('Toutes les recettes sont sans porc.', { exact: false })).toBeVisible()
+  expect(await page.locator('.recipe-card').count()).toBeGreaterThanOrEqual(40)
+  await shot(page, '08-recettes')
+  // Recette perso : refusée si elle contient du porc
+  await page.getByRole('button', { name: 'Ajouter ma propre recette' }).click()
+  await page.getByLabel('Nom').fill('Pâtes crémeuses aux champignons')
+  await page.getByLabel(/Ingrédients/).fill('200 g de pâtes\n100 g de lardons')
+  await expect(page.getByRole('alert')).toContainText('porc')
+  await expect(page.getByRole('button', { name: 'Enregistrer' })).toBeDisabled()
+  await page.getByLabel(/Ingrédients/).fill('200 g de pâtes\n100 g de champignons')
+  await page.getByLabel('Lien de la recette').fill('https://exemple.fr/pates')
+  await page.getByRole('button', { name: 'Enregistrer' }).click()
+  await page.getByRole('group', { name: 'Filtres' }).getByRole('button', { name: 'Mes recettes' }).click()
+  await page.getByRole('button', { name: /Pâtes crémeuses aux champignons/ }).first().click()
+  await expect(page.getByRole('link', { name: /Recette d'origine/ })).toHaveAttribute('href', 'https://exemple.fr/pates')
+  await page.goBack()
+
   await page.getByRole('tab', { name: 'Menu' }).click()
   await page.getByRole('button', { name: 'Compléter les dîners' }).click()
   await expect(page.getByRole('button', { name: 'Retirer du menu' }).first()).toBeVisible()
   await page.getByRole('tab', { name: 'Courses' }).click()
   await expect(page.getByRole('heading', { name: 'Faire remplir le panier par Claude' })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Boucherie halal' }).or(page.getByRole('heading', { name: 'Poissonnerie' })).first()).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Boucherie' }).or(page.getByRole('heading', { name: 'Poissonnerie' })).first()).toBeVisible()
   await page.getByRole('button', { name: /Copier la liste pour Claude/ }).click()
   const text = await page.evaluate(() => navigator.clipboard.readText())
-  expect(text).toMatch(/halal/)
+  expect(text).toMatch(/aucun produit contenant du porc/)
+  expect(text).not.toMatch(/halal/i)
   expect(text).toMatch(/ne valide pas la commande/)
-  await shot(page, '06-courses')
+  await shot(page, '09-courses')
   await noHorizontalScroll(page)
 })
 
@@ -204,12 +340,12 @@ test('reprise après une pause : rien de perdu, un seul petit pas proposé', asy
   await expect(page.getByRole('heading', { name: "Rien n'est perdu" })).toBeVisible()
   await shot(page, '12-reprise')
   await page.getByRole('button', { name: "Boire un verre d'eau" }).click()
-  await expect(page.getByText('1 verre sur 8')).toBeVisible()
+  await expect(page.getByTestId('eau-total')).toHaveText('0,25 L sur 2,0 L')
 })
 
 test('chaque écran principal tient sur un petit écran', async ({ page }) => {
   await onboard(page)
-  for (const [path, name] of [['#/', 'accueil'], ['#/activite', 'activite'], ['#/repas?onglet=recettes', 'recettes'], ['#/repas/recette/tajine-poulet', 'recette'],
+  for (const [path, name] of [['#/', 'accueil'], ['#/activite', 'activite'], ['#/repas', 'journal'], ['#/repas/ajouter?repas=dejeuner', 'ajouter'], ['#/repas?onglet=recettes', 'recettes'], ['#/repas/recette/tajine-poulet', 'recette'],
     ['#/progres', 'calendrier'], ['#/progres?onglet=regularite', 'regularite'], ['#/progres?onglet=badges', 'badges'], ['#/progres/bilan', 'bilan'],
     ['#/univers?onglet=compagnon', 'compagnon'], ['#/profil', 'profil'], ['#/profil/compte', 'compte'], ['#/profil/engagements', 'engagements'], ['#/reprise', 'reprise']] as const) {
     await page.goto('./' + path)

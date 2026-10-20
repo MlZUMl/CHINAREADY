@@ -124,15 +124,18 @@ describe('corps, cycle et courses', () => {
       { day: '2026-10-20', moment: 'midi' as const, recipe_id: 'bowl-teriyaki', portions: 1 },
     ] }
     const list = shoppingList(plan)
-    expect(list.find(i => i.name === 'Blanc de poulet halal')?.qty).toBe(370)
+    // 120 g × 2 portions (salade grecque) + 130 g (bowl teriyaki)
+    expect(list.find(i => i.name === 'Blanc de poulet')?.qty).toBe(370)
     expect(list.filter(i => i.pantry).every(i => i.aisle.startsWith('Placard'))).toBe(true)
     const prompt = claudeCartPrompt(list)
-    expect(prompt).toMatch(/halal/)
+    expect(prompt).toMatch(/aucun produit contenant du porc/)
+    expect(prompt).not.toMatch(/halal/)
     expect(prompt).toMatch(/ne valide pas la commande/)
   })
-  it('recettes : halal, sans porc ni alcool, et aucune valeur calorique', () => {
-    const text = JSON.stringify(RECIPES).toLowerCase()
-    expect(text).not.toMatch(/porc|lardon|jambon|vin blanc|vin rouge|bière|rhum|kcal|calorie/)
-    expect(RECIPES.length).toBeGreaterThanOrEqual(25)
+  it('recettes : aucune mention de porc ni d\'alcool, valeurs nutritionnelles présentes', () => {
+    const text = JSON.stringify(RECIPES.map(r => [r.title, r.ingredients.map(i => i.name), r.steps])).toLowerCase()
+    expect(text).not.toMatch(/porc|lardon|jambon|bacon|chorizo|saucisse|gélatine|vin blanc|vin rouge|bière|rhum/)
+    expect(RECIPES.length).toBeGreaterThanOrEqual(40)
+    expect(RECIPES.every(r => r.nutrition && r.nutrition.kcal > 0)).toBe(true)
   })
 })

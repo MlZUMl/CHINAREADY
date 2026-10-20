@@ -12,7 +12,10 @@ export interface Profile extends Row {
   display_name: string | null
   timezone: string
   onboarded: boolean
+  /** ancien objectif en verres (conservé pour compatibilité) */
   water_goal_glasses: number
+  /** objectif d'eau en millilitres (2 000 par défaut) */
+  water_goal_ml?: number
   weigh_day: number
   portions: number
   halal: boolean
@@ -24,8 +27,26 @@ export interface Profile extends Row {
     minimum_weekdays?: number[]
     /** mettre la version douce en avant les jours de règles notés */
     gentle_on_period?: boolean
-    equipment?: ('elastique' | 'halteres' | 'tapis')[]
+    equipment?: Equipment[]
+    /** réglages du calcul de l'objectif calorique */
+    nutrition?: NutritionSettings
+    /** migrations locales déjà appliquées */
+    upgrades?: string[]
   }
+}
+
+export type Equipment = 'tapis' | 'elastique' | 'halteres' | 'corde' | 'velo_appart' | 'ring_fit' | 'velo'
+
+export interface NutritionSettings {
+  sex?: 'F' | 'H'
+  birthYear?: number
+  heightCm?: number
+  /** poids de référence si aucune pesée n'est enregistrée */
+  weightKg?: number
+  activity?: 'sedentaire' | 'leger' | 'modere' | 'actif'
+  pace?: 'maintien' | 'doux' | 'modere'
+  /** objectif saisi à la main (remplace le calcul) */
+  manualGoal?: number | null
 }
 
 export interface EnergyPreferences extends Row {
@@ -114,7 +135,48 @@ export interface ObstacleReport extends Row {
 export interface WaterLog extends Row {
   day: Day
   at: string
+  /** ancien champ (verres de 25 cl) ; toujours 1 pour les nouvelles entrées */
   glasses: number
+  /** quantité bue en millilitres (absente sur les très anciennes entrées : glasses × 250) */
+  ml?: number
+}
+
+export type MealSlot = 'petit-dejeuner' | 'dejeuner' | 'collation' | 'diner'
+export interface Nutrients { kcal: number; protein: number; carbs: number; fat: number; fiber: number; sugar?: number }
+export type FoodSource = 'ciqual' | 'off' | 'perso' | 'recette' | 'rapide'
+export interface FoodPortion { label: string; grams: number }
+
+/** Une ligne du journal alimentaire (valeurs figées au moment de l'ajout). */
+export interface FoodEntry extends Row {
+  day: Day
+  meal: MealSlot
+  source: FoodSource
+  ref: string | null
+  name: string
+  brand: string | null
+  quantity: number
+  unit: 'g' | 'ml' | 'portion'
+  grams: number
+  portion_label: string | null
+  per100: Nutrients | null
+  kcal: number
+  protein: number
+  carbs: number
+  fat: number
+  fiber: number
+  details: { portions?: number; recipe_title?: string; barcode?: string; pork_checked?: boolean; markers?: string[] }
+  /** famille d'aliment : legumes, fruits, feculents, proteines, laitiers… */
+  category: string | null
+  at: string
+}
+
+export interface CustomFood extends Row {
+  name: string
+  brand: string | null
+  per100: Nutrients
+  unit: 'g' | 'ml'
+  portions: FoodPortion[]
+  barcode: string | null
 }
 
 export type MealMoment = 'matin' | 'midi' | 'gouter' | 'soir' | 'autre'
@@ -138,6 +200,10 @@ export interface UserRecipe extends Row {
   ingredients: Ingredient[]
   steps: string[]
   tags: string[]
+  source_url?: string | null
+  photo_url?: string | null
+  /** valeurs par portion, saisies par l'utilisatrice (facultatif) */
+  nutrition?: Nutrients | null
 }
 
 export interface PlanSlot { day: Day; moment: 'midi' | 'soir'; recipe_id: string; portions: number }
@@ -289,6 +355,8 @@ export interface Tables {
   obstacle_reports: ObstacleReport
   water_logs: WaterLog
   meals: Meal
+  food_entries: FoodEntry
+  custom_foods: CustomFood
   user_recipes: UserRecipe
   meal_plans: MealPlan
   weights: Weight
@@ -312,7 +380,7 @@ export type TableName = keyof Tables
 export const TABLES: TableName[] = [
   'profiles', 'energy_preferences', 'notification_preferences', 'commitments', 'habit_checks',
   'daily_checkins', 'workouts', 'ritual_events', 'obstacle_reports', 'water_logs', 'meals',
-  'user_recipes', 'meal_plans', 'weights', 'cycle_days', 'journal_entries', 'day_presence',
+  'food_entries', 'custom_foods', 'user_recipes', 'meal_plans', 'weights', 'cycle_days', 'journal_entries', 'day_presence',
   'weekly_reviews', 'avatar_profiles', 'companion_profiles', 'companion_interactions',
   'reward_grants', 'user_missions', 'progress_capsules', 'habit_insights', 'scheduled_pushes',
 ]

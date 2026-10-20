@@ -28,6 +28,8 @@ export async function createDb() {
   const rappels = readFileSync(join(__dirname, '../../supabase/migrations/0003_rappels.sql'), 'utf8')
     .split('\n').filter(l => !/^create extension/i.test(l)).join('\n')
   await db.exec(rappels)
+  // Lot 1 : journal alimentaire, eau en millilitres, 5 rappels d'eau
+  await db.exec(readFileSync(join(__dirname, '../../supabase/migrations/0005_journal_alimentaire.sql'), 'utf8'))
   // Droits par défaut de Supabase : les rôles API ont les droits de table, c'est la RLS qui filtre.
   await db.exec(`grant select, insert, update, delete on all tables in schema public to anon, authenticated, service_role;`)
   return db

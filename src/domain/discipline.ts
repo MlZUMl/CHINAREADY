@@ -7,16 +7,58 @@ import { dayRitual, sportCommitment } from './ritual'
 // ------------------------------------------------------------------ habitudes du jour
 export type HabitState = 'usual' | 'min' | 'none'
 
-export function waterGlasses(s: Snapshot, day: Day): number {
-  return s.water_logs.filter(w => w.day === day).reduce((n, w) => n + w.glasses, 0)
+/** Millilitres d'une entrée d'eau (les plus anciennes ne connaissent que les verres de 25 cl). */
+export const entryMl = (w: { ml?: number | null; glasses: number }) => (typeof w.ml === 'number' && w.ml > 0 ? w.ml : w.glasses * 250)
+
+/** Eau bue un jour donné, en millilitres. */
+export function waterMl(s: Snapshot, day: Day): number {
+  return s.water_logs.filter(w => w.day === day).reduce((n, w) => n + entryMl(w), 0)
 }
 
-export function waterGoal(s: Snapshot): number {
-  return s.profiles[0]?.water_goal_glasses ?? 8
+/** Objectif d'eau en millilitres (2 L par défaut). */
+export function waterGoalMl(s: Snapshot): number {
+  const p = s.profiles[0]
+  return p?.water_goal_ml ?? 2000
 }
 
-export function mealsOn(s: Snapshot, day: Day) {
-  return s.meals.filter(m => m.day === day)
+export const waterReached = (s: Snapshot, day: Day) => waterMl(s, day) >= waterGoalMl(s)
+
+/** « 0,75 L » — deux décimales sous 1 L si besoin, sinon une. */
+export function formatLitres(ml: number, digits?: number): string {
+  const d = digits ?? (ml % 100 === 0 ? 1 : 2)
+  return (ml / 1000).toFixed(d).replace('.', ',') + ' L'
+}
+
+/** Jours où un repas est noté (journal alimentaire ou anciens repas qualitatifs). */
+export function foodDays(s: Snapshot): Set<Day> {
+  const set = new Set<Day>()
+  for (const m of s.meals) set.add(m.day)
+  for (const f of s.food_entries) set.add(f.day)
+  return set
+}
+
+export const hasFoodOn = (s: Snapshot, day: Day) => s.food_entries.some(f => f.day === day) || s.meals.some(m => m.day === day)
+
+/** Nombre de repas distincts notés un jour donné. */
+export function mealsCountOn(s: Snapshot, day: Day): number {
+  const slots = new Set<string>()
+  for (const f of s.food_entries) if (f.day === day) slots.add(f.meal)
+  for (const m of s.meals) if (m.day === day) slots.add('ancien:' + m.id)
+  return slots.size
+}
+
+/** Recettes cuisinées et notées : { jour, recette, heure }, toutes sources confondues. */
+export function recipeLogs(s: Snapshot): { day: Day; recipe_id: string; at: string }[] {
+  const out: { day: Day; recipe_id: string; at: string }[] = []
+  for (const m of s.meals) if (m.recipe_id) out.push({ day: m.day, recipe_id: m.recipe_id, at: m.at })
+  for (const f of s.food_entries) if (f.source === 'recette' && f.ref) out.push({ day: f.day, recipe_id: f.ref, at: f.at })
+  return out
+}
+
+/** Un fruit ou des légumes notés ce jour-là. */
+export function fruitOrVegOn(s: Snapshot, day: Day): boolean {
+  if (s.meals.some(m => m.day === day && (m.markers.includes('fruit') || m.markers.includes('legumes')))) return true
+  return s.food_entries.some(f => f.day === day && (f.category === 'legumes' || f.category === 'fruits' || (f.details.markers ?? []).some(k => k === 'fruit' || k === 'legumes')))
 }
 
 /** État d'une habitude un jour donné : déduit des données pour sport/eau/repas, coché à la main sinon. */
@@ -26,11 +68,11 @@ export function habitState(s: Snapshot, c: Commitment, day: Day): HabitState {
     return r.version === 'usual' || r.version === 'plus' ? 'usual' : r.version === 'min' ? 'min' : 'none'
   }
   if (c.kind === 'eau') {
-    const g = waterGlasses(s, day)
-    return g >= waterGoal(s) ? 'usual' : g >= 1 ? 'min' : 'none'
+    const ml = waterMl(s, day)
+    return ml >= waterGoalMl(s) ? 'usual' : ml > 0 ? 'min' : 'none'
   }
   if (c.kind === 'repas') {
-    const n = mealsOn(s, day).length
+    const n = mealsCountOn(s, day)
     return n >= 2 ? 'usual' : n >= 1 ? 'min' : 'none'
   }
   const check = s.habit_checks.find(h => h.commitment_id === c.id && h.day === day)
@@ -165,7 +207,7 @@ export function activeDays(s: Snapshot): Set<Day> {
   const set = new Set<Day>()
   for (const w of s.workouts) set.add(w.day)
   for (const w of s.water_logs) set.add(w.day)
-  for (const m of s.meals) set.add(m.day)
+  for (const d of foodDays(s)) set.add(d)
   for (const c of s.daily_checkins) set.add(c.day)
   for (const h of s.habit_checks) set.add(h.day)
   return set

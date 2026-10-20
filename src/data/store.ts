@@ -20,7 +20,7 @@ export interface OutboxEntry {
 export type Deriver = (snap: Snapshot) => Op[]
 type Listener = () => void
 
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 export class DataStore {
   private mem = new Map<TableName, Map<string, Row>>()

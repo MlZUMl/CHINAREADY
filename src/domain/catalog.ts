@@ -116,7 +116,7 @@ export const BADGES: BadgeDef[] = [
   { id: 'lever-soleil', name: 'Lever de soleil', description: 'Boire un verre d\'eau avant 9 h, 5 jours différents.', secret: true, emoji: '🌅' },
   { id: 'constance-douce', name: 'La constance douce', description: 'Tenir la version minimale 4 fois dans la même semaine.', secret: true, emoji: '🫧' },
   { id: 'joueuse', name: 'Joueuse', description: '5 séances de Ring Fit.', secret: true, emoji: '🕹️' },
-  { id: 'cent-verres', name: 'Cent verres', description: '100 verres d\'eau au total.', secret: true, emoji: '🥛' },
+  { id: 'cent-verres', name: '25 litres', description: '25 litres d\'eau bus au total.', secret: true, emoji: '🥛' },
 ]
 
 export function itemDef(id: string) { return ITEMS.find(i => i.id === id) }

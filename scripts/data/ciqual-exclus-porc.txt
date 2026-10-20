@@ -1,0 +1,210 @@
+Andouille
+Andouille de Guéméné
+Andouille de Vire
+Andouille, réchauffée à la poêle
+Andouillette de Troyes, à cuire
+Andouillette, sautée/poêlée
+Andouillette, à cuire
+Boudin antillais, à cuire
+Boudin blanc truffé, à cuire
+Boudin blanc, sauté/poêlé
+Boudin noir, sauté/poêlé
+Boudin noir, à cuire
+Boudin, sauté/poêlé (aliment moyen)
+Boulettes au porc et au boeuf (à la suédoise), préemballées, crues
+Brochette de porc, crue
+Cassoulet au canard ou oie, appertisé
+Cassoulet au porc, appertisé
+Cassoulet, appertisé
+Cervelas
+Cervelas obernois
+Cervelas à l'ail, pur porc
+Cervelle, porc, braisée
+Cervelle, porc, crue
+Chair à saucisse, crue
+Chair à saucisse, pur porc, crue
+Chipolata, crue
+Chipolata, cuite
+Chop suey (porc ou poulet), préemballé
+Chorizo
+Chorizo supérieur, doux ou fort, type charcuterie en tranches
+Chorizo supérieur, doux ou fort, type saucisse sèche
+Choucroute garnie, préemballée
+Coeur, porc, cru
+Confit de foie de porc
+Coppa
+Croissant au jambon
+Croissant au jambon fromage, préemballé
+Croque-monsieur, préemballé
+Crêpe ou Galette complète (oeuf, jambon, fromage), préemballée
+Crêpe ou Galette fourrée béchamel jambon fromage champignon, préemballée
+Crêpe ou Galette fourrée béchamel jambon fromage, préemballée
+Crêpe ou Galette fourrée béchamel jambon, préemballée
+Dés, allumettes, râpé ou haché de jambon
+Endive au jambon
+Farce porc et boeuf, crue
+Feuilleté ou Friand jambon fromage
+Filet de bacon
+Flammenkueche ou Tarte flambée aux lardons, préemballée
+Foie, porc, cru
+Foie, porc, cuit
+Fromage de tête
+Fromage pané au jambon
+Galantine (aliment moyen)
+Gélatine, sèche
+Hot-dog, préemballé
+Jambon cru
+Jambon cru, fumé
+Jambon cru, fumé, allégé en matière grasse
+Jambon cuit, choix
+Jambon cuit, choix, avec couenne
+Jambon cuit, choix, découenné dégraissé
+Jambon cuit, de Paris, découenné dégraissé
+Jambon cuit, fumé
+Jambon cuit, supérieur
+Jambon cuit, supérieur, avec couenne
+Jambon cuit, supérieur, découenné
+Jambon cuit, supérieur, découenné dégraissé
+Jambon cuit, supérieur, à teneur réduite en sel
+Jambon de Bayonne
+Jambon de porc à cuire ou Jambon à rôtir/cuire au four
+Jambon en croûte
+Jambon persillé en gelée
+Jambon sec
+Jambon sec Serrano
+Jambon sec de Parme
+Jambon sec, découenné, dégraissé
+Jambon à l'os braisé
+Jambonneau, cuit
+Langue, porc, crue
+Lard gras, cru
+Lardon fumé, cru
+Lardon fumé, cuit
+Lardon nature, cru
+Lardon nature, cuit
+Mortadelle
+Mortadelle pistachée pur porc
+Mortadelle, porc et boeuf
+Mortadelle, pur porc
+Mousse de foie de porc
+Mousse de foie de porc supérieure ou Crème de foie
+Museau de porc vinaigrette
+Nem ou Pâté impérial, au porc, préemballé, cuit
+Omelette aux lardons
+Oreille de porc demi-sel
+Palette à la diable, préemballée
+Pancetta ou Poitrine roulée sèche
+Petit salé ou saucisse aux lentilles, préemballé
+Pied de porc demi-sel
+Pizza au chorizo ou salami, préemballée
+Pizza au chèvre et lardons, préemballée
+Pizza au speck ou jambon cru, préemballée
+Pizza aux lardons, oignons et fromage, préemballée
+Pizza jambon fromage champignons ou pizza royale, reine ou regina, préemballée
+Pizza jambon fromage, préemballée
+Pizza type raclette ou tartiflette, préemballée
+Poitrine de porc demi-sel
+Poitrine de porc, fumée, crue
+Porc au caramel, préemballé
+Porc, bardière découennée, crue
+Porc, carré, cru
+Porc, carré, cuit
+Porc, côte, crue
+Porc, côte, grillée
+Porc, escalope de jambon, crue
+Porc, escalope de jambon, cuite
+Porc, filet mignon, cru
+Porc, filet mignon, cuit
+Porc, filet, maigre, cru
+Porc, filet, maigre, en rôti, cuit
+Porc, gorge, découennée, crue
+Porc, hachage sans jarret, sans bateau, découenné, dégraissé, désossé, cru
+Porc, jambon sans jarret, sans bateau, découenné, dégraissé, désossé, cru
+Porc, jambonneau arrière, découenné, dégraisssé, désossé, cru
+Porc, jarret, cru
+Porc, longe, crue
+Porc, longe, cuite
+Porc, maigre 80/20, cru
+Porc, maigre 90/10, cru
+Porc, palette, crue
+Porc, palette, découennée, dégraissée, désossée, crue
+Porc, poitrine cutter, sans mouille, crue
+Porc, poitrine, crue
+Porc, rouelle de jambon, crue
+Porc, rouelle de jambon, cuite
+Porc, rôti filet avec chaînette, cru
+Porc, rôti, cru
+Porc, rôti, cuit
+Porc, travers, braisé
+Porc, travers, cru
+Porc, viande, cuite (aliment moyen)
+Porc, échine, crue
+Porc, échine, rôtie/cuite au four
+Porc, épaule, crue
+Porc, épaule, cuite
+Potée auvergnate (chou et porc)
+Poêlée de pommes de terre préfrites, lardons ou poulet, et autres, sans légumes verts, préemballée
+Pâtes à la carbonara (spaghetti, tagliatelles…)
+Pâté (aliment moyen)
+Pâté au poivre vert
+Pâté breton
+Pâté de foie de porc
+Pâté de foie de porc, supérieur
+Pâté en croûte
+Pâté ou terrine aux champignons (forestier)
+Pâté ou terrine de campagne
+Quiche lorraine, préemballée
+Rillettes de Tours
+Rillettes du Mans
+Rillettes pur porc
+Rillettes traditionnelles de porc
+Rognon, porc, cru
+Rognon, porc, cuit
+Rond de jambon cuit
+Rosette ou Fuseau
+Roulade de porc pistachée
+Saindoux
+Salade de lentilles et saucisse fumée, préemballée
+Salami
+Salami porc et boeuf
+Salami pur porc
+Salami type danois
+Sandwich baguette, jambon emmental, préemballé
+Sandwich baguette, jambon, beurre
+Sandwich baguette, jambon, emmental, beurre
+Sandwich baguette, jambon, oeuf dur, crudités (tomate, salade), beurre
+Sandwich baguette, porc, crudités (tomate, salade), mayonnaise
+Sandwich baguette, pâté, cornichons
+Sandwich baguette, salami, beurre
+Sandwich baguette, saucisson, beurre
+Sandwich pain de mie complet, jambon, crudités, fromage optionnel, préemballé
+Sandwich pain de mie complet, jambon, fromage, préemballé
+Sandwich panini, jambon cru, mozzarella, tomates
+Sanglier, cru
+Sanglier, rôti/cuit au four
+Sauce carbonara, préemballée
+Saucisse (aliment moyen)
+Saucisse cocktail
+Saucisse de Francfort
+Saucisse de Montbéliard
+Saucisse de Morteau
+Saucisse de Morteau, bouillie/cuite à l'eau
+Saucisse de Strasbourg ou Knack
+Saucisse de Toulouse, crue
+Saucisse de Toulouse, cuite
+Saucisse de foie
+Saucisse de jambon pur porc
+Saucisse de volaille, type Knack
+Saucisse sèche
+Saucisson brioché, cuit
+Saucisson cuit pur porc
+Saucisson de Paris
+Saucisson de Paris, fumé
+Saucisson sec
+Saucisson sec aux noix et/ou noisettes
+Saucisson sec pur porc
+Saucisson sec pur porc, qualité supérieure
+Saucisson à l'ail
+Tartiflette, préemballée
+Épaule de porc, cuite, choix, découennée dégraissée
+Épaule de porc, cuite, standard, découennée dégraissée

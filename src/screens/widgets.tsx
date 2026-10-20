@@ -7,14 +7,13 @@ import { Chips, EnergyScale, Sheet, Stepper } from '../ui/components'
 import { NEED_LABELS } from '../domain/recommend'
 import { addDays, isoWeekday, toDay, weekStart, type Day, parseDay, nowIso } from '../lib/dates'
 import { dayRitual } from '../domain/ritual'
-import { waterGlasses, waterGoal } from '../domain/discipline'
+import { waterMl, waterGoalMl, waterReached, hasFoodOn, entryMl, formatLitres } from '../domain/discipline'
 import { cycleInfo, predictedPeriod } from '../domain/body'
 import { missionDef } from '../domain/missions'
 import { navigate } from '../lib/router'
-import { EXTERNAL_ACTIVITIES } from '../domain/exercises'
-import type { Meal, MealMarker, MealMoment, Need } from '../data/types'
-import { RECIPES } from '../domain/recipes'
-import { IconDrop, IconMinus, IconPlus, IconSparkle } from '../ui/icons'
+import { EXTERNAL_ACTIVITIES, EQUIPMENT } from '../domain/exercises'
+import type { Need, WaterLog, Equipment } from '../data/types'
+import { IconDrop, IconSparkle } from '../ui/icons'
 
 // ------------------------------------------------------------------ compagnon
 export function CompanionCard() {
@@ -131,8 +130,8 @@ export function WeekStrip({ onDay }: { onDay?: (d: Day) => void }) {
       {Array.from({ length: 7 }, (_, i) => {
         const d = addDays(ws, i)
         const r = dayRitual(snap, d, today)
-        const water = waterGlasses(snap, d) >= waterGoal(snap)
-        const meals = snap.meals.some(m => m.day === d)
+        const water = waterReached(snap, d)
+        const meals = hasFoodOn(snap, d)
         const cls = ['day-dot', d === today ? 'today' : '', r.status === 'honore' || r.status === 'petit-pas' || r.status === 'repos' ? r.status : '', period.has(d) ? 'period' : predicted.has(d) ? 'predicted' : ''].join(' ')
         return (
           <button key={d} role="listitem" onClick={() => (onDay ? onDay(d) : navigate('/progres?jour=' + d))}
@@ -147,80 +146,66 @@ export function WeekStrip({ onDay }: { onDay?: (d: Day) => void }) {
   )
 }
 
-// ------------------------------------------------------------------ eau
-export function WaterWidget({ day }: { day: Day }) {
-  const { snap, actions } = useApp()
-  const n = waterGlasses(snap, day)
-  const goal = waterGoal(snap)
+// ------------------------------------------------------------------ eau (litres)
+export const WATER_QUICK = [150, 250, 330, 500]
+const cl = (ml: number) => `${Math.round(ml / 10)} cl`
+
+export function WaterWidget({ day, compact = false }: { day: Day; compact?: boolean }) {
+  const { snap, actions, toast } = useApp()
+  const ml = waterMl(snap, day)
+  const goal = waterGoalMl(snap)
+  const [custom, setCustom] = useState(false)
+  const [edit, setEdit] = useState<WaterLog | null>(null)
+  const entries = snap.water_logs.filter(w => w.day === day).sort((a, b) => a.at.localeCompare(b.at))
+  const add = async (amount: number) => {
+    const before = ml
+    await actions.addWater(day, amount)
+    if (before < goal && before + amount >= goal) toast('💧', 'Objectif d\'eau atteint, bravo !')
+  }
   return (
     <section className="card" aria-label="Hydratation">
       <div className="card-head">
-        <span className="emoji-bubble" style={{ background: '#e3f0f8' }} aria-hidden="true"><IconDrop style={{ width: 22, color: '#5a95c3' }} /></span>
-        <div><div className="kicker">Eau</div><strong>{n} verre{n > 1 ? 's' : ''} sur {goal}</strong></div>
-        <button className="icon-btn" aria-label="Retirer un verre" onClick={() => actions.removeWater(day)} disabled={!n}><IconMinus /></button>
-        <button className="icon-btn" style={{ background: 'var(--prune)', color: '#fff' }} aria-label="Ajouter un verre" onClick={() => actions.addWater(day)}><IconPlus /></button>
+        <span className="emoji-bubble" style={{ background: '#e3eff1' }} aria-hidden="true"><IconDrop style={{ width: 22, color: 'var(--nuit)' }} /></span>
+        <div><div className="kicker">Eau</div><strong data-testid="eau-total">{formatLitres(ml)} sur {formatLitres(goal, 1)}</strong></div>
+        <span className="small muted">{goal > ml ? `encore ${formatLitres(goal - ml)}` : 'objectif atteint'}</span>
       </div>
-      <div className="glasses" aria-hidden="true">
-        {Array.from({ length: Math.max(goal, n) }, (_, i) => <span key={i} className={`glass ${i < n ? 'full' : ''}`} />)}
+      <div className="water-bar" role="progressbar" aria-label="Eau bue" aria-valuemin={0} aria-valuemax={goal} aria-valuenow={ml}><div style={{ width: Math.min(100, (ml / goal) * 100) + '%' }} /></div>
+      <div className="water-quick" role="group" aria-label="Ajouter de l'eau">
+        {WATER_QUICK.map(q => <button key={q} onClick={() => add(q)} aria-label={`Ajouter ${formatLitres(q)}`}>{formatLitres(q)}</button>)}
+        <button onClick={() => setCustom(true)} aria-label="Autre quantité">Autre</button>
       </div>
+      {!compact && entries.length > 0 && (
+        <div className="stack" style={{ gap: 6 }}>
+          <span className="small muted">Touche une entrée pour la modifier ou la supprimer.</span>
+          <div className="water-list">
+            {entries.map(w => (
+              <button key={w.id} onClick={() => setEdit(w)} aria-label={`Modifier ${cl(entryMl(w))} de ${hhmm(w.at)}`}>{hhmm(w.at)} · {cl(entryMl(w))}</button>
+            ))}
+          </div>
+        </div>
+      )}
+      {custom && <WaterAmountSheet title="Autre quantité" initial={200} onClose={() => setCustom(false)} onSave={async v => { await add(v); setCustom(false) }} />}
+      {edit && <WaterAmountSheet title={`Eau de ${hhmm(edit.at)}`} initial={entryMl(edit)} onClose={() => setEdit(null)}
+        onSave={async v => { await actions.updateWater(edit.id, v); setEdit(null) }} onDelete={async () => { await actions.deleteWater(edit.id); setEdit(null) }} />}
     </section>
   )
 }
 
-// ------------------------------------------------------------------ repas (sans chiffres)
-export const MARKERS: { id: MealMarker; label: string }[] = [
-  { id: 'proteines', label: 'Protéines' }, { id: 'legumes', label: 'Légumes' }, { id: 'feculents', label: 'Féculents' },
-  { id: 'fruit', label: 'Fruit' }, { id: 'fait_maison', label: 'Fait maison' }, { id: 'plaisir', label: 'Plaisir' },
-]
-export const MOMENTS: { id: MealMoment; label: string }[] = [
-  { id: 'matin', label: 'Matin' }, { id: 'midi', label: 'Midi' }, { id: 'gouter', label: 'Goûter' }, { id: 'soir', label: 'Soir' }, { id: 'autre', label: 'Autre' },
-]
+const hhmm = (iso: string) => { const d = new Date(iso); return `${String(d.getHours()).padStart(2, '0')} h ${String(d.getMinutes()).padStart(2, '0')}` }
 
-export function defaultMoment(): MealMoment {
-  const h = new Date().getHours()
-  return h < 11 ? 'matin' : h < 15 ? 'midi' : h < 18 ? 'gouter' : 'soir'
-}
-
-export function MealSheet({ day, meal, onClose, preset }: { day: Day; meal?: Meal; onClose: () => void; preset?: { title: string; recipe_id: string | null; markers: MealMarker[] } }) {
-  const { snap, actions } = useApp()
-  const [title, setTitle] = useState(meal?.title ?? preset?.title ?? '')
-  const [moment, setMoment] = useState<MealMoment>(meal?.moment ?? defaultMoment())
-  const [markers, setMarkers] = useState<MealMarker[]>(meal?.markers ?? preset?.markers ?? [])
-  const [feeling, setFeeling] = useState<Meal['feeling']>(meal?.feeling ?? null)
-  const [note, setNote] = useState(meal?.note ?? '')
-  const [recipeId, setRecipeId] = useState<string | null>(meal?.recipe_id ?? preset?.recipe_id ?? null)
-  const plan = snap.meal_plans.find(p => p.week_start === weekStart(day))
-  const planned = (plan?.slots ?? []).filter(s => s.day === day).map(s => RECIPES.find(r => r.id === s.recipe_id)).filter(Boolean) as typeof RECIPES
-
-  const save = async () => {
-    await actions.saveMeal({ id: meal?.id, day, moment, title: title.trim() || 'Repas', recipe_id: recipeId, markers, feeling, note: note.trim() || null })
-    onClose()
-  }
+function WaterAmountSheet({ title, initial, onSave, onClose, onDelete }: { title: string; initial: number; onSave: (ml: number) => void; onClose: () => void; onDelete?: () => void }) {
+  const [v, setV] = useState(String(Math.round(initial / 10)))
+  const n = Number(v.replace(',', '.'))
+  const ok = Number.isFinite(n) && n >= 1 && n <= 300
   return (
-    <Sheet title={meal ? 'Modifier le repas' : 'Noter un repas'} onClose={onClose}>
-      <p className="muted small">Pas de chiffres, pas de calcul : juste garder le fil. Le nom du plat suffit.</p>
-      {!meal && planned.length > 0 && (
-        <div className="stack"><strong className="small">Prévu au menu aujourd'hui</strong>
-          <div className="chips">{planned.map(r => <button key={r.id} className={`chip soft ${recipeId === r.id ? 'on' : ''}`} onClick={() => { setTitle(r.title); setRecipeId(r.id); setMarkers(r.markers) }}>{r.emoji} {r.title}</button>)}</div>
-        </div>
-      )}
-      <label className="field">Qu'as-tu mangé ?
-        <input className="input" value={title} onChange={e => { setTitle(e.target.value); if (recipeId) setRecipeId(null) }} placeholder="Ex. : poulet, riz et légumes" />
+    <Sheet title={title} onClose={onClose}>
+      <label className="field">Quantité en centilitres <span className="hint">25 cl = un verre, 50 cl = une petite bouteille</span>
+        <input className="input big-input" inputMode="decimal" value={v} onChange={e => setV(e.target.value)} aria-label="Quantité en centilitres" />
       </label>
-      <div className="stack"><strong className="small">Moment</strong><Chips label="Moment du repas" value={moment} onChange={v => v && setMoment(v)} options={MOMENTS} /></div>
-      <div className="stack"><strong className="small">Repères <span className="muted">(facultatif)</span></strong><Chips label="Repères" multi soft value={markers} onChange={setMarkers} options={MARKERS} /></div>
-      <div className="stack"><strong className="small">Ressenti <span className="muted">(facultatif)</span></strong>
-        <Chips label="Ressenti" soft value={feeling} onChange={setFeeling}
-          options={[{ id: 'agreable', label: 'Agréable' }, { id: 'rassasiee', label: 'Rassasiée' }, { id: 'encore_faim', label: 'Encore faim' }, { id: 'trop', label: 'Trop mangé' }]} />
-        {feeling === 'encore_faim' && <p className="muted small">C'est une information utile, pas un échec : un complément (fruit, yaourt, tartine) est tout à fait possible.</p>}
-        {feeling === 'trop' && <p className="muted small">Ça arrive. Rien à compenser : le prochain repas se fait normalement.</p>}
-      </div>
-      <label className="field">Note <span className="hint">Facultatif</span>
-        <input className="input" value={note} onChange={e => setNote(e.target.value)} />
-      </label>
+      <div className="chips">{[15, 20, 25, 33, 50, 75, 100].map(c => <button key={c} type="button" className={`chip soft ${n === c ? 'on' : ''}`} onClick={() => setV(String(c))}>{c} cl</button>)}</div>
       <div className="grid2">
-        {meal ? <button className="btn danger" onClick={async () => { await actions.deleteMeal(meal.id); onClose() }}>Supprimer</button> : <button className="btn ghost" onClick={onClose}>Annuler</button>}
-        <button className="btn primary" onClick={save}>Enregistrer</button>
+        {onDelete ? <button className="btn danger" onClick={onDelete}>Supprimer</button> : <button className="btn ghost" onClick={onClose}>Annuler</button>}
+        <button className="btn primary" disabled={!ok} onClick={() => onSave(Math.round(n * 10))}>Enregistrer</button>
       </div>
     </Sheet>
   )
@@ -248,7 +233,7 @@ export function ExternalActivitySheet({ onClose, source = 'libre', defaultMinute
   return (
     <Sheet title="Noter une activité" onClose={() => onClose(false)}>
       <div className="species-grid">
-        {EXTERNAL_ACTIVITIES.map(a => (
+        {sortedActivities(snap.profiles[0]?.settings.equipment ?? []).map(a => (
           <button key={a.id} className={activity === a.id ? 'on' : ''} onClick={() => setActivity(a.id)} aria-pressed={activity === a.id}>
             <span style={{ fontSize: '2rem' }} aria-hidden="true">{a.emoji}</span>{a.label}
           </button>
@@ -263,3 +248,43 @@ export function ExternalActivitySheet({ onClose, source = 'libre', defaultMinute
 }
 
 export const iso = nowIso
+
+/** Activités libres : celles dont le matériel est coché passent en premier. */
+function sortedActivities(eq: Equipment[]) {
+  const owned = (id: string) => (id === 'ring_fit' || id === 'velo' || id === 'velo_appart' || id === 'corde') ? eq.includes(id as Equipment) : null
+  return [...EXTERNAL_ACTIVITIES].sort((a, b) => Number(owned(b.id) === true) - Number(owned(a.id) === true))
+}
+
+// ------------------------------------------------------------------ matériel
+/** Choix du matériel : tuiles bien visibles (coche + bordure) et récapitulatif avant validation. */
+export function EquipmentPicker({ value, onChange }: { value: Equipment[]; onChange: (v: Equipment[]) => void }) {
+  const toggle = (id: Equipment) => onChange(value.includes(id) ? value.filter(x => x !== id) : [...value, id])
+  return (
+    <div className="stack">
+      <div className="species-grid" role="group" aria-label="Mon matériel">
+        {EQUIPMENT.map(e => (
+          <button key={e.id} type="button" className={value.includes(e.id) ? 'on' : ''} aria-pressed={value.includes(e.id)} onClick={() => toggle(e.id)}>
+            <span style={{ fontSize: '1.9rem' }} aria-hidden="true">{e.emoji}</span>
+            <span>{e.label}</span>
+            <span className="muted" style={{ fontSize: '.7rem', fontWeight: 700 }}>{e.hint}</span>
+          </button>
+        ))}
+      </div>
+      <div className="equip-summary" aria-live="polite" data-testid="recap-materiel">
+        {value.length ? <><strong>Ton matériel :</strong> {EQUIPMENT.filter(e => value.includes(e.id)).map(e => e.label).join(', ')}.<br /><span className="muted small">{equipmentEffect(value)}</span></>
+          : <><strong>Aucun matériel :</strong> <span className="muted small">les séances utiliseront seulement le poids du corps.</span></>}
+      </div>
+    </div>
+  )
+}
+
+export function equipmentEffect(eq: Equipment[]): string {
+  const parts: string[] = []
+  if (eq.includes('tapis')) parts.push('exercices au sol')
+  if (eq.includes('elastique') || eq.includes('halteres')) parts.push('renforcement avec ' + [eq.includes('elastique') ? 'élastiques' : '', eq.includes('halteres') ? 'haltères' : ''].filter(Boolean).join(' et '))
+  if (eq.includes('corde')) parts.push('cardio à la corde')
+  if (eq.includes('velo_appart')) parts.push('cardio sur le vélo d\'appartement')
+  const libres = [eq.includes('ring_fit') ? 'Ring Fit' : '', eq.includes('velo') ? 'vélo' : ''].filter(Boolean)
+  const s = parts.length ? `Les séances guidées incluront : ${parts.join(', ')}.` : 'Séances guidées au poids du corps.'
+  return libres.length ? `${s} ${libres.join(' et ')} : proposé${libres.length > 1 ? 's' : ''} en premier dans les activités libres.` : s
+}

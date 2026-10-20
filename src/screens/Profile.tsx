@@ -4,7 +4,11 @@ import { Chips, Confirm, Stepper, Toggle, TopBar } from '../ui/components'
 import { navigate } from '../lib/router'
 import { currentSubscription, disablePush, enablePush, pushSupport } from '../lib/push'
 import { IconBell, IconChevron, IconCloud } from '../ui/icons'
-import { WEEKDAYS } from '../lib/dates'
+import { WEEKDAYS, toDay } from '../lib/dates'
+import { EquipmentPicker } from './widgets'
+import { GoalSheet } from './food-parts'
+import { calorieGoal, fmtKcal } from '../domain/nutrition'
+import { HYDRATION_TIMES } from '../domain/defaults'
 
 export function Profile() {
   const { snap, actions, cloud, store, toast } = useApp()
@@ -16,6 +20,8 @@ export function Profile() {
   const [pushError, setPushError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [wipe, setWipe] = useState(false)
+  const [goal, setGoal] = useState(false)
+  const goalInfo = calorieGoal(snap, toDay())
   useEffect(() => { currentSubscription().then(s => setSubscribed(Boolean(s))).catch(() => setSubscribed(false)) }, [])
 
   const togglePush = async (on: boolean) => {
@@ -76,7 +82,7 @@ export function Profile() {
           {pushError && <div className="banner">{pushError}</div>}
           <div className="divider" />
           <Toggle label="Rappel de mon rendez-vous sportif" hint={sport ? `${sport.days.map(d => WEEKDAYS[d - 1].slice(0, 3)).join(', ')} à ${sport.cue_time}` : undefined} checked={notif.ritual} onChange={v => actions.updateNotifPrefs({ ritual: v })} />
-          <Toggle label="Petits rappels d'eau" hint={notif.hydration_times.join(' · ')} checked={notif.hydration} onChange={v => actions.updateNotifPrefs({ hydration: v })} />
+          <Toggle label="Rappels d'eau (5 par jour)" hint={notif.hydration_times.map(t => t.replace(':', ' h ')).join(' · ')} checked={notif.hydration} onChange={v => actions.updateNotifPrefs({ hydration: v, hydration_times: v && notif.hydration_times.length < 5 ? [...HYDRATION_TIMES] : notif.hydration_times })} />
           <Toggle label="Ouverture de mes capsules" checked={notif.capsules} onChange={v => actions.updateNotifPrefs({ capsules: v })} />
           <Toggle label="Rappel mensuel de capsule" hint="Le 1er de chaque mois" checked={notif.monthly_capsule} onChange={v => actions.updateNotifPrefs({ monthly_capsule: v })} />
           <Toggle label="Bilan de la semaine" hint="Le dimanche à 18 h" checked={notif.weekly_review} onChange={v => actions.updateNotifPrefs({ weekly_review: v })} />
@@ -101,15 +107,15 @@ export function Profile() {
 
         <section className="card">
           <h2>Objectifs</h2>
-          <div className="row between"><span>Verres d'eau par jour</span><Stepper label="Verres d'eau" value={p.water_goal_glasses} min={3} max={14} onChange={v => actions.updateProfile({ water_goal_glasses: v })} /></div>
+          <div className="row between"><span>Eau par jour</span><Stepper label="Objectif d'eau" value={p.water_goal_ml ?? 2000} min={1000} max={4000} step={100} onChange={v => actions.updateProfile({ water_goal_ml: v, water_goal_glasses: Math.max(1, Math.min(20, Math.round(v / 250))) })} format={v => (v / 1000).toFixed(1).replace('.', ',') + ' L'} /></div>
+          <div className="row between"><span>Calories par jour</span><button className="link-btn" onClick={() => setGoal(true)}>{goalInfo.goal ? fmtKcal(goalInfo.goal) : 'À définir'}</button></div>
           <div className="row between wrap"><span>Jour de pesée</span>
             <select className="input" style={{ width: 'auto' }} value={p.weigh_day} onChange={e => actions.updateProfile({ weigh_day: Number(e.target.value) })}>
               {WEEKDAYS.map((d, i) => <option key={d} value={i + 1}>{d}</option>)}
             </select></div>
           <div className="row between"><span>Portions par défaut</span><Stepper label="Portions" value={p.portions} min={1} max={8} onChange={v => actions.updateProfile({ portions: v })} /></div>
           <strong className="small">Mon matériel</strong>
-          <Chips label="Matériel" multi value={p.settings.equipment ?? []} onChange={v => actions.updateProfile({ settings: { ...p.settings, equipment: v } })}
-            options={[{ id: 'elastique', label: 'Élastiques' }, { id: 'halteres', label: 'Haltères' }, { id: 'tapis', label: 'Tapis de sol' }]} />
+          <EquipmentPicker value={p.settings.equipment ?? []} onChange={v => actions.updateProfile({ settings: { ...p.settings, equipment: v } })} />
         </section>
 
         <section className="card">
@@ -119,8 +125,9 @@ export function Profile() {
           <button className="btn secondary" onClick={exportData}>Télécharger mes données</button>
           <button className="btn danger" onClick={() => setWipe(true)}>Effacer les données de ce téléphone</button>
         </section>
-        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.0</p>
+        <p className="muted small" style={{ textAlign: 'center' }}>Élan · version 1.1</p>
       </main>
+      {goal && <GoalSheet onClose={() => setGoal(false)} />}
       {wipe && <Confirm danger title="Effacer ce téléphone ?" confirmLabel="Tout effacer ici"
         text={cloud.user ? 'Les données de ce téléphone seront effacées et tu seras déconnectée. Ta sauvegarde en ligne reste intacte : reconnecte-toi pour tout récupérer.' : 'Sans compte, rien n\'est sauvegardé ailleurs : tout sera définitivement perdu.'}
         onClose={() => setWipe(false)} onConfirm={async () => { if (cloud.user) { await cloud.syncNow(); await cloud.signOut() } await store.wipe(); location.hash = '#/'; location.reload() }} />}

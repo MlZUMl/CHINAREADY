@@ -8,6 +8,44 @@ precacheAndRoute(self.__WB_MANIFEST)
 cleanupOutdatedCaches()
 
 self.addEventListener('install', () => { self.skipWaiting() })
+
+// Données (table Ciqual, catalogue de recettes) : réseau d'abord pour voir les mises à jour,
+// copie locale en secours hors ligne. Photos des recettes : copie locale d'abord (60 au plus,
+// seulement si le serveur d'images l'autorise ; sinon le cache du navigateur s'en charge).
+const DATA_CACHE = 'elan-donnees-v1'
+const PHOTO_CACHE = 'elan-photos-v1'
+self.addEventListener('fetch', event => {
+  const req = event.request
+  if (req.method !== 'GET') return
+  const url = new URL(req.url)
+  if (url.origin === self.location.origin && /\/data\/[\w-]+\.json$/.test(url.pathname)) {
+    event.respondWith((async () => {
+      const cache = await caches.open(DATA_CACHE)
+      try {
+        const res = await fetch(req, { cache: 'no-cache' })
+        if (res.ok) await cache.put(url.pathname, res.clone())
+        return res
+      } catch {
+        return (await cache.match(url.pathname)) ?? Response.error()
+      }
+    })())
+    return
+  }
+  if (url.hostname === 'images.pexels.com') {
+    event.respondWith((async () => {
+      const cache = await caches.open(PHOTO_CACHE)
+      const hit = await cache.match(req)
+      if (hit) return hit
+      const res = await fetch(req)
+      if (res.ok) {
+        await cache.put(req, res.clone())
+        const keys = await cache.keys()
+        for (const k of keys.slice(0, Math.max(0, keys.length - 60))) await cache.delete(k)
+      }
+      return res
+    })())
+  }
+})
 self.addEventListener('activate', event => { event.waitUntil(self.clients.claim()) })
 
 interface PushPayload {

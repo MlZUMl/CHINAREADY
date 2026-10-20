@@ -4,7 +4,8 @@ import { CompanionArt } from '../art/Companion'
 import { SPECIES } from '../domain/companion'
 import { Chips, Stepper } from '../ui/components'
 import { WEEKDAYS_SHORT } from '../lib/dates'
-import type { Species } from '../data/types'
+import type { Species, Equipment } from '../data/types'
+import { EquipmentPicker } from './widgets'
 import { AuthForm } from './Account'
 
 export function Onboarding() {
@@ -18,8 +19,8 @@ export function Onboarding() {
   const [place, setPlace] = useState('Salon')
   const [species, setSpecies] = useState<Species>('chat')
   const [cname, setCname] = useState('')
-  const [water, setWater] = useState(8)
-  const [equipment, setEquipment] = useState<('elastique' | 'halteres' | 'tapis')[]>(['elastique', 'halteres', 'tapis'])
+  const [water, setWater] = useState(2000)
+  const [equipment, setEquipment] = useState<Equipment[]>(['tapis'])
   const [saving, setSaving] = useState(false)
 
   const total = cloud.configured ? 6 : 5
@@ -28,7 +29,7 @@ export function Onboarding() {
     await actions.completeOnboarding({
       name: name.trim() || null,
       ritual: { days: days.length ? [...days].sort((a, b) => a - b) : [1, 2, 3, 4, 5], time, usualMinutes: usual, minMinutes: Math.min(min, usual), place: place.trim() || 'Salon' },
-      species, companionName: cname.trim() || SPECIES.find(s => s.id === species)!.defaultName, water, equipment,
+      species, companionName: cname.trim() || SPECIES.find(s => s.id === species)!.defaultName, waterMl: water, equipment,
     })
   }
 
@@ -110,17 +111,16 @@ export function Onboarding() {
       {dots}
       <h1>Eau et matériel</h1>
       <div className="card flat">
-        <div className="row between"><div><strong>Objectif d'eau</strong><div className="muted small">En verres par jour</div></div>
-          <Stepper label="Verres par jour" value={water} min={3} max={14} onChange={setWater} format={v => v + ' verres'} /></div>
+        <div className="row between"><div><strong>Objectif d'eau</strong><div className="muted small">En litres par jour</div></div>
+          <Stepper label="Litres par jour" value={water} min={1000} max={4000} step={100} onChange={setWater} format={v => (v / 1000).toFixed(1).replace('.', ',') + ' L'} /></div>
       </div>
       <div className="stack">
         <strong>Ton matériel à la maison</strong>
-        <Chips label="Matériel" multi value={equipment} onChange={setEquipment}
-          options={[{ id: 'elastique', label: 'Élastiques' }, { id: 'halteres', label: 'Haltères' }, { id: 'tapis', label: 'Tapis de sol' }]} />
-        <p className="muted small">Ring Fit, danse, vélo et marche se notent aussi comme séances.</p>
+        <p className="muted small">Touche ce que tu as : une coche verte apparaît. Vérifie le récapitulatif avant de continuer.</p>
+        <EquipmentPicker value={equipment} onChange={setEquipment} />
       </div>
       <div className="spacer" />
-      <button className="btn primary block" onClick={next}>Continuer</button>
+      <button className="btn primary block" onClick={next}>Valider ce matériel et continuer</button>
     </main>
   )
 
@@ -130,7 +130,7 @@ export function Onboarding() {
       <h1>Sauvegarde et rappels</h1>
       <p className="muted">Avec un compte, tes données sont sauvegardées en ligne (privées, visibles de toi seule) et les rappels de 17 h 15 arrivent même appli fermée.</p>
       {cloud.user ? (
-        <div className="banner" style={{ background: '#e6efe3', color: '#4f6b4c' }}>Connectée : {cloud.user.email}</div>
+        <div className="banner" style={{ background: 'var(--mousse-clair)', color: 'var(--vert)' }}>Connectée : {cloud.user.email}</div>
       ) : <AuthForm compact />}
       <div className="spacer" />
       <button className="btn primary block" onClick={next}>{cloud.user ? 'Continuer' : 'Plus tard'}</button>
@@ -148,8 +148,8 @@ export function Onboarding() {
       <div className="card tint">
         <p><strong>Ton plan est simple :</strong></p>
         <p>• {days.length === 5 && days.every((d, i) => d === i + 1) ? 'Du lundi au vendredi' : 'Les jours choisis'}, à {time.replace(':', ' h ')} : ta séance de {usual} min, ou {Math.min(min, usual)} min les jours difficiles.</p>
-        <p>• Un verre d'eau à la fois, jusqu'à {water}.</p>
-        <p>• Tes repas notés sans compter, juste pour garder le fil.</p>
+        <p>• De l'eau tout au long de la journée, jusqu'à {(water / 1000).toFixed(1).replace('.', ',')} L.</p>
+        <p>• Un journal des repas avec les calories, sans jamais d'objectif trop bas.</p>
         <p>• Si tu rates un jour : tu reprends simplement le lendemain.</p>
       </div>
       <div className="spacer" />

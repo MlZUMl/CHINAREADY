@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react'
-import { IconBack, IconClose } from './icons'
+import { IconBack, IconCheck, IconClose } from './icons'
 import { back } from '../lib/router'
 import { ENERGY_LABELS } from '../domain/recommend'
 
@@ -79,9 +79,12 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
   )
 }
 
-export function Chips<T extends string | number>({ options, value, onChange, multi, soft, label }: {
+export function Chips<T extends string | number>({ options, value, onChange, multi, soft, label, check }: {
   options: { id: T; label: string }[]; value: T | T[] | null; onChange: (v: any) => void; multi?: boolean; soft?: boolean; label: string
+  /** coche visible sur les puces sélectionnées (par défaut pour les choix multiples) */
+  check?: boolean
 }) {
+  const showCheck = check ?? Boolean(multi)
   const isOn = (id: T) => (Array.isArray(value) ? value.includes(id) : value === id)
   return (
     <div className="chips" role="group" aria-label={label}>
@@ -93,6 +96,7 @@ export function Chips<T extends string | number>({ options, value, onChange, mul
               onChange(isOn(o.id) ? arr.filter(x => x !== o.id) : [...arr, o.id])
             } else onChange(isOn(o.id) ? null : o.id)
           }}>
+          {showCheck && isOn(o.id) && <IconCheck className="chk" aria-hidden="true" />}
           {o.label}
         </button>
       ))}
@@ -119,17 +123,17 @@ export function Progress({ value, label }: { value: number; label: string }) {
   return <div className="progress" role="progressbar" aria-label={label} aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}><div style={{ width: pct + '%' }} /></div>
 }
 
-export function Ring({ value, size = 64, stroke = 8, children }: { value: number; size?: number; stroke?: number; children?: ReactNode }) {
+export function Ring({ value, size = 64, stroke = 8, children, color = 'var(--mousse)', track = 'var(--mousse-clair)' }: { value: number; size?: number; stroke?: number; children?: ReactNode; color?: string; track?: string }) {
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   return (
     <div style={{ position: 'relative', width: size, height: size, flex: 'none' }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }} aria-hidden="true">
-        <circle cx={size / 2} cy={size / 2} r={r} stroke="var(--poudre)" strokeWidth={stroke} fill="none" />
-        <circle cx={size / 2} cy={size / 2} r={r} stroke="var(--prune)" strokeWidth={stroke} fill="none" strokeLinecap="round"
+        <circle cx={size / 2} cy={size / 2} r={r} stroke={track} strokeWidth={stroke} fill="none" />
+        <circle cx={size / 2} cy={size / 2} r={r} stroke={color} strokeWidth={stroke} fill="none" strokeLinecap="round"
           strokeDasharray={c} strokeDashoffset={c * (1 - Math.max(0, Math.min(1, value)))} style={{ transition: 'stroke-dashoffset .4s ease' }} />
       </svg>
-      <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', fontWeight: 800, fontSize: size > 70 ? '1.1rem' : '.85rem', color: 'var(--prune)' }}>{children}</div>
+      <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', fontWeight: 800, fontSize: size > 70 ? '1.1rem' : '.85rem', color: 'var(--vert)' }}>{children}</div>
     </div>
   )
 }

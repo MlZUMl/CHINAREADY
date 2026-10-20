@@ -6,7 +6,7 @@ import type { Op } from '../data/store'
 import type { GrantKind, RewardGrant, Snapshot, UserMission } from '../data/types'
 import { addDays, isoWeekday, weekStart, type Day, toDay } from '../lib/dates'
 import { dayRitual, sportCommitment } from './ritual'
-import { activeWeeks, reprises, waterGlasses, waterGoal } from './discipline'
+import { activeWeeks, reprises, waterReached, entryMl, foodDays, recipeLogs } from './discipline'
 import { LEVEL_ITEMS, MYSTERY_ITEMS, zoneOrder } from './catalog'
 import { missionDef, missionOps } from './missions'
 
@@ -35,7 +35,7 @@ export interface RewardStats {
   smallStepDays: Day[]
   realRests: number
   waterGoalDays: Day[]
-  totalGlasses: number
+  totalMl: number
   earlyWaterDays: number
   mealDays: Day[]
   distinctRecipes: number
@@ -58,7 +58,7 @@ export interface RewardStats {
 
 export function computeStats(s: Snapshot, today: Day): RewardStats {
   const dates = [
-    ...s.workouts.map(w => w.day), ...s.water_logs.map(w => w.day), ...s.meals.map(m => m.day),
+    ...s.workouts.map(w => w.day), ...s.water_logs.map(w => w.day), ...foodDays(s),
     ...s.daily_checkins.map(c => c.day), ...s.habit_checks.map(h => h.day), ...s.ritual_events.map(e => e.day),
   ].filter(d => d <= today).sort()
   const firstDay = dates[0] ?? null
@@ -90,18 +90,17 @@ export function computeStats(s: Snapshot, today: Day): RewardStats {
   const completeWeeks = [...scheduledByWeek.values()].filter(w => w.planned >= 3 && w.honored >= w.planned).length
 
   const waterDays = [...new Set(s.water_logs.map(w => w.day))].sort()
-  const goal = waterGoal(s)
-  const waterGoalDays = waterDays.filter(d => waterGlasses(s, d) >= goal)
+  const waterGoalDays = waterDays.filter(d => waterReached(s, d))
   const earlyWaterDays = new Set(s.water_logs.filter(w => new Date(w.at).getHours() < 9).map(w => w.day)).size
-  const mealDays = [...new Set(s.meals.map(m => m.day))].sort()
-  const distinctRecipes = new Set(s.meals.map(m => m.recipe_id).filter(Boolean)).size
+  const mealDays = [...foodDays(s)].sort()
+  const distinctRecipes = new Set(recipeLogs(s).map(r => r.recipe_id)).size
 
   const completed = s.workouts.filter(w => w.completed)
   const activityKinds = new Set(completed.map(w => w.activity))
 
   return {
     firstDay, honoredDays, smallStepDays, realRests,
-    waterGoalDays, totalGlasses: s.water_logs.reduce((n, w) => n + w.glasses, 0), earlyWaterDays,
+    waterGoalDays, totalMl: s.water_logs.reduce((n, w) => n + entryMl(w), 0), earlyWaterDays,
     mealDays, distinctRecipes,
     checkins: s.daily_checkins.filter(c => c.energy).map(c => c.day),
     capsules: s.progress_capsules.length,
@@ -117,7 +116,7 @@ export function computeStats(s: Snapshot, today: Day): RewardStats {
     completeWeeks,
     cycleLogged: s.cycle_days.length > 0,
     activeWeeks: activeWeeks(s),
-    firstHabit: s.habit_checks.length > 0 || completed.length > 0 || s.water_logs.length > 0 || s.meals.length > 0,
+    firstHabit: s.habit_checks.length > 0 || completed.length > 0 || s.water_logs.length > 0 || s.meals.length > 0 || s.food_entries.length > 0,
   }
 }
 
@@ -237,7 +236,7 @@ export function expectedGrants(s: Snapshot, today: Day, missions: UserMission[] 
   add('badge', 'lever-soleil', 'Eau avant 9 h, 5 jours', st.earlyWaterDays >= 5)
   add('badge', 'constance-douce', '4 versions minimales en une semaine', st.maxMinPerWeek >= 4)
   add('badge', 'joueuse', '5 séances de Ring Fit', st.ringFit >= 5)
-  add('badge', 'cent-verres', '100 verres d\'eau', st.totalGlasses >= 100)
+  add('badge', 'cent-verres', '25 litres d\'eau', st.totalMl >= 25000)
   const secretBadges = ['retour-gagnant', 'petite-victoire', 'pluie-ou-soleil', 'deuxieme-souffle', 'fidele-vendredi', 'chasseuse-mysteres', 'lever-soleil', 'constance-douce', 'joueuse', 'cent-verres']
   add('accessory', 'cape', 'Un badge secret', secretBadges.some(b => has.has('badge:' + b)))
 
