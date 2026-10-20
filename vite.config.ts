@@ -15,7 +15,7 @@ export default defineConfig({
       injectRegister: false,
       registerType: 'autoUpdate',
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,png,svg,woff2,webmanifest}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,webp,woff2,webmanifest}'],
         // Polices : seuls les jeux latins servent en français ; les autres se chargent à la demande.
         globIgnores: ['**/*cyrillic*', '**/*vietnamese*', '**/*greek*'],
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
@@ -29,7 +29,7 @@ export default defineConfig({
         scope: './',
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#FFFFFF',
+        background_color: '#FBF6EE',
         theme_color: '#FFFFFF',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },

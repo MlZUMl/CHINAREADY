@@ -7,13 +7,60 @@
     <meta name="description" content="Élan : une routine sport, eau et repas qui tient même les jours sans motivation." />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <link rel="icon" type="image/png" href="./icons/icon-192.png" />
-    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="icon" type="image/png" href="./icons/favicon-64.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="preload" as="image" href="./art/logo.webp" />
+    <style>
+      /* Intro d'ouverture : affichée une fois par lancement, ~1,8 s, touche pour passer. */
+      #intro { position: fixed; inset: 0; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+        background: radial-gradient(circle at 50% 42%, #fff 0%, #FBF6EE 55%, #F3EBDD 100%); color: #0A3323; cursor: pointer;
+        transition: opacity .45s ease, transform .45s ease; -webkit-tap-highlight-color: transparent; }
+      #intro.out { opacity: 0; transform: scale(1.04); pointer-events: none; }
+      #intro .halo { position: absolute; width: min(78vw, 360px); aspect-ratio: 1; top: 50%; left: 50%; transform: translate(-50%, -62%);
+        border-radius: 50%; background: radial-gradient(circle, rgba(211,150,140,.28) 0%, rgba(131,153,88,.12) 45%, transparent 70%); animation: elan-halo 1.8s ease-out both; }
+      #intro img { position: relative; width: min(62vw, 280px); height: auto; animation: elan-pop .9s cubic-bezier(.2,.9,.25,1.2) both, elan-float 2.4s ease-in-out .9s infinite; }
+      #intro h1 { position: relative; margin: 10px 0 0; font: 600 2.6rem/1 'Fraunces Variable', Georgia, serif; letter-spacing: .01em; animation: elan-up .6s ease-out .45s both; }
+      #intro p { position: relative; margin: 0; font: 700 1rem/1.4 'Nunito Variable', system-ui, sans-serif; color: #4A5F55; animation: elan-up .6s ease-out .7s both; }
+      #intro .spark { position: absolute; width: 10px; height: 10px; background: #C9A06A; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+        opacity: 0; animation: elan-spark 1.4s ease-out both; }
+      @keyframes elan-pop { 0% { opacity: 0; transform: scale(.6) rotate(-6deg); } 70% { opacity: 1; transform: scale(1.04) rotate(1deg); } 100% { transform: scale(1) rotate(0); } }
+      @keyframes elan-float { 50% { transform: translateY(-6px); } }
+      @keyframes elan-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+      @keyframes elan-halo { from { opacity: 0; transform: translate(-50%, -62%) scale(.5); } to { opacity: 1; transform: translate(-50%, -62%) scale(1); } }
+      @keyframes elan-spark { 0% { opacity: 0; transform: scale(.2) rotate(0); } 40% { opacity: 1; transform: scale(1.3) rotate(45deg); } 100% { opacity: 0; transform: scale(.4) rotate(90deg); } }
+      @media (prefers-reduced-motion: reduce) { #intro *, #intro .halo { animation: none !important; } }
+    </style>
     <title>Élan</title>
     <!-- Configuration lue à l'exécution (projet Supabase, clé des rappels, illustrations) -->
     <script src="./config.js"></script>
   </head>
   <body>
+    <div id="intro" aria-hidden="true" hidden>
+      <div class="halo"></div>
+      <span class="spark" style="top:24%;left:18%;animation-delay:.35s"></span>
+      <span class="spark" style="top:20%;right:20%;animation-delay:.55s;width:14px;height:14px"></span>
+      <span class="spark" style="top:47%;right:12%;animation-delay:.8s"></span>
+      <span class="spark" style="top:50%;left:10%;animation-delay:1s;width:8px;height:8px"></span>
+      <img src="./art/logo.webp" alt="" width="280" height="270" />
+      <h1>Élan</h1>
+      <p>Un petit pas, chaque jour.</p>
+    </div>
+    <script>
+      (function () {
+        var el = document.getElementById('intro')
+        var force = /[?&]intro=1/.test(location.search)
+        var seen = false
+        try { seen = sessionStorage.getItem('elan-intro') === '1' } catch (e) {}
+        if (!force && (seen || navigator.webdriver)) { el.remove(); return }
+        try { sessionStorage.setItem('elan-intro', '1') } catch (e) {}
+        el.hidden = false
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches
+        var done = false
+        function close() { if (done) return; done = true; el.classList.add('out'); setTimeout(function () { el.remove() }, 500) }
+        el.addEventListener('click', close)
+        setTimeout(close, reduce ? 900 : 1800)
+      })()
+    </script>
     <div id="root"></div>
     <noscript>Élan a besoin de JavaScript pour fonctionner.</noscript>
     <script type="module" src="/src/main.tsx"></script>

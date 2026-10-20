@@ -626,3 +626,14 @@ test('progrès hors balance : mensurations, sommeil, bilan du mois croisé', asy
   await shot(page, '18-corps')
   await noHorizontalScroll(page)
 })
+
+test('intro d\'ouverture : logo et nom, touche pour passer, une seule fois par lancement', async ({ page }) => {
+  await page.goto('./?intro=1#/')
+  await expect(page.locator('#intro img')).toBeVisible()
+  await expect(page.locator('#intro h1')).toHaveText('Élan')
+  await page.locator('#intro').click()
+  await expect(page.locator('#intro')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Bienvenue dans Élan' })).toBeVisible()
+  await page.goto('./#/')
+  await expect(page.locator('#intro')).toHaveCount(0)
+})
