@@ -54,7 +54,7 @@ function grantToast(g: RewardGrant): { emoji: string; text: string } | null {
   if (g.kind === 'badge') { const b = badgeDef(g.ref); return b ? { emoji: b.emoji, text: `${b.secret ? 'Badge secret découvert' : 'Badge débloqué'} : ${b.name}` } : null }
   if (g.kind === 'item') { const it = itemDef(g.ref.split('~')[0]); return it ? { emoji: it.emoji, text: `Nouvel objet pour ton univers : ${it.name}` } : null }
   if (g.kind === 'zone') { const z = ZONES.find(z => z.id === g.ref); return z && g.reason !== 'Ton univers de départ' ? { emoji: '🗝️', text: `Nouvelle zone ouverte : ${z.name}` } : null }
-  if (g.kind === 'points') return { emoji: '💎', text: `+${g.points ?? 0} points : ${g.reason.toLowerCase()}` }
+  if (g.kind === 'points') return { emoji: '🪙', text: `+${g.points ?? 0} points : ${g.reason.toLowerCase()}` }
   if (g.kind === 'accessory') { const a = ACCESSORIES.find(a => a.id === g.ref); return a && a.id !== 'noeud' ? { emoji: '🎀', text: `Nouvel accessoire : ${a.name}` } : null }
   return null
 }

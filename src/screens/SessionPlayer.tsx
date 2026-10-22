@@ -131,7 +131,7 @@ export function SessionPlayer({ query }: { query: URLSearchParams }) {
           <div className="timer-ring" aria-live="off">
             <svg viewBox="0 0 120 120" aria-hidden="true">
               <circle cx="60" cy="60" r={r} stroke="var(--mousse-clair)" strokeWidth="8" fill="none" />
-              <circle cx="60" cy="60" r={r} stroke={step.kind === 'rest' ? '#cfe3e8' : 'var(--vert)'} strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - frac)} />
+              <circle cx="60" cy="60" r={r} stroke={step.kind === 'rest' ? 'var(--eau-clair)' : 'var(--btn)'} strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - frac)} />
             </svg>
             <div className="t"><div>{Math.ceil(Math.max(0, left))}<small>{started ? (paused ? 'en pause' : 'secondes') : 'prête ?'}</small></div></div>
           </div>
@@ -189,7 +189,7 @@ export function SessionDone({ query }: { query: URLSearchParams }) {
           <div className="list">
             <div className="list-item"><span className="emoji-bubble">⏱️</span><div className="grow"><div className="title">{minutes} minutes</div><div className="muted small">{w.program ?? 'Séance'} · enregistrée dans ton historique</div></div></div>
             {xp > 0 && <div className="list-item"><span className="emoji-bubble">✨</span><div className="grow"><div className="title">+{xp} points d'expérience</div><div className="muted small">Ton univers grandit</div></div></div>}
-            {points > 0 && <button className="list-item" style={{ border: 0, background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }} onClick={() => navigate('/univers?onglet=boutique')}><span className="emoji-bubble">💎</span><div className="grow"><div className="title">+{points} points pour la boutique</div><div className="muted small">De quoi habiller ton compagnon · voir la boutique</div></div></button>}
+            {points > 0 && <button className="list-item" style={{ border: 0, background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }} onClick={() => navigate('/univers?onglet=boutique')}><span className="emoji-bubble">🪙</span><div className="grow"><div className="title">+{points} points pour la boutique</div><div className="muted small">De quoi habiller ton compagnon · voir la boutique</div></div></button>}
             {notable.map(g => {
               const label = g.kind === 'badge' ? badgeDef(g.ref)?.name : g.kind === 'item' ? itemDef(g.ref.split('~')[0])?.name : g.kind === 'zone' ? `Nouvelle zone : ${ZONES.find(z => z.id === g.ref)?.name ?? ''}` : `Accessoire pour ton compagnon : ${ACCESSORIES.find(a => a.id === g.ref)?.name ?? ''}`
               const emoji = g.kind === 'badge' ? badgeDef(g.ref)?.emoji : g.kind === 'item' ? itemDef(g.ref.split('~')[0])?.emoji : '🎁'

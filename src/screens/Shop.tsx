@@ -5,6 +5,7 @@ import { Segmented, Sheet } from '../ui/components'
 import { CompanionArt } from '../art/Companion'
 import { AvatarArt } from '../art/Avatar'
 import { IconCheck, IconLock } from '../ui/icons'
+import { Coin } from '../ui/ornaments'
 import { navigate } from '../lib/router'
 import { weekStart } from '../lib/dates'
 import {
@@ -19,7 +20,7 @@ export function PointsPill({ onClick }: { onClick?: () => void }) {
   const { snap } = useApp()
   return (
     <button className="pill points-pill" onClick={onClick ?? (() => navigate('/univers?onglet=boutique'))} aria-label={`Mes points : ${balance(snap)}. Ouvrir la boutique`}>
-      <span aria-hidden="true">💎</span><span data-testid="solde-points">{fmtPts(balance(snap))}</span>
+      <Coin /><span data-testid="solde-points">{fmtPts(balance(snap))}</span>
     </button>
   )
 }
@@ -56,7 +57,7 @@ export function ShopPanel() {
     <>
       <section className="card prune" aria-label="Mes points">
         <div className="row between">
-          <div><div className="kicker" style={{ color: '#cfe7e3' }}>Mes points</div><div className="kbd-num" style={{ color: '#fff' }} data-testid="solde-boutique">{fmtPts(solde)}</div></div>
+          <div><div className="kicker" style={{ color: '#FCE3EA' }}>Mes points</div><div className="kbd-num" style={{ color: '#fff' }} data-testid="solde-boutique">{fmtPts(solde)}</div></div>
           {avatar ? (() => { const l = avatarLook(avatar); return <AvatarArt character={avatar.character} style={l.style} outfit={l.outfit} extras={l.extras} size={92} /> })()
             : <CompanionArt species={comp.species} expression="content" color={comp.color} accessories={comp.accessories} size={84} className="bob" />}
         </div>

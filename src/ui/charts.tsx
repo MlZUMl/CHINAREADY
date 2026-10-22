@@ -10,7 +10,7 @@ const dm = (d: Day) => { const x = parseDay(d); return `${x.getDate()}/${x.getMo
 const TEXT = { fontFamily: 'var(--corps)', fontWeight: 700 as const, fill: 'var(--texte-doux)' }
 
 // ------------------------------------------------------------------ courbe
-export function TrendLine({ days, line, dots, unit, decimals = 1, label, color = 'var(--nuit)', dotColor = 'var(--nuit)' }: {
+export function TrendLine({ days, line, dots, unit, decimals = 1, label, color = 'var(--btn)', dotColor = 'var(--mousse)' }: {
   days: Day[]
   /** courbe principale (ex. tendance lissée du poids) */
   line: number[]
@@ -57,7 +57,7 @@ export function TrendLine({ days, line, dots, unit, decimals = 1, label, color =
         ))}
         {n > 1 && <path d={`${path} L${x(n - 1).toFixed(1)},${base} L${x(0).toFixed(1)},${base} Z`} fill={`url(#${gid})`} />}
         {n > 1 && <path d={path} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />}
-        {dots?.map((v, i) => <circle key={days[i] + i} cx={x(i)} cy={y(v)} r="3" fill={dotColor} opacity=".5" />)}
+        {dots?.map((v, i) => <circle key={days[i] + i} cx={x(i)} cy={y(v)} r="3" fill={dotColor} opacity=".9" />)}
         <circle cx={x(n - 1)} cy={y(lastV)} r="6" fill={color} stroke="#fff" strokeWidth="3" />
         <g>
           <rect x={bx} y={by} width={bw} height="24" rx="12" fill="var(--vert)" />
@@ -72,7 +72,7 @@ export function TrendLine({ days, line, dots, unit, decimals = 1, label, color =
 }
 
 // ------------------------------------------------------------------ barres par jour
-export function DayBars({ items, goal, goalLabel, format, yFormat, step, color = 'var(--nuit)', soft = '#9fc3cc', label, today }: {
+export function DayBars({ items, goal, goalLabel, format, yFormat, step, color = 'var(--eau)', soft = 'var(--eau-clair)', label, today }: {
   items: { day: Day; value: number }[]
   /** repère pointillé : au-dessus, la barre prend la couleur pleine */
   goal?: number
@@ -134,6 +134,50 @@ export function DayBars({ items, goal, goalLabel, format, yFormat, step, color =
             {goalLabel && <text x={W - right} y={base - h(goal) - 4} textAnchor="end" fontSize="10" style={{ fontFamily: 'var(--corps)', fontWeight: 800, fill: 'var(--vert)' }}>{goalLabel}</text>}
           </g>
         )}
+      </svg>
+    </div>
+  )
+}
+
+const signed = (n: number) => (n === 0 ? '0' : `${n < 0 ? '−' : '+'}${fr(Math.abs(n))}`)
+
+// ------------------------------------------------------------------ variation semaine par semaine
+/** Barres de variation du poids par semaine : vers le bas en rose = baisse, vers le haut en or = hausse. */
+export function DeltaBars({ items, unit, label }: { items: { start: Day; delta: number | null }[]; unit: string; label: string }) {
+  const n = items.length
+  if (!n) return null
+  const H = 190, left = 12, right = 12, top = 26, bottom = 34
+  const vals = items.map(i => i.delta ?? 0)
+  const m = Math.max(0.5, Math.ceil(Math.max(...vals.map(Math.abs)) * 2) / 2)
+  const mid = top + (H - top - bottom) / 2
+  const half = (H - top - bottom) / 2 - 8
+  const hh = (v: number) => (Math.abs(v) / m) * half
+  const slot = (W - left - right) / n
+  const bw = Math.min(28, slot * 0.66)
+  return (
+    <div className="chart" role="img" aria-label={label} data-testid="graph-variation">
+      <svg viewBox={`0 0 ${W} ${H}`}>
+        <line x1={left} x2={W - right} y1={mid} y2={mid} stroke="var(--or)" strokeWidth="1.5" />
+        <text x={left} y={top - 12} fontSize="10" style={TEXT}>{`▲ hausse · ▼ baisse (${unit})`}</text>
+        {items.map((it, i) => {
+          const cx = left + slot * i + slot / 2
+          const v = it.delta
+          const down = v !== null && v < 0
+          const h = v === null ? 0 : Math.max(v === 0 ? 0 : 4, hh(v))
+          return (
+            <g key={it.start}>
+              {v === null
+                ? <circle cx={cx} cy={mid} r="2.5" fill="var(--poudre-2)" />
+                : v === 0
+                  ? <rect x={cx - bw / 2} y={mid - 1.5} width={bw} height="3" rx="1.5" fill="var(--or)" />
+                  : <rect x={cx - bw / 2} y={down ? mid : mid - h} width={bw} height={h} rx="7" fill={down ? 'var(--mousse)' : '#F0D18A'} stroke={down ? '#E884A0' : 'var(--or)'} strokeWidth="1" />}
+              {v !== null && (
+                <text x={cx} y={down ? mid + h + 13 : mid - h - 6} textAnchor="middle" fontSize="10.5" style={{ fontFamily: 'var(--corps)', fontWeight: 800, fill: 'var(--vert)' }}>{signed(v)}</text>
+              )}
+              <text x={cx} y={H - 8} textAnchor="middle" fontSize="10" style={{ ...TEXT, fontWeight: i === n - 1 ? 900 : 700, fill: i === n - 1 ? 'var(--vert)' : 'var(--texte-doux)' }}>{dm(it.start)}</text>
+            </g>
+          )
+        })}
       </svg>
     </div>
   )

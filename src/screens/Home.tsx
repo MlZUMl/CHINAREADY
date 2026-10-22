@@ -113,7 +113,7 @@ export function Home({ query }: { query?: URLSearchParams }) {
     const now = new Date().getHours() * 60 + new Date().getMinutes()
     const isTime = now >= minutesOfDay(cue)
     if (ritual.status === 'honore') return (
-      <section className="card tint" aria-label="Rendez-vous sportif">
+      <section className="card tint fleurs" aria-label="Rendez-vous sportif">
         <div className="card-head"><span className="emoji-bubble" aria-hidden="true">🌸</span>
           <div><div className="kicker">Rendez-vous honoré</div><h2>{ritual.minutes} min pour toi aujourd'hui</h2></div></div>
         <p className="muted">{ritual.version === 'min' ? 'Version minimale tenue : le fil est gardé, et c\'est exactement le but.' : 'Séance faite. Ton toi de demain te remercie.'}</p>
@@ -122,7 +122,7 @@ export function Home({ query }: { query?: URLSearchParams }) {
     )
     if (ritual.status === 'repos') return (
       <section className="card flat" aria-label="Rendez-vous sportif">
-        <div className="card-head"><span className="emoji-bubble" style={{ background: '#e3eff1' }} aria-hidden="true">🌙</span>
+        <div className="card-head"><span className="emoji-bubble" style={{ background: 'var(--eau-clair)' }} aria-hidden="true">🌙</span>
           <div><div className="kicker">Repos noté</div><h3>Le repos fait partie du plan.</h3></div></div>
         <p className="muted small">Demain, ton rendez-vous sera là, comme d'habitude.</p>
         <button className="link-btn" onClick={() => actions.cancelRest(today)}>Finalement, je bouge un peu</button>

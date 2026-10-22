@@ -649,6 +649,10 @@ test('courbes : jauge d\'eau en pourcentage, courbe de poids, barres d\'eau et d
   await expect(courbe.getByTestId('graph-courbe')).toBeVisible()
   await courbe.getByRole('tab', { name: 'Tout' }).click()
   await expect(courbe.getByTestId('graph-courbe')).toBeVisible()
+  // Variation par semaine : une seule semaine comparable pour l'instant, message explicatif
+  await courbe.getByRole('tab', { name: 'Par semaine' }).click()
+  await expect(courbe).toContainText('pesées sur deux semaines')
+  await courbe.getByRole('tab', { name: 'Poids' }).click()
   // Eau : sur 7 jours le 20 n'est plus visible (le 27 est la fin), sur 30 jours oui
   const eau = page.getByRole('region', { name: 'Eau sur les derniers jours' })
   await expect(eau.getByTestId('graph-barres')).toBeVisible()
@@ -672,4 +676,27 @@ test('intro d\'ouverture : logo et nom, touche pour passer, une seule fois par l
   await expect(page.getByRole('heading', { name: 'Bienvenue dans Élan' })).toBeVisible()
   await page.goto('./#/')
   await expect(page.locator('#intro')).toHaveCount(0)
+})
+
+test('courbes : variation du poids semaine par semaine', async ({ page }) => {
+  await onboard(page, 'Lina', true)
+  const pesee = async (iso: string, moins: number) => {
+    await page.clock.setFixedTime(new Date(iso))
+    await page.goto('./#/progres?onglet=corps')
+    await page.reload()
+    const poids = page.getByRole('group', { name: 'Poids' })
+    for (let i = 0; i < moins; i++) await poids.getByRole('button', { name: 'Moins' }).click()
+    await page.getByRole('button', { name: 'Enregistrer' }).click()
+    await expect(page.getByTestId('graph-courbe').first()).toBeVisible()
+  }
+  await pesee('2026-10-27T08:00:00+01:00', 4)
+  await pesee('2026-11-03T08:00:00+01:00', 3)
+  await pesee('2026-11-10T08:00:00+01:00', 1)
+  await page.goto('./#/progres?onglet=courbes')
+  await page.reload()
+  const courbe = page.getByRole('region', { name: 'Courbe de poids' })
+  await courbe.getByRole('tab', { name: 'Par semaine' }).click()
+  await expect(courbe.getByTestId('graph-variation')).toBeVisible()
+  await expect(courbe.getByTestId('graph-variation')).toHaveAttribute('aria-label', /Variation du poids par semaine/)
+  await shot(page, '20-variation-semaine')
 })

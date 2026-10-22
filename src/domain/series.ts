@@ -1,6 +1,6 @@
 // Séries pour les graphiques : poids, eau et activité. Fonctions pures, sans écran.
 import type { Snapshot } from '../data/types'
-import { addDays, daysBetween, type Day } from '../lib/dates'
+import { addDays, daysBetween, weekStart, type Day } from '../lib/dates'
 import { waterGoalMl, waterMl } from './discipline'
 
 export interface WaterDay { day: Day; ml: number; goal: number; reached: boolean }
@@ -90,4 +90,29 @@ export function weightStats(points: WeightPoint[]) {
     min: Math.min(...points.map(p => p.kg)),
     max: Math.max(...points.map(p => p.kg)),
   }
+}
+
+export interface WeekDelta { start: Day; delta: number | null }
+
+/** Variation de la tendance, semaine après semaine (du lundi au dimanche), sur les `weeks` dernières semaines.
+ *  `delta` = tendance de fin de semaine moins tendance de fin de la semaine d'avant ; vide (null) sans pesée dans la semaine
+ *  ou sans point de départ. Une baisse est négative. */
+export function weeklyDeltas(points: WeightPoint[], today: Day, weeks = 8): WeekDelta[] {
+  const r1 = (n: number) => Math.round(n * 10) / 10
+  const trendAt = (day: Day): number | null => {
+    let t: number | null = null
+    for (const p of points) { if (p.day <= day) t = p.trend; else break }
+    return t
+  }
+  const thisWeek = weekStart(today)
+  const out: WeekDelta[] = []
+  for (let i = weeks - 1; i >= 0; i--) {
+    const start = addDays(thisWeek, -7 * i)
+    const end = addDays(start, 6)
+    const prev = trendAt(addDays(start, -1))
+    const cur = trendAt(end > today ? today : end)
+    const weighed = points.some(p => p.day >= start && p.day <= end && p.day <= today)
+    out.push({ start, delta: weighed && prev !== null && cur !== null ? r1(cur - prev) : null })
+  }
+  return out
 }

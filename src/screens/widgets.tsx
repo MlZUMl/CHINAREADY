@@ -169,7 +169,7 @@ export function WaterWidget({ day, compact = false }: { day: Day; compact?: bool
   return (
     <section className="card" aria-label="Hydratation">
       <div className="card-head">
-        <span className="emoji-bubble" style={{ background: '#e3eff1' }} aria-hidden="true"><IconDrop style={{ width: 22, color: 'var(--nuit)' }} /></span>
+        <span className="emoji-bubble" style={{ background: 'var(--eau-clair)' }} aria-hidden="true"><IconDrop style={{ width: 22, color: 'var(--nuit)' }} /></span>
         <div><div className="kicker">Eau</div><strong data-testid="eau-total">{formatLitres(ml)} sur {formatLitres(goal, 1)}</strong></div>
         <div className="water-sum"><strong>{Math.round(Math.min(1, ml / goal) * 100)} %</strong><span className="small muted">{goal > ml ? `encore ${formatLitres(goal - ml)}` : 'objectif atteint'}</span></div>
       </div>
