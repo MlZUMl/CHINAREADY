@@ -119,6 +119,7 @@ test('accueil, rituel de 17 h 15 en mode épuisée, séance réelle, récompense
   await page.getByRole('link', { name: 'Accueil' }).click()
   await expect(page.getByText(/rendez-vous honoré/i).first()).toBeVisible()
   await expect(page.getByRole('status')).toHaveCount(0)
+  await shot(page, '04b-accueil-apres-seance')
 })
 
 test('eau en litres : boutons rapides, objectif, modification et suppression d\'une entrée', async ({ page }) => {

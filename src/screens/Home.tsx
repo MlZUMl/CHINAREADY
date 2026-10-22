@@ -137,8 +137,8 @@ export function Home({ query }: { query?: URLSearchParams }) {
       </section>
     )
     return (
-      <section className={`card ${isTime ? 'prune' : 'tint'}`} aria-label="Rendez-vous sportif">
-        <div className="card-head"><span className="emoji-bubble" style={isTime ? { background: 'rgba(255,255,255,.2)' } : undefined} aria-hidden="true">⏰</span>
+      <section className={`card ${isTime ? 'prune' : 'tint fleurs'}`} aria-label="Rendez-vous sportif">
+        <div className="card-head"><span className="emoji-bubble" aria-hidden="true">⏰</span>
           <div><div className="kicker">Mon rendez-vous · {cue.replace(':', ' h ')}</div>
             <h2>{isTime ? 'C\'est l\'heure. On y va ?' : `Séance de ${sport.usual_minutes} min, ou ${sport.min_minutes} min en version mini`}</h2></div></div>
         {ritual.status === 'petit-pas' && <p className={isTime ? '' : 'muted'}>{ritual.minutes} min déjà faites : encore {Math.max(0, (sport.min_minutes ?? 10) - ritual.minutes)} min pour honorer ton rendez-vous.</p>}

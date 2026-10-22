@@ -57,7 +57,7 @@ export function ShopPanel() {
     <>
       <section className="card prune" aria-label="Mes points">
         <div className="row between">
-          <div><div className="kicker" style={{ color: '#FCE3EA' }}>Mes points</div><div className="kbd-num" style={{ color: '#fff' }} data-testid="solde-boutique">{fmtPts(solde)}</div></div>
+          <div><div className="kicker">Mes points</div><div className="kbd-num" data-testid="solde-boutique">{fmtPts(solde)}</div></div>
           {avatar ? (() => { const l = avatarLook(avatar); return <AvatarArt character={avatar.character} style={l.style} outfit={l.outfit} extras={l.extras} size={92} /> })()
             : <CompanionArt species={comp.species} expression="content" color={comp.color} accessories={comp.accessories} size={84} className="bob" />}
         </div>

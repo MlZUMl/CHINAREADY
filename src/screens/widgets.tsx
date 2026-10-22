@@ -1,4 +1,5 @@
 // Composants partagés entre écrans.
+import { Coin } from '../ui/ornaments'
 import { useMemo, useState } from 'react'
 import { useApp } from '../app/state'
 import { CompanionArt } from '../art/Companion'
@@ -104,7 +105,7 @@ export function MissionCard() {
   return (
     <section className={`card ${um.mystery ? 'prune' : 'tint'}`} aria-label="Mission du jour">
       <div className="card-head">
-        <span className="emoji-bubble" aria-hidden="true" style={um.mystery ? { background: 'rgba(255,255,255,.18)' } : undefined}>{done ? '🎉' : um.mystery ? '🔮' : '🎯'}</span>
+        <span className="emoji-bubble" aria-hidden="true" style={undefined}>{done ? '🎉' : um.mystery ? '🔮' : '🎯'}</span>
         <div>
           <div className="kicker">{um.mystery ? 'Mission mystère' : 'Mission du jour'} · facultative</div>
           <h3>{hidden ? 'Aujourd\'hui, une petite action peut débloquer une surprise.' : def.name}</h3>
@@ -141,7 +142,7 @@ export function WeekStrip({ onDay }: { onDay?: (d: Day) => void }) {
           <button key={d} role="listitem" onClick={() => (onDay ? onDay(d) : navigate('/progres?jour=' + d))}
             aria-label={`${['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'][i]} ${parseDay(d).getDate()} : ${r.status === 'honore' ? 'rendez-vous honoré' : r.status === 'repos' ? 'repos' : r.scheduled ? 'rendez-vous prévu' : 'pas de rendez-vous'}`}>
             <span className="wd">{['L', 'M', 'M', 'J', 'V', 'S', 'D'][isoWeekday(d) - 1]}</span>
-            <span className={cls}>{parseDay(d).getDate()}</span>
+            <span className={cls}>{r.status === 'honore' ? <Coin size={26} /> : parseDay(d).getDate()}</span>
             <span className="mini-dots">{water && <i className="eau" />}{meals && <i className="repas" />}</span>
           </button>
         )
